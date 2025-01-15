@@ -5,10 +5,7 @@ import { usePathname } from "next/navigation";
 export default function AdminNav() {
   const path = usePathname();
   const isPagesPage = path.endsWith("/pages");
-  const isPostsPage =
-    path.endsWith("/posts") ||
-    path.endsWith("/posts/new") ||
-    path.endsWith("/posts/drafts");
+  const isPostsPage = path.includes("/posts");
   const isSettingsPage = path.endsWith("/settings");
 
   return (

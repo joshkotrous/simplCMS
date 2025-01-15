@@ -1,5 +1,6 @@
 import { getPost } from "@/packages/core/src/posts";
 import { notFound } from "next/navigation";
+import PostDisplay from "./postDisplay";
 
 export default async function PostPage({
   params,
@@ -10,12 +11,7 @@ export default async function PostPage({
   if (!post) return notFound();
   return (
     <div className="p-4">
-      <h2>{post.title}</h2>
-      <p>{new Date(post.createdAt).toLocaleDateString()}</p>
-      <p>{post.author}</p>
-      <p>{post.category}</p>
-      <p>{post.subtitle}</p>
-      <p>{post.content}</p>
+      <PostDisplay post={post} />
     </div>
   );
 }

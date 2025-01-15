@@ -60,3 +60,46 @@ export async function getPost(post: Partial<PostType>): Promise<PostType> {
     throw error;
   }
 }
+
+export async function deletePost(post: PostType): Promise<void> {
+  try {
+    await connectToDatabase();
+
+    const result = await Post.deleteOne({ _id: post._id });
+
+    if (result.deletedCount === 0) {
+      throw new Error("Post not found");
+    }
+  } catch (error) {
+    console.error(`Could not delete post: ${error}`);
+    throw error;
+  }
+}
+
+export async function updatePost(
+  postId: string,
+  updates: Partial<PostType>
+): Promise<PostType> {
+  try {
+    await connectToDatabase();
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $set: updates },
+      {
+        new: true,
+        runValidators: true,
+        select: "-__v",
+      }
+    );
+
+    if (!updatedPost) {
+      throw new Error("Post not found");
+    }
+
+    return JSON.parse(JSON.stringify(updatedPost));
+  } catch (error) {
+    console.error(`Could not update post: ${error}`);
+    throw error;
+  }
+}

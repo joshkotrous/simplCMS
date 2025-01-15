@@ -57,19 +57,14 @@ export default function PostsList({ posts }: { posts: PostType[] }) {
         <div className="flex flex-1  flex-col gap-3">
           {posts.map((post) => (
             <Link href={`/admin/posts/${post._id}`} key={post._id}>
-              <Card className="relative hover:scale-[99%] transition-all">
+              <Card className="relative hover:scale-[99%] transition-all rounded-lg">
                 <CardHeader className="p-2">
                   <div className="w-full flex justify-between items-center">
-                    {post.draft ? (
-                      <div className="text-xs bg-zinc-200 w-fit p-1 rounded  left-2 top-2">
-                        DRAFT
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
+                    <span className="font-bold text-lg">{post.title}</span>
+
                     <AlertDialog>
                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                        <DropdownMenuTrigger>
                           <Ellipsis className=" right-2 cursor-pointer" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
@@ -93,15 +88,21 @@ export default function PostsList({ posts }: { posts: PostType[] }) {
                     </AlertDialog>
                   </div>
                   <div className="flex w-full justify-between">
-                    <span className="font-bold text-lg">{post.title}</span>
                     <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                   </div>
                   <span>by {post.author}</span>
                 </CardHeader>
-                <CardContent className="p-2">
+                <CardContent className="px-2">
                   <span>{post.subtitle}</span>
                   <span>{post.content}</span>
                 </CardContent>
+                <div className="w-full flex justify-end p-2">
+                  {post.draft && (
+                    <div className="text-xs bg-zinc-200 w-fit p-1 rounded  left-2 top-2">
+                      DRAFT
+                    </div>
+                  )}
+                </div>
               </Card>
             </Link>
           ))}
