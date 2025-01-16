@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function SetupPage() {
-  // if (process.env.MONGO_URI) redirect("/admin");
+  if (process.env.SIMPLCMS_DB_PROVIDER) redirect("/setup/oauth");
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center  space-y-12">
       <div className="text-center">
