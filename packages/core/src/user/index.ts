@@ -1,9 +1,11 @@
-import connectToDatabase from "@/db";
+import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
 import { User } from "@/db/schema";
 import { UserType } from "@/types/types";
 export async function createUser(userData: Partial<UserType>): Promise<void> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
     const newUser = new User(userData);
     await newUser.save();
   } catch (error) {
@@ -14,7 +16,9 @@ export async function createUser(userData: Partial<UserType>): Promise<void> {
 
 export async function getUser(user: Partial<UserType>): Promise<UserType> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
     let query = {};
     if (user.email) {
       query = { email: user.email };
@@ -38,7 +42,9 @@ export async function getUser(user: Partial<UserType>): Promise<UserType> {
 
 export async function getAllUsers(): Promise<UserType[]> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
     const users = await User.find({}).sort({ createdAt: -1 }).select("-__v");
     return JSON.parse(JSON.stringify(users));
   } catch (error) {
@@ -49,7 +55,9 @@ export async function getAllUsers(): Promise<UserType[]> {
 
 export async function getUserByEmail(email: string): Promise<UserType> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
     const user = await User.findOne({ email }).select("-__v");
     return JSON.parse(JSON.stringify(user));
   } catch (error) {
@@ -60,7 +68,9 @@ export async function getUserByEmail(email: string): Promise<UserType> {
 
 export async function userHasAccess(user: UserType): Promise<boolean> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
     const allUsers = await getAllUsers();
     const hasAccess = allUsers.some((_user) => user.email === _user.email);
     return hasAccess;
@@ -69,3 +79,5 @@ export async function userHasAccess(user: UserType): Promise<boolean> {
     throw error;
   }
 }
+
+export * as user from ".";

@@ -21,4 +21,5 @@ const User =
   mongoose.models.User || mongoose.model<UserType>("User", UserSchema);
 const Post =
   mongoose.models.Post || mongoose.model<PostType>("Post", PostSchema);
+
 export { User, Post };

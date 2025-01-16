@@ -1,6 +1,6 @@
 "use server";
 
-import { UserType } from "@/db/schema";
+import { UserType } from "@/types/types";
 import { getUser, createUser, getAllUsers } from "@/packages/core/src/user";
 
 export async function createUserAction(user: Partial<UserType>): Promise<void> {

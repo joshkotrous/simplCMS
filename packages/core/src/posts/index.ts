@@ -1,10 +1,11 @@
-import connectToDatabase from "@/db";
+import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
 import { Post } from "@/db/schema";
 import { CreatePostType, PostType } from "@/types/types";
 
 export async function createPost(post: CreatePostType): Promise<void> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+    await connectToDatabase(uri);
 
     const newPost = new Post(post);
     await newPost.save();
@@ -16,7 +17,9 @@ export async function createPost(post: CreatePostType): Promise<void> {
 
 export async function getAllPosts(): Promise<PostType[]> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
     const posts = await Post.find({}).sort({ createdAt: -1 }).select("-__v");
 
     return JSON.parse(JSON.stringify(posts));
@@ -28,7 +31,9 @@ export async function getAllPosts(): Promise<PostType[]> {
 
 export async function getPost(post: Partial<PostType>): Promise<PostType> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
 
     let query = {};
 
@@ -63,7 +68,9 @@ export async function getPost(post: Partial<PostType>): Promise<PostType> {
 
 export async function deletePost(post: PostType): Promise<void> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
 
     const result = await Post.deleteOne({ _id: post._id });
 
@@ -81,7 +88,9 @@ export async function updatePost(
   updates: Partial<PostType>
 ): Promise<PostType> {
   try {
-    await connectToDatabase();
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
 
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
@@ -103,3 +112,5 @@ export async function updatePost(
     throw error;
   }
 }
+
+export * as posts from ".";
