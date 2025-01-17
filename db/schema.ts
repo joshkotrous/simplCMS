@@ -4,6 +4,8 @@ import mongoose, { Schema } from "mongoose";
 const UserSchema: Schema = new Schema<UserType>({
   email: { type: String, required: true },
   role: { type: String, enum: ["user", "admin"], default: "user" },
+  imageUrl: { type: String, required: false },
+  name: { type: String, required: false },
   createdAt: { type: Date, default: Date.now },
 });
 

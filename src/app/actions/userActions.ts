@@ -1,7 +1,12 @@
 "use server";
 
 import { UserType } from "@/types/types";
-import { getUser, createUser, getAllUsers } from "@/packages/core/src/user";
+import {
+  getUser,
+  createUser,
+  getAllUsers,
+  deleteUser,
+} from "@/packages/core/src/user";
 
 export async function createUserAction(user: Partial<UserType>): Promise<void> {
   try {
@@ -27,6 +32,14 @@ export async function getAllUsersAction(): Promise<UserType[]> {
   try {
     const users = await getAllUsers();
     return users;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteUserAction(user: UserType): Promise<void> {
+  try {
+    await deleteUser(user);
   } catch (error) {
     throw error;
   }

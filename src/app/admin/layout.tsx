@@ -22,7 +22,7 @@ export default async function AdminLayout({
     const hasAccess = await userHasAccess(user);
     if (!hasAccess) throw new Error("User does not have access");
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
-
+    console.log(user);
     return (
       <div className="h-screen w-screen overflow-hidden flex flex-col">
         <div className="flex h-fit justify-between items-center p-4">

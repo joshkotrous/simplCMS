@@ -80,4 +80,60 @@ export async function userHasAccess(user: UserType): Promise<boolean> {
   }
 }
 
+export async function deleteUser(user: UserType): Promise<void> {
+  try {
+    const uri = getDatabaseUriEnvVariable();
+
+    await connectToDatabase(uri);
+    let query = {};
+    if (user.email) {
+      query = { email: user.email };
+    } else if (user._id) {
+      query = { _id: user._id };
+    } else {
+      throw new Error("Either email or _id must be provided");
+    }
+
+    const result = await User.deleteOne(query);
+    if (result.deletedCount === 0) {
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    console.error(`Could not delete user: ${error}`);
+    throw error;
+  }
+}
+
+export async function updateUser(user: Partial<UserType>): Promise<void> {
+  try {
+    const uri = getDatabaseUriEnvVariable();
+    await connectToDatabase(uri);
+
+    let query = {};
+    if (user.email) {
+      query = { email: user.email };
+    } else if (user._id) {
+      query = { _id: user._id };
+    } else {
+      throw new Error("Either email or _id must be provided");
+    }
+
+    const updateData = { ...user };
+    delete updateData._id;
+    delete updateData.email;
+
+    const result = await User.updateOne(query, { $set: updateData });
+
+    if (result.matchedCount === 0) {
+      throw new Error("User not found");
+    }
+
+    if (result.modifiedCount === 0) {
+      throw new Error("No changes were made to the user");
+    }
+  } catch (error) {
+    console.error(`Could not update user: ${error}`);
+    throw error;
+  }
+}
 export * as user from ".";

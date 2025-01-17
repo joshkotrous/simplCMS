@@ -35,7 +35,7 @@ export function parseRoutes(routes: PageInfo[]): TreeNode[] {
   const homePage = routes.find((route) => route.route === "/");
   if (homePage) {
     tree.push({
-      name: "Home",
+      name: "home",
       route: "/",
       icon: Home,
     });
@@ -135,7 +135,7 @@ export function TreeNodeComponent({
             }`}
             onClick={handleClick}
           >
-            <span className="flex items-center">
+            <span className="flex items-center capitalize">
               <node.icon className="mr-2 h-4 w-4" />
               {node.name}
             </span>
@@ -170,7 +170,9 @@ export function TreeNodeComponent({
   return (
     <Button
       variant="ghost"
-      className={`w-full justify-start ${isSelected ? "bg-zinc-100" : ""}`}
+      className={`w-full justify-start capitalize ${
+        isSelected ? "bg-zinc-100" : ""
+      }`}
       onClick={handleClick}
     >
       <node.icon className="mr-2 h-4 w-4" />

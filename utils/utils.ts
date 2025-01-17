@@ -1,3 +1,4 @@
+// import { vercel } from "@/packages/core/src/vercel";
 import crypto from "crypto";
 
 export function getEnvironment(): "dev" | "prod" {
@@ -10,3 +11,7 @@ export function getEnvironment(): "dev" | "prod" {
 export function generateSecret(length: number = 32): string {
   return crypto.randomBytes(length).toString("hex");
 }
+
+// export function getEnvVars() {
+//   const { projectId, teamId, token } = vercel.getVercelEnvVars();
+// }

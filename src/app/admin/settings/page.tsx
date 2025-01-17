@@ -1,11 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import AddUserButton from "./addUserButton";
 import { getAllUsers } from "@/packages/core/src/user";
-import { FaGoogle, FaTrashAlt } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MongoDBLogo } from "@/app/setup/page";
 import { Separator } from "@/components/ui/separator";
+import Users from "./users";
 
 export default async function AdminSettingsPage() {
   const users = await getAllUsers();
@@ -35,21 +35,7 @@ export default async function AdminSettingsPage() {
 
         <div className="flex-1 w-full flex justify-center">
           <TabsContent value="users" className="w-[44rem]">
-            <div className="w-full">
-              <h2 className="text-2xl font-bold">Users</h2>
-              <div>
-                {users.map((user) => (
-                  <div key={user._id} className="grid grid-cols-3">
-                    <span>{user._id}</span>
-                    <span>{user.email}</span>
-                    <span className="flex justify-end">
-                      <FaTrashAlt />
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <AddUserButton />
-            </div>
+            <Users users={users} />
           </TabsContent>
           <TabsContent value="site" className="w-[44rem] space-y-4">
             <div className="space-y-4">

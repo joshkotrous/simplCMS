@@ -4,6 +4,8 @@ import type { Document } from "mongoose";
 export type UserType = {
   _id: string;
   email: string;
+  imageUrl: string;
+  name: string;
   role: "user" | "admin";
   createdAt: Date;
 };

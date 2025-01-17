@@ -30,7 +30,7 @@ export default function SetupMongoForm() {
     toast.promise(connectDbToApplication("MongoDB", uri), {
       loading: "Connecting database to SimplCMS...",
       success: () => {
-        router.push("/setup/oauth");
+        router.push("/setup/media-storage");
         return "Database connected successfully.";
       },
       error: () => {

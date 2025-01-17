@@ -1,6 +1,10 @@
 import NextAuth, { Account, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { getUserByEmail, userHasAccess } from "@/packages/core/src/user";
+import {
+  getUserByEmail,
+  updateUser,
+  userHasAccess,
+} from "@/packages/core/src/user";
 import { JWT } from "next-auth/jwt";
 
 if (!process.env.GOOGLE_CLIENT_ID)
@@ -24,6 +28,52 @@ async function validateSession(session: Session, token: JWT): Promise<Session> {
   }
   session.accessToken = token.accessToken;
   return session;
+}
+
+async function updateUserInformation({
+  session,
+  token,
+}: {
+  session?: Session;
+  token?: JWT;
+}): Promise<void> {
+  try {
+    const email = session
+      ? session.user.email
+      : token
+      ? token.email
+      : (() => {
+          throw new Error("No email found in session or token");
+        })();
+
+    const name = session
+      ? session.user.name
+      : token
+      ? token.name
+      : (() => {
+          throw new Error("No name found in session or token");
+        })();
+    const image = session
+      ? session.user.image
+      : token
+      ? token.picture
+      : undefined;
+
+    if (!email) {
+      throw new Error("Email was not provided via OAuth.");
+    }
+    const user = await getUserByEmail(email);
+    if (!user) {
+      throw new Error("User could not be found.");
+    }
+    await updateUser({
+      _id: user._id,
+      name: name ?? undefined,
+      imageUrl: image ?? undefined,
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function validateToken(
@@ -62,11 +112,13 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, account }) {
       token = await validateToken(token, account);
+      await updateUserInformation({ token });
       return token;
     },
     async session({ session, token }) {
       session = await validateSession(session, token);
-      console.log("SESSION", session);
+      console.log("Updating user information...");
+      await updateUserInformation({ session });
       return session;
     },
     async redirect({ url, baseUrl }) {

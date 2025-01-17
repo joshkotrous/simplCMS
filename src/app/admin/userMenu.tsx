@@ -8,14 +8,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import { UserType } from "@/types/types";
+import Image from "next/image";
 export default function UserMenu({ user }: { user: UserType }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
+          <Image alt="profile" width={100} height={100} src={user.imageUrl} />
           <AvatarFallback className="uppercase">
-            {user.email[0]}
-            {user.email[1]}
+            {user.name[0]}
+            {user.name[1]}
           </AvatarFallback>
           <DropdownMenuContent>
             <DropdownMenuItem onClick={() => signOut()}>
