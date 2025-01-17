@@ -1,4 +1,4 @@
-import { getEnvironment } from "@/utils/utils";
+import { getEnvironment } from "@/lib/utils";
 import { Vercel } from "@vercel/sdk";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { dev } from "../dev";

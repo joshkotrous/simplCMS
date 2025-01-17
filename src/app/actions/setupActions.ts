@@ -1,7 +1,7 @@
 "use server";
 
 import { getVercelEnvVars, vercel } from "@/packages/core/src/vercel";
-import { generateSecret } from "@/utils/utils";
+import { generateSecret } from "@/lib/utils";
 
 export async function connectDbToApplication(
   provider: "MongoDB",

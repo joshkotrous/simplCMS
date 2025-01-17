@@ -1,4 +1,4 @@
-import { scanPages } from "@/utils/pages";
+import { scanPages } from "@/lib/pages";
 import { Plus } from "lucide-react";
 import PagePreview from "./pagePreview";
 
