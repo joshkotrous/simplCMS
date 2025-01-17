@@ -9,21 +9,28 @@ import {
   GetProjectsResponseBody,
 } from "@vercel/sdk/models/getprojectsop.js";
 import { toast } from "sonner";
-import { connectProject, getProjectsAction } from "@/app/actions/vercelActions";
+import {
+  addEnvVar,
+  connectProject,
+  getProjectsAction,
+} from "@/app/actions/vercelActions";
 import { useRouter } from "next/navigation";
 
 export default function SetupVercelForm({
   initialProjects,
+  initialSiteUrl,
 }: {
   initialProjects: GetProjectsResponseBody | null;
+  initialSiteUrl: string | null;
 }) {
+  const [siteUrl, setSiteUrl] = useState<string | null>(initialSiteUrl ?? null);
   const router = useRouter();
   const [formData, setFormData] = useState({
     teamId: "",
     token: "",
     loading: false,
   });
-
+  const [projectConnected, setProjectConnected] = useState(false);
   const [projects, setProjects] = useState<GetProjectsResponseBody | null>(
     initialProjects
   );
@@ -56,7 +63,8 @@ export default function SetupVercelForm({
     toast.promise(connectProject(selectedProject, formData.token), {
       loading: `Connecting to ${selectedProject.name}...`,
       success: () => {
-        router.push("/setup/database");
+        // router.push("/setup/database");
+        setProjectConnected(true);
         return `Successfully connected ${selectedProject.name}.`;
       },
       error: (error) => {
@@ -67,6 +75,57 @@ export default function SetupVercelForm({
         return `Error connecting to ${selectedProject.name}: ${message}.`;
       },
     });
+  }
+
+  async function configureSiteUrl() {
+    if (!selectedProject || !siteUrl) return;
+    toast.promise(
+      addEnvVar(formData.token, selectedProject, {
+        key: "NEXT_PUBLIC_SITE_URL",
+        value: siteUrl,
+        target: ["production"],
+        type: "plain",
+      }),
+      {
+        loading: "Setting site url...",
+        success: () => {
+          router.push("/setup/database");
+          return "Successfully configured site url.";
+        },
+        error: () => {
+          return "Error configuring site url.";
+        },
+      }
+    );
+  }
+
+  if (projectConnected && !siteUrl) {
+    return (
+      <div className="w-screen h-screen flex justify-center items-center">
+        <Card>
+          <CardHeader className="gap-4 text-center">
+            <div className="flex w-full justify-center">
+              <VercelLogo />
+            </div>
+            Configure Site URL
+          </CardHeader>
+          <CardContent className="space-y-4 w-72">
+            <Input
+              value={siteUrl ?? ""}
+              onChange={(e) => setSiteUrl(e.target.value)}
+              placeholder="Site URL..."
+            />
+            <Button
+              onClick={configureSiteUrl}
+              disabled={!siteUrl || siteUrl === ""}
+              className="w-full"
+            >
+              Set Site URL
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (projects) {

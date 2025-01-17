@@ -1,6 +1,7 @@
 "use server";
 
 import { getVercelEnvVars, vercel } from "@/packages/core/src/vercel";
+import { generateSecret } from "@/utils/utils";
 
 export async function connectDbToApplication(
   provider: "MongoDB",
@@ -35,11 +36,13 @@ export async function connectDbToApplication(
 
 export async function setupGoogleOauth(
   clientId: string,
-  clientSecret: string
+  clientSecret: string,
+  siteUrl: string
 ): Promise<void> {
   try {
     const { token, teamId, projectId } = getVercelEnvVars();
     const client = vercel.connect(token);
+    const nextAuthSecret = generateSecret();
     vercel.addEnvToProject({
       vercel: client,
       key: "GOOGLE_OAUTH_CLIENT_ID",
@@ -60,8 +63,26 @@ export async function setupGoogleOauth(
     });
     vercel.addEnvToProject({
       vercel: client,
-      key: "GOOGLE_OAUTH_CLIENT_SECRET",
+      key: "SIMPL_CMS_OAUTH_PROVIDERS",
       value: "Google",
+      projectId: projectId,
+      teamId: teamId,
+      type: "plain",
+      target: ["production"],
+    });
+    vercel.addEnvToProject({
+      vercel: client,
+      key: "NEXTAUTH_URL",
+      value: siteUrl,
+      projectId: projectId,
+      teamId: teamId,
+      type: "plain",
+      target: ["production"],
+    });
+    vercel.addEnvToProject({
+      vercel: client,
+      key: "NEXTAUTH_SECRET",
+      value: nextAuthSecret,
       projectId: projectId,
       teamId: teamId,
       type: "plain",

@@ -1,5 +1,7 @@
+import { getEnvironment } from "@/utils/utils";
 import { Vercel } from "@vercel/sdk";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
+import { dev } from "../dev";
 
 export function connect(apiKey: string): Vercel {
   try {
@@ -42,18 +44,22 @@ export async function addEnvToProject({
   target: ("production" | "preview" | "development")[];
 }) {
   try {
-    const response = await vercel.projects.createProjectEnv({
-      idOrName: projectId,
-      teamId: teamId,
-      requestBody: {
-        key: key,
-        value: value,
-        type: type,
-        target: target,
-      },
-    });
-
-    return response;
+    const env = getEnvironment();
+    if (env === "prod") {
+      await vercel.projects.createProjectEnv({
+        idOrName: projectId,
+        teamId: teamId,
+        requestBody: {
+          key: key,
+          value: value,
+          type: type,
+          target: target,
+        },
+      });
+    } else {
+      console.warn("Dev mode enabled. Setting local env var.");
+      dev.setLocalEnvVar(key, value);
+    }
   } catch (error) {
     console.error(`Could not add environment variable to project: ${error}`);
     throw error;

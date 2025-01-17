@@ -12,22 +12,27 @@ export default function SetupGoogleOauth() {
   const [formData, setFormData] = useState({ clientId: "", clientSecret: "" });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  if (!process.env.NEXT_PUBLIC_SITE_URL)
+    throw Error("NEXT_PUBLIC_SITE_URL not configured");
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const redirectUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback/google`;
   async function setup() {
     setLoading(true);
-    toast.promise(setupGoogleOauth(formData.clientId, formData.clientSecret), {
-      loading: "Connecting Google OAuth...",
-      success: () => {
-        router.push("/setup/add-user");
-        setLoading(false);
-        return "Successfully connected Google OAuth.";
-      },
-      error: () => {
-        setLoading(false);
-        return "Error connecting Google OAuth.";
-      },
-    });
+    toast.promise(
+      setupGoogleOauth(formData.clientId, formData.clientSecret, siteUrl),
+      {
+        loading: "Connecting Google OAuth...",
+        success: () => {
+          router.push("/setup/add-user");
+          setLoading(false);
+          return "Successfully connected Google OAuth.";
+        },
+        error: () => {
+          setLoading(false);
+          return "Error connecting Google OAuth.";
+        },
+      }
+    );
   }
   return (
     <div className="w-screen h-screen flex justify-center items-center">

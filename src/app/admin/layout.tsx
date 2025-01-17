@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getUserByEmail, userHasAccess } from "@/packages/core/src/user";
 import AdminNav from "./adminNav";
 import { Button } from "@/components/ui/button";
@@ -14,13 +14,14 @@ export default async function AdminLayout({
   try {
     // TODO: Figure out middleware solution
     const session = await getServerSession();
-    if (!session?.user?.email) return notFound();
+    if (!session?.user?.email) redirect("/login");
 
     const user = await getUserByEmail(session.user.email);
-    if (!user) return notFound();
+    if (!user) throw new Error("Cannot get user");
 
     const hasAccess = await userHasAccess(user);
-    if (!hasAccess) return notFound();
+    if (!hasAccess) throw new Error("User does not have access");
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
     return (
       <div className="h-screen w-screen overflow-hidden flex flex-col">
@@ -29,7 +30,9 @@ export default async function AdminLayout({
             Admin
           </Link>
           <div className="flex gap-4 items-center">
-            <Button className="text-xs">Go to Site</Button>
+            <Link href={siteUrl}>
+              <Button className="text-xs">Go to Site</Button>
+            </Link>
             <UserMenu user={user} />
           </div>
         </div>
@@ -39,6 +42,6 @@ export default async function AdminLayout({
     );
   } catch (error) {
     console.error(error);
-    return notFound();
+    throw error;
   }
 }

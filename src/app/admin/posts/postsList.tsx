@@ -34,12 +34,20 @@ export default function PostsList({ posts }: { posts: PostType[] }) {
     <div className="w-[44rem] p-4 space-y-4 h-full">
       <div className="flex gap-8 w-full border-b">
         <Link href="/admin/posts">
-          <div className={`p-2 ${!isDrafts && "border-b-black border-b-2"}`}>
+          <div
+            className={`p-2 hover:border-b-black hover:border-b-2 ${
+              !isDrafts && "border-b-black border-b-2"
+            }`}
+          >
             Published
           </div>
         </Link>
         <Link href="/admin/posts/drafts">
-          <div className={`p-2 ${isDrafts && "border-b-black border-b-2"}`}>
+          <div
+            className={`p-2 hover:border-b-black hover:border-b-2 ${
+              isDrafts && "border-b-black border-b-2"
+            }`}
+          >
             Drafts
           </div>
         </Link>

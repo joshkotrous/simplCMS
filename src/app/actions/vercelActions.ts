@@ -24,6 +24,33 @@ export async function getProjectsAction(
   }
 }
 
+export async function addEnvVar(
+  apiKey: string,
+  project: GetProjectsProjects,
+  params: {
+    key: string;
+    value: string;
+    type: "system" | "encrypted" | "plain" | "sensitive" | "secret";
+    target: ("production" | "preview" | "development")[];
+  }
+) {
+  try {
+    const vercel = connect(apiKey);
+    await addEnvToProject({
+      vercel,
+      projectId: project.id,
+      key: params.key,
+      value: params.value,
+      teamId: project.accountId,
+      type: params.type,
+      target: params.target,
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
 export async function connectProject(
   project: GetProjectsProjects,
   apiKey: string
