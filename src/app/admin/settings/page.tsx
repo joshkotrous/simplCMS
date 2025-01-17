@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import { MongoDBLogo } from "@/app/setup/page";
 import { Separator } from "@/components/ui/separator";
 import Users from "./users";
+import { CloudinaryLogo } from "@/app/setup/media-storage/page";
 
 export default async function AdminSettingsPage() {
   const users = await getAllUsers();
   const dataBaseProvider = process.env.SIMPLCMS_DB_PROVIDER ?? null;
+  const mediaStorageProvider =
+    process.env.SIMPLCMS_MEDIA_STORAGE_PROVIDER ?? null;
   const oauthProviders = process.env.SIMPLCMS_OAUTH_PROVIDERS
     ? process.env.SIMPLCMS_OAUTH_PROVIDERS.split(",")
     : [];
@@ -43,9 +46,28 @@ export default async function AdminSettingsPage() {
               <div className="grid grid-cols-3">
                 {dataBaseProvider && (
                   <Card className="">
-                    <CardContent className="p-2 flex justify-center items-center flex-col gap-4">
+                    <CardContent className="p-2 pt-4 flex justify-center items-center flex-col gap-4">
                       <MongoDBLogo />
                       <span className="font-semibold">{dataBaseProvider}</span>
+                      <Button className="w-full" variant="destructive">
+                        Disconnect
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+            <Separator />
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold">Media Storage</h3>
+              <div className="grid grid-cols-3">
+                {mediaStorageProvider && (
+                  <Card className="">
+                    <CardContent className="p-2 pt-4 flex justify-center items-center flex-col gap-4">
+                      <CloudinaryLogo />
+                      <span className="font-semibold">
+                        {mediaStorageProvider}
+                      </span>
                       <Button className="w-full" variant="destructive">
                         Disconnect
                       </Button>
@@ -62,7 +84,7 @@ export default async function AdminSettingsPage() {
                   <div>
                     {oauthProviders.map((provider) => (
                       <Card key={provider} className="">
-                        <CardContent className="p-2 flex justify-center items-center flex-col gap-4">
+                        <CardContent className="p-2 pt-4 flex justify-center items-center flex-col gap-4">
                           <FaGoogle className="size-24" />
                           <span className="font-semibold">Google OAuth</span>
                           <Button className="w-full" variant="destructive">

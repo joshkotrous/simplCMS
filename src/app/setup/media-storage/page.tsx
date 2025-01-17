@@ -4,7 +4,7 @@ import { SupabaseLogo } from "../page";
 
 export default async function SetupPage() {
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center  space-y-12">
+    <div className="w-screen h-screen flex flex-col justify-center items-center  space-y-12 bg-background text-foreground">
       <div className="text-center">
         <h2 className="text-2xl font-bold">SimplCMS</h2>
         <h3 className="text-xl font-semibold">Setup </h3>

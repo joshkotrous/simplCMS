@@ -32,7 +32,7 @@ export default function PagePreview({ routes }: { routes: PageInfo[] }) {
       />
       <div className="relative w-full h-full">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white/80">
+          <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-zinc-900/50">
             <Loader2 className="size-6 animate-spin text-gray-500" />
           </div>
         )}

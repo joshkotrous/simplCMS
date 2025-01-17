@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 
 export default async function SetupVercelPage() {
   let projects: GetProjectsResponseBody | null = null;
-  console.log("TEST", process.env.VERCEL_TOKEN);
   if (
     process.env.VERCEL_PROJECT_ID &&
     process.env.SIMPLCMS_HOST_PROVIDER === "vercel" &&

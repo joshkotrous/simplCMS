@@ -16,7 +16,7 @@ export default function AdminToolbar() {
   }
 
   return (
-    <div className="p-2 text-sm bg-zinc-100 flex justify-between">
+    <div className="p-2 text-sm bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-400 text-foreground flex justify-between">
       <span>Admin Mode</span>
       <div className="space-x-4">
         <Link href="/admin" className="hover:text-zinc-500 transition-all">

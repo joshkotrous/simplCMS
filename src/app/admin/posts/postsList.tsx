@@ -32,11 +32,11 @@ export default function PostsList({ posts }: { posts: PostType[] }) {
   const isDrafts = path.endsWith("/drafts");
   return (
     <div className="w-[44rem] p-4 space-y-4 h-full">
-      <div className="flex gap-8 w-full border-b">
+      <div className="flex w-full border-b">
         <Link href="/admin/posts">
           <div
-            className={`p-2 hover:border-b-black hover:border-b-2 ${
-              !isDrafts && "border-b-black border-b-2"
+            className={`px-8 hover:border-b-foreground hover:border-b-2 ${
+              !isDrafts && "border-b-foreground border-b-2"
             }`}
           >
             Published
@@ -44,8 +44,8 @@ export default function PostsList({ posts }: { posts: PostType[] }) {
         </Link>
         <Link href="/admin/posts/drafts">
           <div
-            className={`p-2 hover:border-b-black hover:border-b-2 ${
-              isDrafts && "border-b-black border-b-2"
+            className={`px-8 hover:border-b-foreground hover:border-b-2 ${
+              isDrafts && "border-b-foreground border-b-2"
             }`}
           >
             Drafts

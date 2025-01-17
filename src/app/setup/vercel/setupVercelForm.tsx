@@ -40,7 +40,6 @@ export default function SetupVercelForm({
 
   function getProjects() {
     setFormData({ ...formData, loading: true });
-    console.log(formData);
     toast.promise(getProjectsAction(formData.token, formData.teamId), {
       loading: "Connecting to Vercel...",
       success: (data) => {
@@ -101,7 +100,7 @@ export default function SetupVercelForm({
 
   if (projectConnected && !siteUrl) {
     return (
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen h-screen flex justify-center items-center bg-background text-foreground">
         <Card>
           <CardHeader className="gap-4 text-center">
             <div className="flex w-full justify-center">
@@ -130,7 +129,7 @@ export default function SetupVercelForm({
 
   if (projects) {
     return (
-      <div className="w-screen h-screen flex justify-center items-center">
+      <div className="w-screen h-screen flex justify-center items-center bg-background text-foreground">
         <Card className="">
           <CardHeader className="w-full text-center gap-4">
             <div className="flex justify-center">

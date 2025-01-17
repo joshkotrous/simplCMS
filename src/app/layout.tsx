@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
-
-import "./globals.css";
 import { getServerSession } from "next-auth";
 import { getUserByEmail } from "@/packages/core/src/user";
 import { UserType } from "@/types/types";
 import AdminToolbar from "./adminToolbar";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +35,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen overflow-hidden dark`}
       >
         {user && session && <AdminToolbar />}
         {children}

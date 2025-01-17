@@ -93,3 +93,35 @@ export async function setupGoogleOauth(
     throw error;
   }
 }
+
+export async function connectMediaStorageToApplication(
+  provider: "Cloudinary",
+  url: string
+) {
+  try {
+    const { token, teamId, projectId } = getVercelEnvVars();
+    const client = vercel.connect(token);
+
+    vercel.addEnvToProject({
+      vercel: client,
+      key: "SIMPLCMS_MEDIA_STORAGE_PROVIDER",
+      value: provider,
+      projectId: projectId,
+      teamId: teamId,
+      type: "plain",
+      target: ["production"],
+    });
+    vercel.addEnvToProject({
+      vercel: client,
+      key: "CLOUDINARY_URL",
+      value: url,
+      projectId: projectId,
+      teamId: teamId,
+      type: "plain",
+      target: ["production"],
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}

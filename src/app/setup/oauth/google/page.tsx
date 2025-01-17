@@ -35,7 +35,7 @@ export default function SetupGoogleOauth() {
     );
   }
   return (
-    <div className="w-screen h-screen flex justify-center items-center">
+    <div className="w-screen h-screen flex justify-center items-center bg-background text-foreground">
       <Card>
         <CardHeader className="gap-4">
           <div className="w-full flex justify-center">

@@ -4,7 +4,6 @@ import PagePreview from "./pagePreview";
 
 export default async function PagesPage() {
   const staticPages = scanPages();
-  console.log(staticPages);
   return (
     <div className="relative h-full overflow-hidden">
       <div className="w-full border-b flex justify-end items-center p-4">

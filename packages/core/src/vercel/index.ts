@@ -67,7 +67,6 @@ export async function addEnvToProject({
 }
 
 export function getVercelToken() {
-  console.log("TOKEN", process.env.VERCEL_TOKEN);
   if (!process.env.VERCEL_TOKEN)
     throw new Error("VERCEL_TOKEN not configured.");
   return process.env.VERCEL_TOKEN;
