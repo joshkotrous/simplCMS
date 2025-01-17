@@ -1,6 +1,10 @@
 import type { Document } from "mongoose";
 
-// Base types
+export type SiteConfigType = {
+  _id: string;
+  logo: string;
+};
+
 export type UserType = {
   _id: string;
   email: string;
@@ -28,11 +32,21 @@ export type PageInfo = {
   lastModified: Date;
 };
 
-// Document types
+export type CloudinaryMedia = {
+  asset_id: string;
+  display_name: string;
+  resource_type: "image" | "video";
+  secure_url: string;
+  format: string;
+};
+
 export type UserDocument = UserType & Document;
 export type PostDocument = PostType & Document;
+export type SiteConfigDocument = SiteConfigType & Document;
 
-// Optional: Create types for operations like create/update
+export type CreateSiteConfigType = Omit<SiteConfigType, "_id">;
+export type UpdateSiteConfigType = Partial<CreateSiteConfigType>;
+
 export type CreateUserType = Omit<UserType, "_id" | "createdAt">;
 export type UpdateUserType = Partial<CreateUserType>;
 

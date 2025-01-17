@@ -7,6 +7,9 @@ import { MongoDBLogo } from "@/app/setup/page";
 import { Separator } from "@/components/ui/separator";
 import Users from "./users";
 import { CloudinaryLogo } from "@/app/setup/media-storage/page";
+import { ImageIcon } from "lucide-react";
+import { cloudinary } from "@/packages/core/src/cloudinary";
+import MediaPopover from "@/components/mediaPopover";
 
 export default async function AdminSettingsPage() {
   const users = await getAllUsers();
@@ -17,6 +20,7 @@ export default async function AdminSettingsPage() {
     ? process.env.SIMPLCMS_OAUTH_PROVIDERS.split(",")
     : [];
 
+  const media = await cloudinary.getMedia();
   return (
     <div className="p-4 h-full overflow-auto space-y-2">
       <h2 className="text-3xl font-bold">Settings</h2>
@@ -41,6 +45,20 @@ export default async function AdminSettingsPage() {
             <Users users={users} />
           </TabsContent>
           <TabsContent value="site" className="w-[44rem] space-y-4">
+            <div className="space-y-4">
+              <h3 className="text-2xl font-semibold">Logo</h3>
+              <div className="">
+                <div className="w-fit h-40 p-4 border rounded-md border-dashed border-zinc-400 text-zinc-400 flex flex-col justify-center items-center gap-4">
+                  <div className="space-x-2 flex gap-1 items-center text-nowrap">
+                    <ImageIcon className="size-4" /> No Logo Configured
+                  </div>
+                  <MediaPopover media={media}>
+                    <Button>Select Logo</Button>
+                  </MediaPopover>
+                </div>
+              </div>
+            </div>
+            <Separator />
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold">Database Connection</h3>
               <div className="grid grid-cols-3">

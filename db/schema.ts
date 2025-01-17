@@ -1,5 +1,9 @@
-import { PostType, UserType } from "@/types/types";
+import { PostType, UserType, SiteConfigType } from "@/types/types";
 import mongoose, { Schema } from "mongoose";
+
+const SiteConfigSchema: Schema = new Schema<SiteConfigType>({
+  logo: { type: String, required: false },
+});
 
 const UserSchema: Schema = new Schema<UserType>({
   email: { type: String, required: true },
@@ -23,5 +27,8 @@ const User =
   mongoose.models.User || mongoose.model<UserType>("User", UserSchema);
 const Post =
   mongoose.models.Post || mongoose.model<PostType>("Post", PostSchema);
+const SiteConfig =
+  mongoose.models.SiteConfig ||
+  mongoose.model<SiteConfigType>("SiteConfig", SiteConfigSchema);
 
-export { User, Post };
+export { User, Post, SiteConfig };
