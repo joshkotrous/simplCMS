@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,8 +13,8 @@ export default function UserMenu({ user }: { user: UserType }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar>
-          <Image alt="profile" width={100} height={100} src={user.imageUrl} />
+        <Avatar className="rounded-md">
+          <AvatarImage alt="profile" src={user.imageUrl} />
           <AvatarFallback className="uppercase">
             {user.name[0]}
             {user.name[1]}

@@ -2,9 +2,9 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUserByEmail, userHasAccess } from "@/packages/core/src/user";
-import AdminNav from "./adminNav";
 import { Button } from "@/components/ui/button";
-import UserMenu from "./userMenu";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AdminSidebar from "./adminSidebar";
 
 export default async function AdminLayout({
   children,
@@ -23,21 +23,23 @@ export default async function AdminLayout({
     if (!hasAccess) throw new Error("User does not have access");
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
     return (
-      <div className="h-screen w-screen overflow-hidden flex flex-col bg-background text-foreground">
-        <div className="flex h-fit justify-between items-center p-4">
-          <Link href="/admin" className="text-xl font-bold">
-            Admin
-          </Link>
-          <div className="flex gap-4 items-center">
-            <Link href={siteUrl}>
+      <SidebarProvider>
+        <AdminSidebar user={user} />
+        <div className="h-screen w-screen overflow-hidden flex flex-col bg-background text-foreground">
+          <div className="flex justify-between items-start">
+            <SidebarTrigger className="text-foreground ml-2" />
+            <Link href={siteUrl} className="p-2">
               <Button className="text-xs">Go to Site</Button>
             </Link>
-            <UserMenu user={user} />
           </div>
+
+          <div className="flex h-fit justify-between items-center p-4">
+            <div className="flex gap-4 items-center"></div>
+          </div>
+
+          <div className="flex-1 overflow-auto">{children}</div>
         </div>
-        <AdminNav />
-        <div className="flex-1 overflow-auto">{children}</div>
-      </div>
+      </SidebarProvider>
     );
   } catch (error) {
     console.error(error);

@@ -1,6 +1,7 @@
 "use client";
 
-import { deletePostAction, updatePostAction } from "@/app/actions/postActions";
+import { updatePostAction } from "@/app/actions/postActions";
+import * as postActions from "@/app/actions/post";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +26,7 @@ export default function PostDisplay({ post }: { post: PostType }) {
   const [editedPost, setEditedPost] = useState<PostType>(post);
 
   async function deletePost() {
-    toast.promise(deletePostAction(post), {
+    toast.promise(postActions.deletePostAction(post), {
       loading: "Deleting post...",
       success: () => {
         router.refresh();
