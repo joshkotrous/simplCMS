@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 export default async function SetupPage() {
   if (process.env.SIMPLCMS_DB_PROVIDER) redirect("/setup/oauth");
   return (
-    <div className="w-screen h-screen flex flex-col justify-center items-center  space-y-12 bg-background text-foreground">
+    <div className="size-full flex flex-col justify-center items-center  space-y-12 text-foreground">
       <div className="text-center">
         <h2 className="text-2xl font-bold">SimplCMS</h2>
         <h3 className="text-xl font-semibold">Setup </h3>

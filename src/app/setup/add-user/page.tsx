@@ -6,7 +6,7 @@ export default async function AddFirstUserPage() {
   const users = await user.getAllUsers();
   if (users.length > 0) redirect("/login");
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-background text-foreground">
+    <div className="size-full flex justify-center items-center text-foreground">
       <AddFirstUserForm />
     </div>
   );

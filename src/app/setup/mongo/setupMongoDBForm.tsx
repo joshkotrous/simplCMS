@@ -41,7 +41,7 @@ export default function SetupMongoForm() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="text-center">
         <div className="flex w-full justify-center">
           <MongoDBLogo />
         </div>

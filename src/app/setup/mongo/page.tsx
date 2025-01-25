@@ -5,7 +5,7 @@ import SetupMongoForm from "./setupMongoDBForm";
 export default async function SetupMongo() {
   if (!process.env.SIMPLCMS_HOST_PROVIDER)
     return (
-      <div className="h-screen w-screen flex flex-col justify-center items-center gap-4 bg-background text-foreground">
+      <div className="size-full flex flex-col justify-center items-center gap-4 text-foreground">
         <h2 className="font-semibold">
           You must setup a host provider before connecting to a database.
         </h2>
@@ -16,7 +16,7 @@ export default async function SetupMongo() {
     );
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-background text-foreground">
+    <div className="size-full flex justify-center items-center text-foreground">
       <SetupMongoForm />
     </div>
   );
