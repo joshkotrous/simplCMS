@@ -1,6 +1,6 @@
 "use client";
 
-import { UserType } from "@/types/types";
+import { User } from "@/types/types";
 import { Trash } from "lucide-react";
 import AddUserButton from "./addUserButton";
 import {
@@ -13,15 +13,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { deleteUserAction } from "@/app/actions/userActions";
+import * as userActions from "@/app/actions/user";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 
-export default function Users({ users }: { users: UserType[] }) {
+export default function Users({ users }: { users: User[] }) {
   const router = useRouter();
-  async function deleteUser(user: UserType) {
-    toast.promise(deleteUserAction(user), {
+  async function deleteUser(user: User) {
+    toast.promise(userActions.deleteUserAction(user), {
       loading: `Deleting ${user.email}...`,
       success: () => {
         router.refresh();

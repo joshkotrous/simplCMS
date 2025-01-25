@@ -1,5 +1,5 @@
 "use client";
-import { createUserAction } from "@/app/actions/userActions";
+import * as userActions from "@/app/actions/user";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,7 @@ export default function AddFirstUserForm() {
   const router = useRouter();
   async function submit() {
     setLoading(true);
-    toast.promise(createUserAction({ email: email }), {
+    toast.promise(userActions.createUserAction({ email: email }), {
       loading: "Creating user...",
       success: () => {
         router.push("/login");

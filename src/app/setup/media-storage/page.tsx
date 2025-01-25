@@ -20,7 +20,7 @@ export default async function SetupPage() {
           </Card>
         </Link>
 
-        <Card className="size-full p-12 flex items-center justify-center hover:scale-[99%] cursor-pointer text-center bg-zinc-200 text-black">
+        <Card className="size-full p-12 flex items-center justify-center hover:scale-[99%] cursor-pointer text-center bg-zinc-200 text-foreground">
           <CardContent className="p-0 gap-4 flex flex-col">
             <AWSS3Logo />
             <span className="font-semibold">AWS S3</span>

@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { getServerSession } from "next-auth";
 import { getUserByEmail } from "@/packages/core/src/user";
-import { UserType } from "@/types/types";
+import { User } from "@/types/types";
+import { SiteProvider } from "./siteContextProvider";
 import AdminToolbar from "./adminToolbar";
 import "./globals.css";
 
@@ -27,7 +28,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let user: UserType | null = null;
+  let user: User | null = null;
   const session = await getServerSession();
   if (session && session.user.email)
     user = await getUserByEmail(session.user.email);
@@ -35,11 +36,13 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen overflow-hidden dark`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen overflow-hidden`}
       >
-        {user && session && <AdminToolbar />}
-        {children}
-        <Toaster />
+        <SiteProvider>
+          {user && session && <AdminToolbar />}
+          {children}
+          <Toaster />
+        </SiteProvider>
       </body>
     </html>
   );

@@ -7,7 +7,8 @@ export default async function PostPage({
 }: {
   params: { postId: string };
 }) {
-  const post = await getPost({ _id: params.postId });
+  const { postId } = await params;
+  const post = await getPost({ _id: postId });
   if (!post) return notFound();
   return (
     <div className="p-4">

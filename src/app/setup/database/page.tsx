@@ -162,7 +162,7 @@ function DynamoDBLogo() {
           ></path>
         </g>
       </svg>
-      <span>AWS DynamoDB</span>
+      <span className="text-nowrap">AWS DynamoDB</span>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { createUserAction } from "@/app/actions/userActions";
+import * as userActions from "@/app/actions/user";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,7 +18,7 @@ export default function AddUserButton() {
   const [loading, setLoading] = useState(false);
   async function submit() {
     setLoading(true);
-    await createUserAction({ email: email });
+    await userActions.createUserAction({ email: email });
     setLoading(false);
   }
   return (

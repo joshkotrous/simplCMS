@@ -1,12 +1,12 @@
 import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
-import { User } from "@/db/schema";
-import { UserType } from "@/types/types";
-export async function createUser(userData: Partial<UserType>): Promise<void> {
+import { UserModel } from "@/db/schema";
+import { User, userSchema } from "@/types/types";
+export async function createUser(userData: Partial<User>): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
     await connectToDatabase(uri);
-    const newUser = new User(userData);
+    const newUser = new UserModel(userData);
     await newUser.save();
   } catch (error) {
     console.error(`Could not create user ${error}`);
@@ -14,7 +14,7 @@ export async function createUser(userData: Partial<UserType>): Promise<void> {
   }
 }
 
-export async function getUser(user: Partial<UserType>): Promise<UserType> {
+export async function getUser(user: Partial<User>): Promise<User> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
@@ -28,45 +28,47 @@ export async function getUser(user: Partial<UserType>): Promise<UserType> {
       throw new Error("Either email or _id must be provided");
     }
 
-    const foundUser = await User.findOne(query).select("-__v");
+    const foundUser = await UserModel.findOne(query).select("-__v");
     if (!foundUser) {
       throw new Error("User not found");
     }
 
-    return JSON.parse(JSON.stringify(foundUser));
+    return userSchema.parse(JSON.stringify(foundUser));
   } catch (error) {
     console.error(`Could not get user: ${error}`);
     throw error;
   }
 }
 
-export async function getAllUsers(): Promise<UserType[]> {
+export async function getAllUsers(): Promise<User[]> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
     await connectToDatabase(uri);
-    const users = await User.find({}).sort({ createdAt: -1 }).select("-__v");
-    return JSON.parse(JSON.stringify(users));
+    const users = await UserModel.find({})
+      .sort({ createdAt: -1 })
+      .select("-__v");
+    return userSchema.array().parse(users);
   } catch (error) {
     console.error(`Could not get all users ${error}`);
     throw error;
   }
 }
 
-export async function getUserByEmail(email: string): Promise<UserType> {
+export async function getUserByEmail(email: string): Promise<User> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
     await connectToDatabase(uri);
-    const user = await User.findOne({ email }).select("-__v");
-    return JSON.parse(JSON.stringify(user));
+    const user = await UserModel.findOne({ email }).select("-__v");
+    return userSchema.parse(user);
   } catch (error) {
     console.error(`Could not get user by email ${error}`);
     throw error;
   }
 }
 
-export async function userHasAccess(user: UserType): Promise<boolean> {
+export async function userHasAccess(user: User): Promise<boolean> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
@@ -80,7 +82,7 @@ export async function userHasAccess(user: UserType): Promise<boolean> {
   }
 }
 
-export async function deleteUser(user: UserType): Promise<void> {
+export async function deleteUser(user: User): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
@@ -94,7 +96,7 @@ export async function deleteUser(user: UserType): Promise<void> {
       throw new Error("Either email or _id must be provided");
     }
 
-    const result = await User.deleteOne(query);
+    const result = await UserModel.deleteOne(query);
     if (result.deletedCount === 0) {
       throw new Error("User not found");
     }
@@ -104,7 +106,7 @@ export async function deleteUser(user: UserType): Promise<void> {
   }
 }
 
-export async function updateUser(user: Partial<UserType>): Promise<void> {
+export async function updateUser(user: Partial<User>): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
     await connectToDatabase(uri);
@@ -122,7 +124,7 @@ export async function updateUser(user: Partial<UserType>): Promise<void> {
     delete updateData._id;
     delete updateData.email;
 
-    const result = await User.updateOne(query, { $set: updateData });
+    const result = await UserModel.updateOne(query, { $set: updateData });
 
     if (result.matchedCount === 0) {
       throw new Error("User not found");

@@ -22,12 +22,12 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import { PostType } from "@/types/types";
+import { Post } from "@/types/types";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function PostsList({ posts }: { posts: PostType[] }) {
+export default function PostsList({ posts }: { posts: Post[] }) {
   const path = usePathname();
   const isDrafts = path.endsWith("/drafts");
   return (
@@ -106,7 +106,7 @@ export default function PostsList({ posts }: { posts: PostType[] }) {
                 </CardContent>
                 <div className="w-full flex justify-end p-2">
                   {post.draft && (
-                    <div className="text-xs bg-zinc-200 w-fit p-1 rounded  left-2 top-2">
+                    <div className="text-xs bg-zinc-200 dark:bg-zinc-800 w-fit p-1 rounded  left-2 top-2">
                       DRAFT
                     </div>
                   )}

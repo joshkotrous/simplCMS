@@ -5,6 +5,7 @@ import { getUserByEmail, userHasAccess } from "@/packages/core/src/user";
 import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSidebar from "./adminSidebar";
+import ThemeToggle from "../themeToggle";
 
 export default async function AdminLayout({
   children,
@@ -28,9 +29,12 @@ export default async function AdminLayout({
         <div className="h-screen w-screen overflow-hidden flex flex-col bg-background text-foreground">
           <div className="flex justify-between items-start">
             <SidebarTrigger className="text-foreground ml-2" />
-            <Link href={siteUrl} className="p-2">
-              <Button className="text-xs">Go to Site</Button>
-            </Link>
+            <div className="flex items-center gap-1">
+              <ThemeToggle />
+              <Link href={siteUrl} className="p-2">
+                <Button className="text-xs">Go to Site</Button>
+              </Link>
+            </div>
           </div>
 
           <div className="flex h-fit justify-between items-center p-4">

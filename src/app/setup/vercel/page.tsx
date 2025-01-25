@@ -27,8 +27,8 @@ export default async function SetupVercelPage() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? null;
 
   return (
-    <>
+    <div className="w-screen h-screen flex justify-center items-center bg-background text-foreground">
       <SetupVercelForm initialSiteUrl={siteUrl} initialProjects={projects} />
-    </>
+    </div>
   );
 }

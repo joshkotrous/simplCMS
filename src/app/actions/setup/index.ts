@@ -104,7 +104,7 @@ export async function connectMediaStorageToApplication(
 
     vercel.addEnvToProject({
       vercel: client,
-      key: "SIMPLCMS_MEDIA_STORAGE_PROVIDER",
+      key: "SIMPLCMS_MEDIA_STORAGE_PROVIDERS",
       value: provider,
       projectId: projectId,
       teamId: teamId,

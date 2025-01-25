@@ -33,10 +33,10 @@ export default async function AdminMediaPage() {
 
                 <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <div className="absolute bottom-0 left-0 right-0 p-3">
-                    <p className="text-xs text-white truncate">
+                    <p className="text-xs text-foreground truncate">
                       {item.display_name}
                     </p>
-                    {/* <p className="text-xs text-white/60">
+                    {/* <p className="text-xs text-foreground/60">
                           {formatFileSize(item.bytes)}
                         </p> */}
                   </div>

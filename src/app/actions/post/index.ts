@@ -1,8 +1,8 @@
 "use server";
 import { createPost, deletePost, updatePost } from "@/packages/core/src/posts";
-import { CreatePostType, PostType } from "@/types/types";
+import { CreatePost, Post } from "@/types/types";
 
-export async function createNewPost(post: CreatePostType): Promise<void> {
+export async function createNewPost(post: CreatePost): Promise<void> {
   try {
     await createPost(post);
   } catch (error) {
@@ -11,7 +11,7 @@ export async function createNewPost(post: CreatePostType): Promise<void> {
   }
 }
 
-export async function deletePostAction(post: PostType): Promise<void> {
+export async function deletePostAction(post: Post): Promise<void> {
   try {
     await deletePost(post);
   } catch (error) {
@@ -22,7 +22,7 @@ export async function deletePostAction(post: PostType): Promise<void> {
 
 export async function updatePostAction(
   postId: string,
-  post: Partial<PostType>
+  post: Partial<Post>
 ): Promise<void> {
   try {
     await updatePost(postId, post);

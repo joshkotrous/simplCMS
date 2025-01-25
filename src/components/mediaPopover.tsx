@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import { uploadToCloudinary } from "@/app/actions/mediaActions";
+import * as mediaActions from "@/app/actions/media";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
@@ -28,7 +28,7 @@ export default function MediaPopover({
     setFilesToUpload(files);
     setIsUploading(true);
 
-    toast.promise(uploadToCloudinary(files), {
+    toast.promise(mediaActions.uploadToCloudinary(files), {
       loading: "Uploading media...",
       success: () => {
         setIsUploading(false);

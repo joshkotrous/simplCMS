@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IoLogoGithub } from "react-icons/io";
 import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 import { signIn } from "next-auth/react";
+import ErrorToast from "@/components/errorToast";
 
 export default function AdminLoginPage() {
   return (

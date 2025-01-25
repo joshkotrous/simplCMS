@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testConnection } from "@/app/actions/mongoActions";
-import { connectDbToApplication } from "@/app/actions/setupActions";
+import { testConnection } from "@/app/actions/mongo";
+import { connectDbToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 
 export default function SetupMongoForm() {

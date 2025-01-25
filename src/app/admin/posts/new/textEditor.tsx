@@ -17,15 +17,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
-import { CreatePostType } from "@/types/types";
-import { createNewPost } from "@/app/actions/postActions";
+import { CreatePost } from "@/types/types";
+import { createNewPost } from "@/app/actions/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export function MarkdownEditor() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [postData, setPostData] = useState<CreatePostType>({
+  const [postData, setPostData] = useState<CreatePost>({
     title: "",
     content: "",
     author: "",
@@ -87,7 +87,7 @@ export function MarkdownEditor() {
           placeholder="Post title..."
         />
         <Input
-          value={postData.subtitle}
+          value={postData.subtitle ?? ""}
           onChange={(event) => {
             setPostData((previousState) => ({
               ...previousState,
@@ -97,7 +97,7 @@ export function MarkdownEditor() {
           placeholder="Subtitle..."
         />
         <Input
-          value={postData.category}
+          value={postData.category ?? ""}
           onChange={(event) => {
             setPostData((previousState) => ({
               ...previousState,

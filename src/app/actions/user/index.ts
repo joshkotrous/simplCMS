@@ -1,6 +1,6 @@
 "use server";
 
-import { UserType } from "@/types/types";
+import { User } from "@/types/types";
 import {
   getUser,
   createUser,
@@ -8,7 +8,7 @@ import {
   deleteUser,
 } from "@/packages/core/src/user";
 
-export async function createUserAction(user: Partial<UserType>): Promise<void> {
+export async function createUserAction(user: Partial<User>): Promise<void> {
   try {
     await createUser(user);
   } catch (error) {
@@ -16,9 +16,7 @@ export async function createUserAction(user: Partial<UserType>): Promise<void> {
   }
 }
 
-export async function getUserAction(
-  user: Partial<UserType>
-): Promise<UserType> {
+export async function getUserAction(user: Partial<User>): Promise<User> {
   try {
     const _user = await getUser(user);
     if (!user) throw new Error("User could not be found.");
@@ -28,7 +26,7 @@ export async function getUserAction(
   }
 }
 
-export async function getAllUsersAction(): Promise<UserType[]> {
+export async function getAllUsersAction(): Promise<User[]> {
   try {
     const users = await getAllUsers();
     return users;
@@ -37,7 +35,7 @@ export async function getAllUsersAction(): Promise<UserType[]> {
   }
 }
 
-export async function deleteUserAction(user: UserType): Promise<void> {
+export async function deleteUserAction(user: User): Promise<void> {
   try {
     await deleteUser(user);
   } catch (error) {

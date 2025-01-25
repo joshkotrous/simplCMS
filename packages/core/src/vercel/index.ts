@@ -2,6 +2,7 @@ import { getEnvironment } from "@/lib/utils";
 import { Vercel } from "@vercel/sdk";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { dev } from "../dev";
+import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
 
 export function connect(apiKey: string): Vercel {
   try {
@@ -62,6 +63,18 @@ export async function addEnvToProject({
     }
   } catch (error) {
     console.error(`Could not add environment variable to project: ${error}`);
+    throw error;
+  }
+}
+
+export async function getUserTeams(
+  vercel: Vercel
+): Promise<GetTeamsResponseBody> {
+  try {
+    const teams = await vercel.teams.getTeams({});
+    return teams;
+  } catch (error) {
+    console.log(`Could not get teams from vercel ${error}`);
     throw error;
   }
 }

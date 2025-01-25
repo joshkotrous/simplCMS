@@ -6,8 +6,8 @@ import { CloudinaryLogo } from "../page";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testCloudinaryConnectionAction } from "@/app/actions/cloudinaryActions";
-import { connectMediaStorageToApplication } from "@/app/actions/setupActions";
+import { testCloudinaryConnectionAction } from "@/app/actions/cloudinary";
+import { connectMediaStorageToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 
 export default function SetupCloudinaryForm() {

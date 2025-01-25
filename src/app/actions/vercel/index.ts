@@ -4,11 +4,13 @@ import {
   addEnvToProject,
   connect,
   getProjects,
+  getUserTeams,
 } from "@/packages/core/src/vercel";
 import {
   GetProjectsProjects,
   GetProjectsResponseBody,
 } from "@vercel/sdk/models/getprojectsop.js";
+import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
 
 export async function getProjectsAction(
   apiKey: string,
@@ -89,11 +91,22 @@ export async function connectProject(
       vercel,
       projectId: project.id,
       key: "SIMPLCMS_HOST_PROVIDER",
-      value: "vercel",
+      value: "Vercel",
       teamId: project.accountId,
       type: "plain",
       target: ["production"],
     });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getTeams(apiKey: string): Promise<GetTeamsResponseBody> {
+  try {
+    const vercel = connect(apiKey);
+    const teams = getUserTeams(vercel);
+    return teams;
   } catch (error) {
     console.error(error);
     throw error;

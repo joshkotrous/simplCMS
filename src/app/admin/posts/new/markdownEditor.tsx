@@ -29,7 +29,7 @@ export default function MarkdownEditor({
 
   return (
     <Tabs defaultValue="edit">
-      <div className=" mx-auto p-4 border rounded-lg">
+      <div className=" mx-auto p-4 border dark:border-zinc-800 rounded-lg">
         <div className="flex gap-2 items-center justify-between">
           <div className="flex gap-2">
             <Button
@@ -91,7 +91,7 @@ export default function MarkdownEditor({
           />
         </TabsContent>
         <TabsContent value="preview">
-          <div className="prose max-w-none rounded border p-4">
+          <div className="prose max-w-none rounded border dark:border-zinc-800 p-4">
             <ReactMarkdown className="h-[32rem]">{content}</ReactMarkdown>
           </div>
         </TabsContent>
