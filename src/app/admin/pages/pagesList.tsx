@@ -228,7 +228,7 @@ export default function VerticalTreeMenu({
     .filter((node): node is TreeNode => node !== null);
 
   return (
-    <div className="bg-background w-64 border-r p-2 space-y-1">
+    <div className="bg-background w-64 border-r dark:border-r-dark p-2 space-y-1">
       {tree.map((node, index) => (
         <TreeNodeComponent
           key={index}

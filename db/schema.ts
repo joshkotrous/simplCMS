@@ -2,7 +2,7 @@ import { Post, User, SiteConfig, HostProvider } from "@/types/types";
 import mongoose, { Schema } from "mongoose";
 
 const SiteConfigSchema: Schema = new Schema<SiteConfig>({
-  logo: { type: String, required: true, default: null },
+  logo: { type: String },
   simplCMSHostProvider: {
     type: String,
     enum: ["Vercel"],
@@ -48,7 +48,7 @@ const PostSchema: Schema = new Schema<Post>({
 });
 
 const UserModel =
-  mongoose.models.User ?? mongoose.model<User>("User", UserSchema);
+  mongoose.models.User || mongoose.model<User>("User", UserSchema);
 const PostModel =
   mongoose.models.Post || mongoose.model<Post>("Post", PostSchema);
 const SiteConfigModel =

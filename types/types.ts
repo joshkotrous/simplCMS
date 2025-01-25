@@ -18,7 +18,7 @@ export const siteConfigSchema = z.object({
 export const userSchema = z.object({
   _id: z.instanceof(ObjectId).transform((id) => id.toString()),
   email: z.string().email(),
-  imageUrl: z.string().url().nullable(),
+  imageUrl: z.string().url(),
   name: z.string().nullable(),
   role: z.enum(["user", "admin"]),
   createdAt: z.date(),
@@ -30,8 +30,8 @@ export const postSchema = z.object({
   content: z.string(),
   author: z.string(),
   createdAt: z.date(),
-  category: z.string().nullable().optional(),
-  subtitle: z.string().nullable().optional(),
+  category: z.string().nullable(),
+  subtitle: z.string().nullable(),
   draft: z.boolean(),
 });
 

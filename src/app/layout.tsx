@@ -7,6 +7,8 @@ import { User } from "@/types/types";
 import { SiteProvider } from "./siteContextProvider";
 import AdminToolbar from "./adminToolbar";
 import "./globals.css";
+import { cookies } from "next/headers";
+import { cn } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,16 +34,16 @@ export default async function RootLayout({
   const session = await getServerSession();
   if (session && session.user.email)
     user = await getUserByEmail(session.user.email);
+  const cookieStore = await cookies();
+  const darkModeCookie = cookieStore.get("darkMode");
+  const darkMode = darkModeCookie?.value === "true";
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased w-screen h-screen overflow-hidden`}
-      >
-        <SiteProvider>
-          {user && session && <AdminToolbar />}
+    <html lang="en" className={darkMode ? "dark" : ""}>
+      <body className="h-screen w-screen overflow-hidden">
+        <SiteProvider initialSettings={{ darkMode }}>
+          <AdminToolbar />
           {children}
-          <Toaster />
         </SiteProvider>
       </body>
     </html>

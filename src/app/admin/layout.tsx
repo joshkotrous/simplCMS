@@ -28,7 +28,7 @@ export default async function AdminLayout({
         <AdminSidebar user={user} />
         <div className="h-screen w-screen overflow-hidden flex flex-col bg-background text-foreground">
           <div className="flex justify-between items-start">
-            <SidebarTrigger className="text-foreground ml-2" />
+            <SidebarTrigger className="text-foreground ml-1 mt-1" />
             <div className="flex items-center gap-1">
               <ThemeToggle />
               <Link href={siteUrl} className="p-2">

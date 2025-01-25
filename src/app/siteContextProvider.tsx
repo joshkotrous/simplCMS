@@ -15,7 +15,7 @@ type SiteContextType = {
 };
 
 const defaultSettings: SiteSettings = {
-  darkMode: false, // Default value, will be updated in useEffect
+  darkMode: false,
 };
 
 const SiteContext = createContext<SiteContextType>({
@@ -23,43 +23,30 @@ const SiteContext = createContext<SiteContextType>({
   updateSetting: () => {},
 });
 
-export function SiteProvider({ children }: { children: React.ReactNode }) {
-  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
-  const [mounted, setMounted] = useState(false);
-
-  // Initialize on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("siteSettings");
-    const savedSettings = saved ? JSON.parse(saved) : null;
-    const systemDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-
-    setSettings(savedSettings || { darkMode: systemDark });
-    setMounted(true);
-  }, []);
-
-  // Update HTML class when dark mode changes
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("siteSettings", JSON.stringify(settings));
-      if (settings.darkMode) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    }
-  }, [settings, mounted]);
+export function SiteProvider({
+  children,
+  initialSettings,
+}: {
+  children: React.ReactNode;
+  initialSettings: SiteSettings;
+}) {
+  const [settings, setSettings] = useState<SiteSettings>(initialSettings);
 
   const updateSetting = <K extends keyof SiteSettings>(
     key: K,
     value: SiteSettings[K]
   ) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
-  };
+    document.cookie = `${key}=${value}; path=/; max-age=31536000`; // Update cookie
 
-  // Avoid hydration mismatch
-  if (!mounted) return <>{children}</>;
+    if (key === "darkMode") {
+      if (value) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    }
+  };
 
   return (
     <SiteContext.Provider value={{ settings, updateSetting }}>

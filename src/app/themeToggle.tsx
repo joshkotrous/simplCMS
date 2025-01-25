@@ -1,7 +1,7 @@
 "use client";
+
 import { Moon, Sun } from "lucide-react";
 import { useSiteSettings } from "./siteContextProvider";
-import { Button } from "@/components/ui/button";
 
 export default function ThemeToggle() {
   const { settings, updateSetting } = useSiteSettings();
@@ -13,7 +13,7 @@ export default function ThemeToggle() {
       aria-label="Toggle dark mode"
     >
       {settings.darkMode ? (
-        <Sun className="size-4 text-foreground  hover:text-yellow-500" />
+        <Sun className="size-4 text-foreground hover:text-yellow-500" />
       ) : (
         <Moon className="size-4 text-foreground hover:text-indigo-700" />
       )}
