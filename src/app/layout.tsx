@@ -5,6 +5,7 @@ import { SiteProvider } from "./siteContextProvider";
 import AdminToolbar from "./adminToolbar";
 import "./globals.css";
 import { cookies } from "next/headers";
+import { CSSProperties } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,6 +16,13 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+function useGlobalStyles(styles?: any): CSSProperties {
+  return {
+    "--h2-font-size": styles?.h1?.fontSize || "12rem",
+    "--h2-font-weight": styles?.h1?.fontWeight || "600",
+  } as CSSProperties;
+}
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -29,10 +37,11 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const darkModeCookie = cookieStore.get("darkMode");
   const darkMode = darkModeCookie?.value === "true";
+  const globalStyles = useGlobalStyles();
 
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
-      <body className="h-screen w-screen overflow-hidden">
+      <body className="h-screen w-screen overflow-hidden" style={globalStyles}>
         <SiteProvider initialSettings={{ darkMode }}>
           <AdminToolbar />
           {children}

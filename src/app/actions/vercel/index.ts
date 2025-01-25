@@ -3,9 +3,15 @@
 import {
   addEnvToProject,
   connect,
+  getDeploymentById,
+  getLatestDeployment,
   getProjects,
   getUserTeams,
+  triggerRedeploy,
 } from "@/packages/core/src/vercel";
+import { CreateDeploymentResponseBody } from "@vercel/sdk/models/createdeploymentop.js";
+import { GetDeploymentResponseBody } from "@vercel/sdk/models/getdeploymentop.js";
+import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 import {
   GetProjectsProjects,
   GetProjectsResponseBody,
@@ -107,6 +113,61 @@ export async function getTeams(apiKey: string): Promise<GetTeamsResponseBody> {
     const vercel = connect(apiKey);
     const teams = getUserTeams(vercel);
     return teams;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getLatestDeploymentAction(
+  vercelToken: string,
+  projectId: string,
+  teamId: string
+): Promise<Deployments | null> {
+  try {
+    const vercel = connect(vercelToken);
+    const deployment = await getLatestDeployment({ vercel, projectId, teamId });
+    return deployment;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function triggerRedeployAction(
+  vercelToken: string,
+  projectId: string,
+  teamId: string,
+  deploymentId: string
+): Promise<CreateDeploymentResponseBody> {
+  try {
+    const vercel = connect(vercelToken);
+    const deployment = await triggerRedeploy({
+      vercel,
+      projectId,
+      teamId,
+      deploymentId,
+    });
+    return deployment;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function getDeploymentAction(
+  vercelToken: string,
+  deploymentId: string,
+  teamId: string
+): Promise<GetDeploymentResponseBody> {
+  try {
+    const vercel = connect(vercelToken);
+    const deployment = await getDeploymentById({
+      vercel,
+      deploymentId,
+      teamId,
+    });
+    return deployment;
   } catch (error) {
     console.error(error);
     throw error;

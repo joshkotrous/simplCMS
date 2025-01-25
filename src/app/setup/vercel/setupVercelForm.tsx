@@ -9,16 +9,13 @@ import { Input } from "@/components/ui/input";
 import { VercelLogo } from "@/components/logos";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import {
-  GetProjectsProjects,
-  GetProjectsResponseBody,
-} from "@vercel/sdk/models/getprojectsop.js";
+import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { toast } from "sonner";
 import * as vercel from "@/app/actions/vercel";
 import { useRouter } from "next/navigation";
 import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
-import { TeamLimited } from "@vercel/sdk/models/teamlimited.js";
 import Link from "next/link";
+import { useSetupData } from "../setupContextProvider";
 
 export default function SetupVercelForm({
   initialProjects,
@@ -27,39 +24,34 @@ export default function SetupVercelForm({
   initialProjects: GetProjectsResponseBody | null;
   initialSiteUrl: string | null;
 }) {
+  const { setupData, setSetupData } = useSetupData();
+  const [loading, setLoading] = useState(false);
   const [siteUrl, setSiteUrl] = useState<string | null>(initialSiteUrl ?? null);
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    token: "",
-    loading: false,
-  });
+
   const [projectConnected, setProjectConnected] = useState(false);
   const [projects, setProjects] = useState<GetProjectsResponseBody | null>(
     initialProjects
   );
   const [teams, setTeams] = useState<GetTeamsResponseBody | null>(null);
 
-  const [selectedProject, setSelectedProject] =
-    useState<GetProjectsProjects | null>(null);
-  const [selectedTeam, setSelectedTeam] = useState<
-    TeamLimited | { [k: string]: any } | null
-  >(null);
-
   async function getProjects() {
-    setFormData({ ...formData, loading: true });
-    if (!selectedTeam) throw new Error("Team must be selected");
+    setLoading(true);
+    if (!setupData.vercelToken) throw new Error("Vercel token is not set");
+    if (!setupData.vercelTeam) throw new Error("Team must be selected");
     const projects = await vercel.getProjectsAction(
-      formData.token,
-      selectedTeam.id
+      setupData.vercelToken,
+      setupData.vercelTeam.id
     );
     console.log(projects);
     setProjects(projects);
-    setFormData({ ...formData, loading: false });
+    setLoading(false);
   }
 
   async function getTeams() {
-    setFormData({ ...formData, loading: true });
-    toast.promise(vercel.getTeams(formData.token), {
+    setLoading(true);
+    if (!setupData.vercelToken) throw new Error("Vercel token not setup");
+    toast.promise(vercel.getTeams(setupData.vercelToken), {
       loading: "Connecting to Vercel...",
       success: (data) => {
         setTeams(data);
@@ -70,36 +62,41 @@ export default function SetupVercelForm({
         return "Error connecting to Vercel";
       },
     });
-    setFormData({ ...formData, loading: false });
+    setLoading(false);
   }
 
   async function connectVercelProject() {
-    if (!selectedProject) {
+    if (!setupData.vercelProject || !setupData.vercelToken) {
       toast.error("You must select a project to connect.");
       return;
     }
 
-    toast.promise(vercel.connectProject(selectedProject, formData.token), {
-      loading: `Connecting to ${selectedProject.name}...`,
-      success: () => {
-        // router.push("/setup/database");
-        setProjectConnected(true);
-        return `Successfully connected ${selectedProject.name}.`;
-      },
-      error: (error) => {
-        const _error = JSON.parse(
-          error.message.replace("Response validation failed: ", "")
-        );
-        const message = _error.length > 1 ? _error[1].received : null;
-        return `Error connecting to ${selectedProject.name}: ${message}.`;
-      },
-    });
+    toast.promise(
+      vercel.connectProject(setupData.vercelProject, setupData.vercelToken),
+      {
+        loading: `Connecting to ${setupData.vercelProject.name}...`,
+        success: () => {
+          setProjectConnected(true);
+          return `Successfully connected ${setupData.vercelProject!.name}.`;
+        },
+        error: (error) => {
+          const _error = JSON.parse(
+            error.message.replace("Response validation failed: ", "")
+          );
+          const message = _error.length > 1 ? _error[1].received : null;
+          return `Error connecting to ${
+            setupData.vercelProject!.name
+          }: ${message}.`;
+        },
+      }
+    );
   }
 
   async function configureSiteUrl() {
-    if (!selectedProject || !siteUrl) return;
+    if (!setupData.vercelProject || !siteUrl) return;
+    if (!setupData.vercelToken) return;
     toast.promise(
-      vercel.addEnvVar(formData.token, selectedProject, {
+      vercel.addEnvVar(setupData.vercelToken, setupData.vercelProject, {
         key: "NEXT_PUBLIC_SITE_URL",
         value: siteUrl,
         target: ["production"],
@@ -159,15 +156,18 @@ export default function SetupVercelForm({
             {projects.projects.map((project) => (
               <div
                 onClick={() => {
-                  if (selectedProject && selectedProject.id === project.id) {
-                    setSelectedProject(null);
+                  if (setupData.vercelProject?.id === project.id) {
+                    setSetupData((prev) => ({ ...prev, vercelProject: null }));
                   } else {
-                    setSelectedProject(project);
+                    setSetupData((prev) => ({
+                      ...prev,
+                      vercelProject: project,
+                    }));
                   }
                 }}
                 className={`border rounded p-2 flex flex-col hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all ${
-                  selectedProject &&
-                  selectedProject.id === project.id &&
+                  setupData.vercelProject &&
+                  setupData.vercelProject.id === project.id &&
                   "bg-zinc-200 dark:bg-zinc-800"
                 }`}
                 key={project.id}
@@ -183,7 +183,7 @@ export default function SetupVercelForm({
           </div>
 
           <Button
-            disabled={!selectedProject}
+            disabled={!setupData.vercelProject}
             onClick={connectVercelProject}
             className="w-full"
           >
@@ -208,15 +208,18 @@ export default function SetupVercelForm({
             {teams.teams.map((team) => (
               <div
                 onClick={() => {
-                  if (selectedTeam && selectedTeam.id === team.id) {
-                    setSelectedTeam(null);
+                  if (
+                    setupData.vercelTeam &&
+                    setupData.vercelTeam.id === team.id
+                  ) {
+                    setSetupData((prev) => ({ ...prev, vercelTeam: null }));
                   } else {
-                    setSelectedTeam(team);
+                    setSetupData((prev) => ({ ...prev, vercelTeam: team }));
                   }
                 }}
                 className={`border rounded p-2 flex flex-col hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-all ${
-                  selectedTeam &&
-                  selectedTeam.id === team.id &&
+                  setupData.vercelTeam &&
+                  setupData.vercelTeam.id === team.id &&
                   "bg-zinc-200 dark:bg-zinc-800"
                 }`}
                 key={team.id}
@@ -232,7 +235,7 @@ export default function SetupVercelForm({
           </div>
 
           <Button
-            disabled={!selectedTeam || formData.loading}
+            disabled={!setupData.vercelTeam || loading}
             onClick={getProjects}
             className="w-full"
           >
@@ -264,14 +267,16 @@ export default function SetupVercelForm({
           and create an access token.
         </CardDescription>
         <Input
-          value={formData.token}
-          onChange={(e) => setFormData({ ...formData, token: e.target.value })}
+          value={setupData.vercelToken}
+          onChange={(e) =>
+            setSetupData((prev) => ({ ...prev, vercelToken: e.target.value }))
+          }
           type="password"
           placeholder="Access token..."
         />
         <Button
           onClick={getTeams}
-          disabled={formData.token === "" || formData.loading}
+          disabled={setupData.vercelToken === "" || loading}
           className="w-full"
         >
           Connect Vercel

@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="size-full flex justify-center items-center overflow-hidden font-[family-name:var(--font-geist-sans)] bg-[linear-gradient(215deg,rgba(0,0,0,0.25)_0%,transparent_40%)] bg-background dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)]">
       <main className="flex gap-4 items-center flex-col text-foreground">
-        <h1 className="text-2xl font-bold">SimplCMS</h1>
+        <h1 className=" font-bold">SimplCMS</h1>
         <Link href="/setup">
           <Button className="text-xl p-8 bg-transparent bg-zinc-800 rounded-xl bg-[linear-gradient(180deg,rgba(255,255,255,0.1)_0%,transparent_100%)] hover:scale-[98%] hover:translate-y-[2px] transition-all">
             ✨ Get Started

@@ -4,7 +4,7 @@ import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 export default async function SetupOauth() {
-  if (process.env.SIMPLCMS_OAUTH_PROVIDERS) redirect("/setup/add-user");
+  if (process.env.SIMPLCMS_OAUTH_PROVIDERS) redirect("/setup/redeploy");
 
   return (
     <div className="size-full flex justify-center items-center text-foreground">
