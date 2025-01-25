@@ -3,7 +3,7 @@ import Link from "next/link";
 import SetupMongoForm from "./setupMongoDBForm";
 
 export default async function SetupMongo() {
-  if (!process.env.SIMPLCMS_HOST_PROVIDER)
+  if (!process.env.SIMPLCMS_HOST_PROVIDER) {
     return (
       <div className="size-full flex flex-col justify-center items-center gap-4 text-foreground">
         <h2 className="font-semibold">
@@ -14,6 +14,7 @@ export default async function SetupMongo() {
         </Link>
       </div>
     );
+  }
 
   return (
     <div className="size-full flex justify-center items-center text-foreground">

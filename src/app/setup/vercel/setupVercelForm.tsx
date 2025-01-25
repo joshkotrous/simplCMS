@@ -6,7 +6,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { VercelLogo } from "../page";
+import { VercelLogo } from "@/components/logos";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {

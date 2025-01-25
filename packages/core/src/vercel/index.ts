@@ -3,6 +3,11 @@ import { Vercel } from "@vercel/sdk";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { dev } from "../dev";
 import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
+import {
+  CreateDeploymentResponseBody,
+  Target,
+} from "@vercel/sdk/models/createdeploymentop.js";
+import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 
 export function connect(apiKey: string): Vercel {
   try {
@@ -94,6 +99,98 @@ export function getVercelEnvVars() {
   const teamId = process.env.VERCEL_TEAM_ID;
   const projectId = process.env.VERCEL_PROJECT_ID;
   return { token, teamId, projectId };
+}
+
+export async function triggerDeployment({
+  vercel,
+  projectId,
+  teamId,
+  name = "Production Deployment",
+  target = "production",
+}: {
+  vercel: Vercel;
+  projectId: string;
+  teamId: string;
+  name?: string;
+  target?: "production" | "preview" | "staging";
+}): Promise<CreateDeploymentResponseBody> {
+  try {
+    const deployment = await vercel.deployments.createDeployment({
+      teamId,
+      requestBody: {
+        name,
+        project: projectId,
+        target: target as Target,
+        withLatestCommit: true,
+      },
+    });
+    return deployment;
+  } catch (error) {
+    console.error(`Could not trigger deployment: ${error}`);
+    throw error;
+  }
+}
+
+export async function triggerRedeploy({
+  vercel,
+  projectId,
+  teamId,
+  deploymentId,
+  name = "Production Deployment",
+  target = "production",
+}: {
+  vercel: Vercel;
+  projectId: string;
+  teamId: string;
+  deploymentId?: string;
+  name?: string;
+  target?: "production" | "preview" | "staging";
+}): Promise<CreateDeploymentResponseBody> {
+  try {
+    const deployment = await vercel.deployments.createDeployment({
+      teamId,
+      requestBody: {
+        name,
+        project: projectId,
+        target: target as Target,
+        deploymentId,
+        withLatestCommit: !deploymentId,
+      },
+    });
+    return deployment;
+  } catch (error) {
+    console.error(`Could not trigger deployment: ${error}`);
+    throw error;
+  }
+}
+
+export async function getLatestDeployment({
+  vercel,
+  projectId,
+  teamId,
+}: {
+  vercel: Vercel;
+  projectId: string;
+  teamId: string;
+}): Promise<Deployments | null> {
+  try {
+    const deployments = await vercel.deployments.getDeployments({
+      teamId,
+      projectId,
+      target: "production",
+      limit: 1,
+      from: Date.now(),
+    });
+
+    if (!deployments?.deployments?.[0]) {
+      return null;
+    }
+
+    return deployments.deployments[0];
+  } catch (error) {
+    console.error(`Could not get latest deployment: ${error}`);
+    throw error;
+  }
 }
 
 export * as vercel from ".";

@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { SupabaseLogo } from "../page";
+import { SupabaseLogo } from "@/components/logos";
 import { CloudinaryLogo, AWSS3Logo } from "@/components/logos";
 export default async function SetupPage() {
   return (
