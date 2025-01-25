@@ -193,4 +193,48 @@ export async function getLatestDeployment({
   }
 }
 
+export async function getRunningDeployments({
+  vercel,
+  projectId,
+  teamId,
+}: {
+  vercel: Vercel;
+  projectId: string;
+  teamId: string;
+}) {
+  try {
+    const deployments = await vercel.deployments.getDeployments({
+      teamId,
+      projectId,
+      state: "BUILDING",
+    });
+
+    return deployments.deployments || [];
+  } catch (error) {
+    console.error(`Could not get running deployments: ${error}`);
+    throw error;
+  }
+}
+
+export async function getDeploymentById({
+  vercel,
+  deploymentId,
+  teamId,
+}: {
+  vercel: Vercel;
+  deploymentId: string;
+  teamId: string;
+}) {
+  try {
+    const deployment = await vercel.deployments.getDeployment({
+      teamId,
+      idOrUrl: deploymentId,
+    });
+    return deployment;
+  } catch (error) {
+    console.error(`Could not get deployment ${deploymentId}: ${error}`);
+    throw error;
+  }
+}
+
 export * as vercel from ".";

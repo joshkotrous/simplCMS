@@ -23,7 +23,7 @@ export default function SetupGoogleOauth() {
       {
         loading: "Connecting Google OAuth...",
         success: () => {
-          router.push("/setup/add-user");
+          router.push("/setup/redeploy");
           setLoading(false);
           return "Successfully connected Google OAuth.";
         },
