@@ -30,10 +30,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  let user: User | null = null;
-  const session = await getServerSession();
-  if (session && session.user.email)
-    user = await getUserByEmail(session.user.email);
   const cookieStore = await cookies();
   const darkModeCookie = cookieStore.get("darkMode");
   const darkMode = darkModeCookie?.value === "true";
