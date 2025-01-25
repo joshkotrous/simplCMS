@@ -18,10 +18,8 @@ import Link from "next/link";
 import { useSetupData } from "../setupContextProvider";
 
 export default function SetupVercelForm({
-  initialProjects,
   initialSiteUrl,
 }: {
-  initialProjects: GetProjectsResponseBody | null;
   initialSiteUrl: string | null;
 }) {
   const { setupData, setSetupData } = useSetupData();
@@ -31,7 +29,7 @@ export default function SetupVercelForm({
 
   const [projectConnected, setProjectConnected] = useState(false);
   const [projects, setProjects] = useState<GetProjectsResponseBody | null>(
-    initialProjects
+    null
   );
   const [teams, setTeams] = useState<GetTeamsResponseBody | null>(null);
 
@@ -96,11 +94,11 @@ export default function SetupVercelForm({
   async function configureSiteUrl() {
     if (!setupData.vercelProject) throw new Error("Project is missing");
     if (!setupData.vercelToken) throw new Error("Vercel token is missing");
-    if (!process.env.VERCEL_URL) throw new Error("Could not get site url");
+    if (!siteUrl) throw new Error("Could not get site url");
     toast.promise(
       vercel.addEnvVar(setupData.vercelToken, setupData.vercelProject, {
         key: "NEXT_PUBLIC_SITE_URL",
-        value: process.env.VERCEL_URL,
+        value: siteUrl,
         target: ["production"],
         type: "plain",
       }),
@@ -114,6 +112,33 @@ export default function SetupVercelForm({
           return "Error configuring site url.";
         },
       }
+    );
+  }
+
+  if (projectConnected) {
+    return (
+      <Card>
+        <CardHeader className="gap-4 text-center">
+          <div className="flex w-full justify-center">
+            <VercelLogo />
+          </div>
+          Configure Site URL
+        </CardHeader>
+        <CardContent className="space-y-4 w-72">
+          <Input
+            value={siteUrl ?? ""}
+            onChange={(e) => setSiteUrl(e.target.value)}
+            placeholder="Site URL..."
+          />
+          <Button
+            onClick={configureSiteUrl}
+            disabled={!siteUrl || siteUrl === ""}
+            className="w-full"
+          >
+            Set Site URL
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -159,10 +184,7 @@ export default function SetupVercelForm({
 
           <Button
             disabled={!setupData.vercelProject}
-            onClick={async () => {
-              await connectVercelProject();
-              await configureSiteUrl();
-            }}
+            onClick={connectVercelProject}
             className="w-full"
           >
             Connect Project
