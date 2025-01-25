@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AdminSidebar from "./adminSidebar";
 import ThemeToggle from "../themeToggle";
+import ErrorToast from "@/components/errorToast";
 
 export default async function AdminLayout({
   children,
@@ -13,7 +14,6 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   try {
-    // TODO: Figure out middleware solution
     const session = await getServerSession();
     if (!session?.user?.email) redirect("/login");
 
@@ -47,6 +47,6 @@ export default async function AdminLayout({
     );
   } catch (error) {
     console.error(error);
-    throw error;
+    return <ErrorToast error={error} />;
   }
 }
