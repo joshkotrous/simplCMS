@@ -1,5 +1,5 @@
-import { CloudinaryLogo } from "@/app/setup/media-storage/page";
-import { MongoDBLogo } from "@/app/setup/page";
+import { CloudinaryLogo } from "@/components/logos";
+import { MongoDBLogo } from "@/components/logos";
 import MediaPopover from "@/components/mediaPopover";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AWSS3Logo } from "../page";
+import { AWSS3Logo } from "@/components/logos";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testCloudinaryConnectionAction } from "@/app/actions/cloudinaryActions";
-import { connectMediaStorageToApplication } from "@/app/actions/setupActions";
+import { testCloudinaryConnectionAction } from "@/app/actions/cloudinary";
+import { connectMediaStorageToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 
 export default function SetupS3Form() {

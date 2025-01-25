@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { CloudinaryLogo } from "../page";
+import { CloudinaryLogo } from "@/components/logos";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";

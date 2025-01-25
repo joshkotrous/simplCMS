@@ -51,8 +51,7 @@ export default function Users({ users }: { users: User[] }) {
                   src={user.imageUrl}
                 />
                 <AvatarFallback>
-                  {user.name[0]}
-                  {user.name[1]}
+                  {user.name ? `${user.name[0]}${user.name[1]}` : ""}
                 </AvatarFallback>
               </Avatar>
               {user.name}
