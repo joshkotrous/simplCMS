@@ -7,7 +7,7 @@ export default async function SetupVercelPage() {
   let projects: GetProjectsResponseBody | null = null;
   if (
     process.env.VERCEL_PROJECT_ID &&
-    process.env.SIMPLCMS_HOST_PROVIDER === "vercel" &&
+    process.env.SIMPLCMS_HOST_PROVIDER === "Vercel" &&
     process.env.VERCEL_TOKEN &&
     process.env.VERCEL_TEAM_ID &&
     process.env.NEXT_PUBLIC_SITE_URL
@@ -15,7 +15,7 @@ export default async function SetupVercelPage() {
     redirect("/setup/database");
   }
   if (
-    process.env.SIMPLCMS_HOST_PROVIDER === "vercel" &&
+    process.env.SIMPLCMS_HOST_PROVIDER === "Vercel" &&
     process.env.VERCEL_TOKEN &&
     process.env.VERCEL_TEAM_ID &&
     !process.env.VERCEL_PROJECT_ID

@@ -8,9 +8,11 @@ import { toast } from "sonner";
 import { testConnection } from "@/app/actions/mongo";
 import { connectDbToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
+import { useSetupData } from "../setupContextProvider";
 
 export default function SetupMongoForm() {
   const router = useRouter();
+  const { setupData } = useSetupData();
   const [uri, setUri] = useState("");
   const [testSuccessful, setTestSuccessful] = useState(false);
   async function testDBConnection() {
@@ -27,16 +29,26 @@ export default function SetupMongoForm() {
   }
 
   async function connectDB() {
-    toast.promise(connectDbToApplication("MongoDB", uri), {
-      loading: "Connecting database to SimplCMS...",
-      success: () => {
-        router.push("/setup/media-storage");
-        return "Database connected successfully.";
-      },
-      error: () => {
-        return "Error connecting database.";
-      },
-    });
+    if (!setupData.vercelProject) throw new Error("No vercel project selected");
+    toast.promise(
+      connectDbToApplication(
+        setupData.vercelToken,
+        setupData.vercelTeam?.id,
+        setupData.vercelProject?.id,
+        "MongoDB",
+        uri
+      ),
+      {
+        loading: "Connecting database to SimplCMS...",
+        success: () => {
+          router.push("/setup/media-storage");
+          return "Database connected successfully.";
+        },
+        error: () => {
+          return "Error connecting database.";
+        },
+      }
+    );
   }
 
   return (

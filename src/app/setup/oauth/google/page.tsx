@@ -8,7 +8,9 @@ import { setupGoogleOauth } from "@/app/actions/setup";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useSetupData } from "../../setupContextProvider";
 export default function SetupGoogleOauth() {
+  const { setupData } = useSetupData();
   const [formData, setFormData] = useState({ clientId: "", clientSecret: "" });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -17,9 +19,18 @@ export default function SetupGoogleOauth() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const redirectUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback/google`;
   async function setup() {
+    if (!setupData.vercelTeam) throw new Error("Vercel team is mising");
+    if (!setupData.vercelProject) throw new Error("Vercel project is missing");
     setLoading(true);
     toast.promise(
-      setupGoogleOauth(formData.clientId, formData.clientSecret, siteUrl),
+      setupGoogleOauth(
+        setupData.vercelToken,
+        setupData.vercelTeam.id,
+        setupData.vercelProject.id,
+        formData.clientId,
+        formData.clientSecret,
+        siteUrl
+      ),
       {
         loading: "Connecting Google OAuth...",
         success: () => {

@@ -4,18 +4,20 @@ import { getVercelEnvVars, vercel } from "@/packages/core/src/vercel";
 import { generateSecret } from "@/lib/utils";
 
 export async function connectDbToApplication(
+  vercelToken: string,
+  vercelTeamId: string,
+  vercelProjectId: string,
   provider: "MongoDB",
   uri: string
 ): Promise<void> {
   try {
-    const { token, teamId, projectId } = getVercelEnvVars();
-    const client = vercel.connect(token);
+    const client = vercel.connect(vercelToken);
     vercel.addEnvToProject({
       vercel: client,
       key: "MONGO_URI",
       value: uri,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "encrypted",
       target: ["production"],
     });
@@ -23,8 +25,8 @@ export async function connectDbToApplication(
       vercel: client,
       key: "SIMPLCMS_DB_PROVIDER",
       value: provider,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "encrypted",
       target: ["production"],
     });
@@ -35,20 +37,22 @@ export async function connectDbToApplication(
 }
 
 export async function setupGoogleOauth(
+  vercelToken: string,
+  vercelTeamId: string,
+  vercelProjectId: string,
   clientId: string,
   clientSecret: string,
   siteUrl: string
 ): Promise<void> {
   try {
-    const { token, teamId, projectId } = getVercelEnvVars();
-    const client = vercel.connect(token);
+    const client = vercel.connect(vercelToken);
     const nextAuthSecret = generateSecret();
     vercel.addEnvToProject({
       vercel: client,
       key: "GOOGLE_OAUTH_CLIENT_ID",
       value: clientId,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "encrypted",
       target: ["production"],
     });
@@ -56,8 +60,8 @@ export async function setupGoogleOauth(
       vercel: client,
       key: "GOOGLE_OAUTH_CLIENT_SECRET",
       value: clientSecret,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "encrypted",
       target: ["production"],
     });
@@ -65,8 +69,8 @@ export async function setupGoogleOauth(
       vercel: client,
       key: "SIMPL_CMS_OAUTH_PROVIDERS",
       value: "Google",
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "plain",
       target: ["production"],
     });
@@ -74,8 +78,8 @@ export async function setupGoogleOauth(
       vercel: client,
       key: "NEXTAUTH_URL",
       value: siteUrl,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "plain",
       target: ["production"],
     });
@@ -83,8 +87,8 @@ export async function setupGoogleOauth(
       vercel: client,
       key: "NEXTAUTH_SECRET",
       value: nextAuthSecret,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "plain",
       target: ["production"],
     });
@@ -95,19 +99,21 @@ export async function setupGoogleOauth(
 }
 
 export async function connectMediaStorageToApplication(
+  vercelToken: string,
+  vercelProjectId: string,
+  vercelTeamId: string,
   provider: "Cloudinary",
   url: string
 ) {
   try {
-    const { token, teamId, projectId } = getVercelEnvVars();
-    const client = vercel.connect(token);
+    const client = vercel.connect(vercelToken);
 
     vercel.addEnvToProject({
       vercel: client,
       key: "SIMPLCMS_MEDIA_STORAGE_PROVIDERS",
       value: provider,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "plain",
       target: ["production"],
     });
@@ -115,8 +121,8 @@ export async function connectMediaStorageToApplication(
       vercel: client,
       key: "CLOUDINARY_URL",
       value: url,
-      projectId: projectId,
-      teamId: teamId,
+      projectId: vercelProjectId,
+      teamId: vercelTeamId,
       type: "plain",
       target: ["production"],
     });

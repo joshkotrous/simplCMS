@@ -9,10 +9,12 @@ import { toast } from "sonner";
 import { testCloudinaryConnectionAction } from "@/app/actions/cloudinary";
 import { connectMediaStorageToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
+import { useSetupData } from "../../setupContextProvider";
 
 export default function SetupS3Form() {
   const router = useRouter();
   const [url, setUrl] = useState("");
+  const { setupData } = useSetupData();
   const [testSuccessful, setTestSuccessful] = useState(false);
   async function testConnection() {
     toast.promise(testCloudinaryConnectionAction(url), {
@@ -28,16 +30,27 @@ export default function SetupS3Form() {
   }
 
   async function connectCloudinary() {
-    toast.promise(connectMediaStorageToApplication("Cloudinary", url), {
-      loading: "Connecting Cloudinary to SimplCMS...",
-      success: () => {
-        router.push("/setup/oauth");
-        return "Successfully connected Cloudinary";
-      },
-      error: () => {
-        return "Error connecting Cloudinary";
-      },
-    });
+    if (!setupData.vercelProject) throw new Error("Vercel project is missing");
+    if (!setupData.vercelTeam) throw new Error("Vercle team is missing");
+    toast.promise(
+      connectMediaStorageToApplication(
+        setupData.vercelToken,
+        setupData.vercelProject?.id,
+        setupData.vercelTeam.id,
+        "Cloudinary",
+        url
+      ),
+      {
+        loading: "Connecting Cloudinary to SimplCMS...",
+        success: () => {
+          router.push("/setup/oauth");
+          return "Successfully connected Cloudinary";
+        },
+        error: () => {
+          return "Error connecting Cloudinary";
+        },
+      }
+    );
   }
 
   return (
