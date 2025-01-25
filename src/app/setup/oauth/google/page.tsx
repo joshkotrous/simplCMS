@@ -14,13 +14,12 @@ export default function SetupGoogleOauth() {
   const [formData, setFormData] = useState({ clientId: "", clientSecret: "" });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  if (!process.env.NEXT_PUBLIC_SITE_URL)
-    throw Error("NEXT_PUBLIC_SITE_URL not configured");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  const redirectUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback/google`;
+  const siteUrl = process.env.VERCEL_URL ?? process.env.NEXT_PUBLIC_SITE_URL;
+  const redirectUrl = `${siteUrl}/api/auth/callback/google`;
   async function setup() {
     if (!setupData.vercelTeam) throw new Error("Vercel team is mising");
     if (!setupData.vercelProject) throw new Error("Vercel project is missing");
+    if (!siteUrl) throw new Error("No site URL configured");
     setLoading(true);
     toast.promise(
       setupGoogleOauth(

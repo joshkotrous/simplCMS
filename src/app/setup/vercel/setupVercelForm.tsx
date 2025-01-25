@@ -77,6 +77,7 @@ export default function SetupVercelForm({
         loading: `Connecting to ${setupData.vercelProject.name}...`,
         success: () => {
           setProjectConnected(true);
+          configureSiteUrl();
           return `Successfully connected ${setupData.vercelProject!.name}.`;
         },
         error: (error) => {
@@ -93,12 +94,13 @@ export default function SetupVercelForm({
   }
 
   async function configureSiteUrl() {
-    if (!setupData.vercelProject || !siteUrl) return;
-    if (!setupData.vercelToken) return;
+    if (!setupData.vercelProject) throw new Error("Project is missing");
+    if (!setupData.vercelToken) throw new Error("Vercel token is missing");
+    if (!process.env.VERCEL_URL) throw new Error("Could not get site url");
     toast.promise(
       vercel.addEnvVar(setupData.vercelToken, setupData.vercelProject, {
         key: "NEXT_PUBLIC_SITE_URL",
-        value: siteUrl,
+        value: process.env.VERCEL_URL,
         target: ["production"],
         type: "plain",
       }),
@@ -112,33 +114,6 @@ export default function SetupVercelForm({
           return "Error configuring site url.";
         },
       }
-    );
-  }
-
-  if (projectConnected) {
-    return (
-      <Card>
-        <CardHeader className="gap-4 text-center">
-          <div className="flex w-full justify-center">
-            <VercelLogo />
-          </div>
-          Configure Site URL
-        </CardHeader>
-        <CardContent className="space-y-4 w-72">
-          <Input
-            value={siteUrl ?? ""}
-            onChange={(e) => setSiteUrl(e.target.value)}
-            placeholder="Site URL..."
-          />
-          <Button
-            onClick={configureSiteUrl}
-            disabled={!siteUrl || siteUrl === ""}
-            className="w-full"
-          >
-            Set Site URL
-          </Button>
-        </CardContent>
-      </Card>
     );
   }
 
