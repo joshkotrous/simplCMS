@@ -77,6 +77,7 @@ export default function SetupVercelForm({
         loading: `Connecting to ${setupData.vercelProject.name}...`,
         success: () => {
           setProjectConnected(true);
+
           return `Successfully connected ${setupData.vercelProject!.name}.`;
         },
         error: (error) => {
@@ -90,7 +91,6 @@ export default function SetupVercelForm({
         },
       }
     );
-    configureSiteUrl();
   }
 
   async function configureSiteUrl() {
@@ -159,7 +159,10 @@ export default function SetupVercelForm({
 
           <Button
             disabled={!setupData.vercelProject}
-            onClick={connectVercelProject}
+            onClick={async () => {
+              await connectVercelProject();
+              await configureSiteUrl();
+            }}
             className="w-full"
           >
             Connect Project
