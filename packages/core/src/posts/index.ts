@@ -2,12 +2,46 @@ import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
 import { PostModel } from "@/db/schema";
 import { CreatePost, Post, postSchema } from "@/types/types";
 
+function createSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  try {
+    const uri = getDatabaseUriEnvVariable();
+    await connectToDatabase(uri);
+
+    const post = await PostModel.findOne({ slug }).select("-__v");
+
+    if (!post) {
+      return null;
+    }
+
+    return postSchema.parse(post);
+  } catch (error) {
+    console.error(`Could not get post by slug: ${error}`);
+    throw error;
+  }
+}
+
 export async function createPost(post: CreatePost): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
     await connectToDatabase(uri);
 
-    const newPost = new PostModel(post);
+    const slug = createSlug(post.title);
+
+    const postWithSlug = {
+      ...post,
+      slug,
+    };
+
+    const newPost = new PostModel(postWithSlug);
     await newPost.save();
   } catch (error) {
     console.error(`Could not create post ${error}`);

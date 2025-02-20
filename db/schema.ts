@@ -44,6 +44,7 @@ const PostSchema: Schema = new Schema<Post>({
   createdAt: { type: Date, default: Date.now },
   category: { type: String },
   subtitle: { type: String },
+  slug: { type: String },
   draft: { type: Boolean, required: true, default: false },
 });
 

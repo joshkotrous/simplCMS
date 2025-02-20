@@ -24,7 +24,7 @@ export default function AdminToolbar() {
         <ThemeToggle />
         <div className="space-x-4">
           <Link href="/admin" className="hover:text-zinc-500 transition-all">
-            Go to Dashboard
+            Dashboard
           </Link>
           <span
             onClick={() => signOut()}

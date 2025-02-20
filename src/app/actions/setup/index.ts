@@ -2,6 +2,7 @@
 
 import { getVercelEnvVars, vercel } from "@/packages/core/src/vercel";
 import { generateSecret } from "@/lib/utils";
+import { MediaStorageProvider } from "@/types/types";
 
 export async function connectDbToApplication(
   vercelToken: string,
@@ -102,7 +103,7 @@ export async function connectMediaStorageToApplication(
   vercelToken: string,
   vercelProjectId: string,
   vercelTeamId: string,
-  provider: "Cloudinary",
+  provider: MediaStorageProvider,
   url: string
 ) {
   try {
