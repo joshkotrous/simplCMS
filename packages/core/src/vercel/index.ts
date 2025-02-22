@@ -8,6 +8,8 @@ import {
   Target,
 } from "@vercel/sdk/models/createdeploymentop.js";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
+import { GetProjectEnvResponseBody } from "@vercel/sdk/models/getprojectenvop.js";
+import { FilterProjectEnvsResponseBody } from "@vercel/sdk/models/filterprojectenvsop.js";
 
 export function connect(apiKey: string): Vercel {
   try {
@@ -235,6 +237,54 @@ export async function getDeploymentById({
     console.error(`Could not get deployment ${deploymentId}: ${error}`);
     throw error;
   }
+}
+
+export async function getProjectEnvVarValue({
+  vercel,
+  varId,
+  projectId,
+  teamId,
+  target,
+}: {
+  vercel: Vercel;
+  varId: string;
+  projectId: string;
+  teamId: string;
+  target?: ("production" | "preview" | "development")[];
+}): Promise<GetProjectEnvResponseBody> {
+  try {
+    const envVar = await vercel.projects.getProjectEnv({
+      idOrName: projectId,
+      id: varId,
+      teamId: teamId,
+      ...(target && { target: target }),
+    });
+    return envVar;
+  } catch (error) {
+    console.error(
+      `Could not get environment variable for project ${projectId}: ${varId}  ${error}`
+    );
+    throw error;
+  }
+}
+
+export async function getProjectEnvVars({
+  vercel,
+  projectId,
+  teamId,
+  target,
+}: {
+  vercel: Vercel;
+  projectId: string;
+  teamId: string;
+  target?: ("production" | "preview" | "development")[];
+}): Promise<FilterProjectEnvsResponseBody> {
+  const envVars = await vercel.projects.filterProjectEnvs({
+    idOrName: projectId,
+    teamId: teamId,
+    ...(target && { target: target }),
+  });
+  return envVars;
 }
 
 export * as vercel from ".";

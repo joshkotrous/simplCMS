@@ -40,9 +40,11 @@ export async function getUser(user: Partial<User>): Promise<User> {
   }
 }
 
-export async function getAllUsers(): Promise<User[]> {
+export async function getAllUsers(uri?: string): Promise<User[]> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    if (!uri) {
+      uri = getDatabaseUriEnvVariable();
+    }
 
     await connectToDatabase(uri);
     const users = await UserModel.find({})
