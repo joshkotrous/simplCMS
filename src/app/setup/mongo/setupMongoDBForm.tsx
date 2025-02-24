@@ -9,14 +9,20 @@ import { testConnection } from "@/app/actions/mongo";
 import { connectDbToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../setupContextProvider";
+import { SimplCMSPlatformConfiguration } from "@/types/types";
 
-export default function SetupMongoForm() {
+export default function SetupMongoForm({
+  platformConfiguration,
+}: {
+  platformConfiguration: SimplCMSPlatformConfiguration;
+}) {
   const router = useRouter();
-  const { setupData } = useSetupData();
-  const [uri, setUri] = useState("");
+  const { setupData, setSetupData } = useSetupData();
   const [testSuccessful, setTestSuccessful] = useState(false);
   async function testDBConnection() {
-    toast.promise(testConnection(uri), {
+    if (!setupData.database?.mongo?.uri)
+      throw new Error("Mongo uri is not configured");
+    toast.promise(testConnection(setupData.database?.mongo?.uri), {
       loading: "Testing connection...",
       success: () => {
         setTestSuccessful(true);
@@ -29,19 +35,40 @@ export default function SetupMongoForm() {
   }
 
   async function connectDB() {
-    if (!setupData.vercelProject) throw new Error("No vercel project selected");
+    if (
+      !platformConfiguration.host?.vercel?.token &&
+      !setupData.host?.vercel?.token
+    )
+      throw new Error("Missing vercel token");
+    if (
+      !platformConfiguration.host?.vercel?.projectId &&
+      !setupData.host?.vercel?.projectId
+    )
+      throw new Error("No vercel project configured");
+    if (
+      !platformConfiguration.host?.vercel?.teamId &&
+      !setupData.host?.vercel?.teamId
+    )
+      throw new Error("No vercel team configured");
+    if (!setupData.database?.mongo?.uri)
+      throw new Error("Mongo uri is not configured");
+    if (!setupData.database.provider)
+      throw new Error("Database provider not configured");
     toast.promise(
       connectDbToApplication(
-        setupData.vercelToken,
-        setupData.vercelTeam?.id,
-        setupData.vercelProject?.id,
-        "MongoDB",
-        uri
+        platformConfiguration.host?.vercel?.token! ??
+          setupData.host?.vercel?.token,
+        platformConfiguration.host?.vercel?.teamId! ??
+          setupData.host?.vercel?.teamId,
+        platformConfiguration.host?.vercel?.projectId! ??
+          setupData.host?.vercel?.projectId,
+        setupData.database.provider,
+        setupData.database?.mongo?.uri
       ),
       {
         loading: "Connecting database to SimplCMS...",
         success: () => {
-          router.push("/setup/media-storage");
+          router.push("/");
           return "Database connected successfully.";
         },
         error: () => {
@@ -61,13 +88,24 @@ export default function SetupMongoForm() {
       </CardHeader>
       <CardContent className="space-y-4">
         <Input
-          value={uri}
-          onChange={(e) => setUri(e.target.value)}
+          value={setupData.database?.mongo?.uri ?? ""}
+          onChange={(e) =>
+            setSetupData((prev) => ({
+              ...prev,
+              database: {
+                provider: "MongoDB",
+                mongo: { uri: e.target.value },
+              },
+            }))
+          }
           placeholder="Database URI..."
         />
         <Button
           onClick={testDBConnection}
-          disabled={!uri || uri === ""}
+          disabled={
+            !setupData.database?.mongo?.uri ||
+            setupData.database?.mongo?.uri === ""
+          }
           variant="secondary"
           className="w-full"
         >
@@ -75,7 +113,11 @@ export default function SetupMongoForm() {
         </Button>
         <Button
           onClick={connectDB}
-          disabled={!uri || uri === "" || !testSuccessful}
+          disabled={
+            !setupData.database?.mongo?.uri ||
+            setupData.database?.mongo?.uri === "" ||
+            !testSuccessful
+          }
           className="w-full"
         >
           Connect to MongoDB

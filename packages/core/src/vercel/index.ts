@@ -53,18 +53,17 @@ export async function addEnvToProject({
 }) {
   try {
     const env = getEnvironment();
-    if (env === "prod") {
-      await vercel.projects.createProjectEnv({
-        idOrName: projectId,
-        teamId: teamId,
-        requestBody: {
-          key: key,
-          value: value,
-          type: type,
-          target: target,
-        },
-      });
-    } else {
+    await vercel.projects.createProjectEnv({
+      idOrName: projectId,
+      teamId: teamId,
+      requestBody: {
+        key: key,
+        value: value,
+        type: type,
+        target: target,
+      },
+    });
+    if (env !== "prod") {
       console.warn("Dev mode enabled. Setting local env var.");
       dev.setLocalEnvVar(key, value);
     }

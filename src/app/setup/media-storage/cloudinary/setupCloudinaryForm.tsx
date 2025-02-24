@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CloudinaryLogo } from "@/components/logos";
@@ -10,40 +9,103 @@ import { testCloudinaryConnectionAction } from "@/app/actions/cloudinary";
 import { connectMediaStorageToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../../setupContextProvider";
+import { SimplCMSPlatformConfiguration } from "@/types/types";
 
-export default function SetupCloudinaryForm() {
+export default function SetupCloudinaryForm({
+  platformConfiguration,
+}: {
+  platformConfiguration: SimplCMSPlatformConfiguration;
+}) {
   const router = useRouter();
-  const { setupData } = useSetupData();
-  const [url, setUrl] = useState("");
+  const { setupData, setSetupData } = useSetupData();
   const [testSuccessful, setTestSuccessful] = useState(false);
-  async function testConnection() {
-    toast.promise(testCloudinaryConnectionAction(url), {
-      loading: "Testing Cloudinary connection...",
-      success: () => {
-        setTestSuccessful(true);
-        return "Successfully connected to Cloudinary.";
-      },
-      error: () => {
-        return "Error connecting to Cloudinary.";
-      },
+
+  const cloudinaryConnection =
+    platformConfiguration.mediaStorage?.find(
+      (item) => item.provider === "Cloudinary"
+    ) ?? setupData.mediaStorage?.find((item) => item.provider === "Cloudinary");
+
+  const handleUriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUri = e.target.value;
+
+    setSetupData((prev) => {
+      const updatedMediaStorage = [...(prev.mediaStorage || [])];
+
+      const cloudinaryIndex = updatedMediaStorage.findIndex(
+        (item) => item.provider === "Cloudinary"
+      );
+
+      if (cloudinaryIndex >= 0) {
+        updatedMediaStorage[cloudinaryIndex] = {
+          ...updatedMediaStorage[cloudinaryIndex],
+          provider: "Cloudinary",
+          cloudinary: { uri: newUri },
+        };
+      } else {
+        updatedMediaStorage.push({
+          provider: "Cloudinary",
+          cloudinary: { uri: newUri },
+        });
+      }
+
+      return {
+        ...prev,
+        mediaStorage: updatedMediaStorage,
+      };
     });
+  };
+
+  async function testConnection() {
+    if (!cloudinaryConnection || !cloudinaryConnection.cloudinary?.uri)
+      throw new Error("Cloudinary is not configured");
+    toast.promise(
+      testCloudinaryConnectionAction(cloudinaryConnection?.cloudinary?.uri),
+      {
+        loading: "Testing Cloudinary connection...",
+        success: () => {
+          setTestSuccessful(true);
+          return "Successfully connected to Cloudinary.";
+        },
+        error: () => {
+          return "Error connecting to Cloudinary.";
+        },
+      }
+    );
   }
 
   async function connectCloudinary() {
-    if (!setupData.vercelProject) throw new Error("Vercel project is missing");
-    if (!setupData.vercelTeam) throw new Error("Vercel team is missing");
+    if (
+      !platformConfiguration.host?.vercel?.token &&
+      !setupData.host?.vercel?.token
+    )
+      throw new Error("Vercel token is missing");
+    if (
+      !platformConfiguration.host?.vercel?.projectId &&
+      !setupData.host?.vercel?.projectId
+    )
+      throw new Error("Vercel project is missing");
+    if (
+      !platformConfiguration.host?.vercel?.teamId &&
+      !setupData.host?.vercel?.teamId
+    )
+      throw new Error("Vercel team is missing");
+    if (!cloudinaryConnection?.cloudinary?.uri)
+      throw new Error("Cloudinary uri is not configured");
     toast.promise(
       connectMediaStorageToApplication(
-        setupData.vercelToken,
-        setupData.vercelProject.id,
-        setupData.vercelTeam.id,
+        platformConfiguration.host?.vercel?.token! ??
+          setupData.host?.vercel?.token,
+        platformConfiguration.host?.vercel?.projectId! ??
+          setupData.host?.vercel?.projectId,
+        platformConfiguration.host?.vercel?.teamId! ?? // Fixed: was using projectId again
+          setupData.host?.vercel?.teamId,
         "Cloudinary",
-        url
+        cloudinaryConnection?.cloudinary?.uri
       ),
       {
         loading: "Connecting Cloudinary to SimplCMS...",
         success: () => {
-          router.push("/setup/oauth");
+          router.push("/");
           return "Successfully connected Cloudinary";
         },
         error: () => {
@@ -63,13 +125,16 @@ export default function SetupCloudinaryForm() {
       </CardHeader>
       <CardContent className="space-y-4">
         <Input
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          value={cloudinaryConnection?.cloudinary?.uri ?? ""}
+          onChange={handleUriChange}
           placeholder="Cloudinary connection url..."
         />
         <Button
           onClick={testConnection}
-          disabled={!url || url === ""}
+          disabled={
+            !cloudinaryConnection?.cloudinary?.uri ||
+            cloudinaryConnection?.cloudinary?.uri === ""
+          }
           variant="secondary"
           className="w-full"
         >
@@ -77,7 +142,11 @@ export default function SetupCloudinaryForm() {
         </Button>
         <Button
           onClick={connectCloudinary}
-          disabled={!url || url === "" || !testSuccessful}
+          disabled={
+            !cloudinaryConnection?.cloudinary?.uri ||
+            cloudinaryConnection?.cloudinary?.uri === "" ||
+            !testSuccessful
+          }
           className="w-full"
         >
           Connect to Cloudinary

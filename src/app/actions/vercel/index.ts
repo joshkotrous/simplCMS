@@ -34,7 +34,8 @@ export async function getProjectsAction(
 
 export async function addEnvVar(
   apiKey: string,
-  project: GetProjectsProjects,
+  projectId: string,
+  teamId: string,
   params: {
     key: string;
     value: string;
@@ -46,10 +47,10 @@ export async function addEnvVar(
     const vercel = connect(apiKey);
     await addEnvToProject({
       vercel,
-      projectId: project.id,
+      projectId: projectId,
       key: params.key,
       value: params.value,
-      teamId: project.accountId,
+      teamId: teamId,
       type: params.type,
       target: params.target,
     });
@@ -60,45 +61,46 @@ export async function addEnvVar(
 }
 
 export async function connectProject(
-  project: GetProjectsProjects,
+  projectId: string,
+  teamId: string,
   apiKey: string
 ): Promise<void> {
   try {
     const vercel = connect(apiKey);
     await addEnvToProject({
       vercel,
-      projectId: project.id,
+      projectId: projectId,
       key: "VERCEL_TOKEN",
       value: apiKey,
-      teamId: project.accountId,
+      teamId: teamId,
       type: "encrypted",
       target: ["production"],
     });
     await addEnvToProject({
       vercel,
-      projectId: project.id,
+      projectId: projectId,
       key: "VERCEL_TEAM_ID",
-      value: project.accountId,
-      teamId: project.accountId,
+      value: teamId,
+      teamId: teamId,
       type: "plain",
       target: ["production"],
     });
 
     await addEnvToProject({
       vercel,
-      projectId: project.id,
+      projectId: projectId,
       key: "VERCEL_PROJECT_ID",
-      value: project.id,
-      teamId: project.accountId,
+      value: projectId,
+      teamId: teamId,
       type: "plain",
       target: ["production"],
     });
     await addEnvToProject({
       vercel,
-      projectId: project.id,
+      projectId: projectId,
       key: "SIMPLCMS_HOST_PROVIDER",
       value: "Vercel",
-      teamId: project.accountId,
+      teamId: teamId,
       type: "plain",
       target: ["production"],
     });

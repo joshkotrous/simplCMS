@@ -8,7 +8,7 @@ export async function connectDbToApplication(
   vercelToken: string,
   vercelTeamId: string,
   vercelProjectId: string,
-  provider: "MongoDB",
+  provider: "MongoDB" | "DynamoDB",
   uri: string
 ): Promise<void> {
   try {

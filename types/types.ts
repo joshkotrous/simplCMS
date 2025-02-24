@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ObjectId } from "mongodb";
 
 export const hostProviderSchema = z.enum(["Vercel"]);
 export const dbProviderSchema = z.enum(["MongoDB", "DynamoDB"]);
@@ -16,7 +15,9 @@ export const setupStepSchema = z.enum([
 export type SetupStep = z.infer<typeof setupStepSchema>;
 
 export const userSchema = z.object({
-  _id: z.instanceof(ObjectId).transform((id) => id.toString()),
+  _id: z
+    .preprocess((val: any) => JSON.stringify(val._id), z.string())
+    .transform((id) => ({ id })),
   email: z.string().email(),
   imageUrl: z.string().url(),
   name: z.string().nullable(),
@@ -25,7 +26,7 @@ export const userSchema = z.object({
 });
 
 export const postSchema = z.object({
-  _id: z.instanceof(ObjectId).transform((id) => id.toString()),
+  _id: z.preprocess((val: any) => JSON.stringify(val._id), z.string()),
   title: z.string(),
   content: z.string(),
   author: z.string(),
@@ -84,7 +85,9 @@ const awsDynamoConfig = z.object({
 
 export const simplCMSHostObject = z.object({
   provider: hostProviderSchema,
-  vercel: vercelConfig.optional(),
+  vercel: vercelConfig
+    .extend({ projectName: z.string().nullable().optional() })
+    .optional(),
 });
 
 export const simplCMSDBObject = z.object({
@@ -128,7 +131,7 @@ export const simplCMSPlatformConfigurationObject = z.object({
 });
 
 export const siteConfigSchema = z.object({
-  _id: z.instanceof(ObjectId).transform((id) => id.toString()),
+  _id: z.string().transform((id) => ({ _id: id.toString() })),
   logo: z.string().nullable(),
   simplCMSHostProvider: hostProviderSchema,
   simplCMSDbProvider: dbProviderSchema,

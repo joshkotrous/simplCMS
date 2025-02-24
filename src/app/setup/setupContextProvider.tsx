@@ -1,34 +1,47 @@
 "use client";
-import { HostProvider } from "@/types/types";
-import { GetProjectsProjects } from "@vercel/sdk/models/getprojectsop.js";
-import { TeamLimited } from "@vercel/sdk/models/teamlimited.js";
-import React, { createContext, useContext, useState } from "react";
+import {
+  SimplCMSPlatformConfiguration,
+  simplCMSPlatformConfigurationObject,
+} from "@/types/types";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-interface SetupData {
-  hostProvider: HostProvider | null;
-  vercelToken: string;
-  vercelTeam: TeamLimited | { [k: string]: any } | null;
-  vercelProject: GetProjectsProjects | null;
-}
+const SETUP_DATA_KEY = "setupData";
 
-const defaultSetupData: SetupData = {
-  hostProvider: "Vercel",
-  vercelToken: "",
-  vercelTeam: null,
-  vercelProject: null,
+const defaultSetupData: SimplCMSPlatformConfiguration = {
+  host: null,
+  database: null,
+  mediaStorage: null,
+  oauth: null,
 };
 
 export const SetupContext = createContext<{
-  setupData: SetupData;
-  setSetupData: React.Dispatch<React.SetStateAction<SetupData>>;
+  setupData: SimplCMSPlatformConfiguration;
+  setSetupData: React.Dispatch<
+    React.SetStateAction<SimplCMSPlatformConfiguration>
+  >;
 }>({
   setupData: defaultSetupData,
   setSetupData: () => {},
 });
 
+function getDefaultSetupData() {
+  const localValue = localStorage.getItem(SETUP_DATA_KEY);
+  if (localValue) {
+    return simplCMSPlatformConfigurationObject.parse(JSON.parse(localValue));
+  } else {
+    return defaultSetupData;
+  }
+}
+
 export function SetupProvider({ children }: { children: React.ReactNode }) {
-  const [setupData, setSetupData] = useState<SetupData>(defaultSetupData);
+  const [setupData, setSetupData] = useState<SimplCMSPlatformConfiguration>(
+    getDefaultSetupData()
+  );
   const value = { setupData, setSetupData };
+
+  useEffect(() => {
+    localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(setupData));
+  }, [setupData]);
 
   return (
     <SetupContext.Provider value={value}>{children}</SetupContext.Provider>

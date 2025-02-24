@@ -31,12 +31,16 @@ export default function RedeployForm() {
   const [currentDeployment, setCurrentDeployment] =
     useState<CurrentDeployment | null>(null);
   async function getData() {
-    if (!setupData.vercelProject) throw new Error("Vercel Project is missing");
-    if (!setupData.vercelTeam) throw new Error("Vercel team is missing");
+    if (!setupData.host?.vercel?.token)
+      throw new Error("Vercel token is missing");
+    if (!setupData.host?.vercel?.projectId)
+      throw new Error("Vercel Project is missing");
+    if (!setupData.host.vercel.teamId)
+      throw new Error("Vercel team is missing");
     const _latestDeployment = await vercelActions.getLatestDeploymentAction(
-      setupData.vercelToken,
-      setupData.vercelProject?.id,
-      setupData.vercelTeam.id
+      setupData.host.vercel.token,
+      setupData.host.vercel?.projectId,
+      setupData.host.vercel.teamId
     );
     if (!_latestDeployment) throw new Error("Could not get latest deployment");
     setLatestDeployment(_latestDeployment);
@@ -44,14 +48,18 @@ export default function RedeployForm() {
   }
 
   async function redeploy() {
-    if (!setupData.vercelProject)
+    if (!setupData.host?.vercel?.token)
+      throw new Error("Vercel token is missing");
+    if (!setupData.host?.vercel?.projectId)
       throw new Error("Vercel project is not configured");
+    if (!setupData.host.vercel.teamId)
+      throw new Error("Vercel team is missing");
     if (!latestDeployment) throw new Error("Could not get latest deployment");
     toast.promise(
       vercelActions.triggerRedeployAction(
-        setupData.vercelToken,
-        setupData.vercelProject.id,
-        setupData.vercelTeam?.id,
+        setupData.host.vercel.token,
+        setupData.host.vercel.projectId,
+        setupData.host.vercel?.teamId,
         latestDeployment.uid
       ),
       {
@@ -73,11 +81,14 @@ export default function RedeployForm() {
     try {
       if (!currentDeployment)
         throw new Error("Could not get current deployment");
-      if (!setupData.vercelTeam) throw new Error("Could not get vercel team");
+      if (!setupData.host?.vercel?.token)
+        throw new Error("Vercel token is missing");
+      if (!setupData.host?.vercel?.teamId)
+        throw new Error("Could not get vercel team");
       const deployment = await vercelActions.getDeploymentAction(
-        setupData.vercelToken,
+        setupData.host.vercel.token,
         currentDeployment?.id,
-        setupData.vercelTeam.id
+        setupData.host.vercel.teamId
       );
       setCurrentDeployment({ id: deployment.id, status: deployment.status });
     } catch (error) {
@@ -108,7 +119,7 @@ export default function RedeployForm() {
           </CardDescription>
         </CardHeader>
         <span className="text-center font-semibold">
-          {setupData.vercelProject?.name}
+          {setupData.host?.vercel?.projectName}
         </span>
         {!currentDeployment && (
           <Button disabled={currentDeployment !== null} onClick={redeploy}>

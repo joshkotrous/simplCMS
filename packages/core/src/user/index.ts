@@ -1,11 +1,16 @@
 import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
 import { UserModel } from "@/db/schema";
 import { User, userSchema } from "@/types/types";
-export async function createUser(userData: Partial<User>): Promise<void> {
+export async function createUser(
+  userData: Partial<User>,
+  dbUri?: string
+): Promise<void> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    if (!dbUri) {
+      dbUri = getDatabaseUriEnvVariable();
+    }
 
-    await connectToDatabase(uri);
+    await connectToDatabase(dbUri);
     const newUser = new UserModel(userData);
     await newUser.save();
   } catch (error) {
@@ -40,16 +45,17 @@ export async function getUser(user: Partial<User>): Promise<User> {
   }
 }
 
-export async function getAllUsers(uri?: string): Promise<User[]> {
+export async function getAllUsers(dbUri?: string): Promise<User[]> {
   try {
-    if (!uri) {
-      uri = getDatabaseUriEnvVariable();
+    if (!dbUri) {
+      dbUri = getDatabaseUriEnvVariable();
     }
 
-    await connectToDatabase(uri);
+    await connectToDatabase(dbUri);
     const users = await UserModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
+    console.log(JSON.stringify(users, null, 2));
     return userSchema.array().parse(users);
   } catch (error) {
     console.error(`Could not get all users ${error}`);

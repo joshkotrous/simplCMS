@@ -1,6 +1,7 @@
 "use server";
 
 import { simplCms } from "@/packages/core/src/simplCms";
+import { HostProvider, SimplCMSPlatformConfiguration } from "@/types/types";
 
 export async function initSiteConfig() {
   try {
@@ -9,4 +10,21 @@ export async function initSiteConfig() {
     console.error(error);
     throw error;
   }
+}
+
+export async function validateSetupAction({
+  provider,
+  vercelConfig,
+  setupData,
+}: {
+  provider?: HostProvider;
+  vercelConfig?: { token: string; projectId: string; teamId: string };
+  setupData?: SimplCMSPlatformConfiguration;
+}) {
+  const setupValidation = await simplCms.validateSetup({
+    provider: provider,
+    vercelConfig,
+    setupData,
+  });
+  return setupValidation;
 }

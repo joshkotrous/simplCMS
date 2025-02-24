@@ -8,9 +8,12 @@ import {
   deleteUser,
 } from "@/packages/core/src/user";
 
-export async function createUserAction(user: Partial<User>): Promise<void> {
+export async function createUserAction(
+  user: Partial<User>,
+  dbUri?: string
+): Promise<void> {
   try {
-    await createUser(user);
+    await createUser(user, dbUri);
   } catch (error) {
     throw error;
   }

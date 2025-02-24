@@ -6,6 +6,7 @@ import AdminToolbar from "./adminToolbar";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { CSSProperties } from "react";
+import Navigation from "./ navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,7 +44,11 @@ export default async function RootLayout({
     <html lang="en" className={darkMode ? "dark" : ""}>
       <body className="h-screen w-screen overflow-hidden">
         <SiteProvider initialSettings={{ darkMode }}>
-          <AdminToolbar />
+          <div className="fixed w-screen top-0">
+            <AdminToolbar />
+            <Navigation />
+          </div>
+
           {children}
           <Toaster
             toastOptions={{

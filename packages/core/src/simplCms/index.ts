@@ -14,7 +14,6 @@ import {
   siteConfigSchema,
 } from "@/types/types";
 import { vercel } from "../vercel";
-import { Vercel } from "@vercel/sdk";
 import { GetProjectEnvResponseBody } from "@vercel/sdk/models/getprojectenvop.js";
 import {
   FilterProjectEnvsResponseBody,
@@ -27,7 +26,7 @@ export type SetupValidationComponent = {
   errors: string[];
 };
 
-type SetupValidation = {
+export type SetupValidation = {
   [K in SetupStep]: SetupValidationComponent;
 };
 
@@ -44,22 +43,39 @@ function findEnvVar(
 export async function validateSetup({
   provider,
   vercelConfig,
+  setupData,
 }: {
-  provider: HostProvider;
+  provider?: HostProvider;
   vercelConfig?: {
     token: string;
     projectId: string;
     teamId: string;
   };
+  setupData?: SimplCMSPlatformConfiguration;
 }): Promise<Partial<SetupValidation>> {
   const envVars = getServerEnvVars();
-  if (!vercelConfig) throw new Error("Missing vercel configuration");
+  console.log("SERVER ENV VARS", JSON.stringify(envVars, null, 2));
+
+  if (!vercelConfig)
+    return {
+      host: {
+        setupComplete: false,
+        errors: [],
+      },
+      database: { setupComplete: false, errors: [] },
+      mediaStorage: { setupComplete: false, errors: [] },
+      oauth: { setupComplete: false, errors: [] },
+      adminUser: { setupComplete: false, errors: [] },
+      redeploy: { setupComplete: false, errors: [] },
+    };
+
   const vercelClient = vercel.connect(vercelConfig.token);
   const providerEnvVars = await vercel.getProjectEnvVars({
     vercel: vercelClient,
     projectId: vercelConfig?.projectId,
     teamId: vercelConfig?.teamId,
   });
+  console.log("PROVIDER ENV VARS", JSON.stringify(providerEnvVars, null, 2));
 
   function checkRedeployNeeded(requiredVars: string[]): boolean {
     return requiredVars.some(
@@ -67,29 +83,59 @@ export async function validateSetup({
     );
   }
 
+  function checkSectionEnvVarsExist(sectionVars: string[]): boolean {
+    return sectionVars.some((varName) => findEnvVar(providerEnvVars, varName));
+  }
+
   let validation: Partial<SetupValidation> = {};
   let redeployRequired = false;
 
+  const hostVarNames = ["VERCEL_TOKEN", "VERCEL_PROJECT_ID", "VERCEL_TEAM_ID"];
+  const mongoVarNames = ["MONGO_URI"];
+  const dynamoVarNames = [
+    "DYNAMODB_ACCESS_KEY_ID",
+    "DYNAMODB_ACCESS_SECRET_KEY",
+    "DYNAMODB_REGION",
+    "DYNAMODB_TABLE_NAME",
+  ];
+  const googleOauthVarNames = [
+    "GOOGLE_OAUTH_CLIENT_ID",
+    "GOOGLE_OAUTH_CLIENT_SECRET",
+    "SIMPL_CMS_OAUTH_PROVIDERS", // Added this variable
+    "NEXTAUTH_URL", // Added this variable
+    "NEXTAUTH_SECRET", // Added this variable
+  ];
+  const cloudinaryVarNames = [
+    "CLOUDINARY_URL",
+    "SIMPLCMS_MEDIA_STORAGE_PROVIDERS",
+  ];
+  const s3VarNames = [
+    "AWS_S3_BUCKET_NAME",
+    "AWS_S3_REGION",
+    "AWS_S3_ACCESS_KEY_ID",
+    "AWS_S3_ACCESS_SECRET_KEY",
+  ];
+
+  // Host validation
   if (!envVars.host) {
     validation.host = {
       setupComplete: false,
       errors: [],
     };
+    // Check if host vars exist in Vercel but not locally
+    redeployRequired =
+      redeployRequired || checkSectionEnvVarsExist(hostVarNames);
   } else if (envVars.host.provider === null) {
     validation.host = {
       setupComplete: false,
       errors: [],
     };
+    redeployRequired =
+      redeployRequired || checkSectionEnvVarsExist(hostVarNames);
   } else {
     switch (envVars.host.provider) {
       case "Vercel": {
         const errors = [];
-        const hostVars = [
-          "VERCEL_TOKEN",
-          "VERCEL_PROJECT_ID",
-          "VERCEL_TEAM_ID",
-        ];
-
         if (!envVars.host.vercel?.token) {
           errors.push("Vercel token is not configured");
         }
@@ -102,10 +148,11 @@ export async function validateSetup({
         validation.host = {
           setupComplete:
             errors.length === 0 ||
-            hostVars.every((v) => findEnvVar(providerEnvVars, v)),
+            hostVarNames.every((v) => findEnvVar(providerEnvVars, v)),
           errors: errors,
         };
-        redeployRequired = redeployRequired || checkRedeployNeeded(hostVars);
+        redeployRequired =
+          redeployRequired || checkRedeployNeeded(hostVarNames);
         break;
       }
       default: {
@@ -118,43 +165,38 @@ export async function validateSetup({
     }
   }
 
+  // Database validation
   if (!envVars.database) {
     validation.database = {
       setupComplete: false,
       errors: [],
     };
+    redeployRequired =
+      redeployRequired ||
+      checkSectionEnvVarsExist([...mongoVarNames, ...dynamoVarNames]);
   } else if (envVars.database.provider === null) {
     validation.database = {
       setupComplete: false,
       errors: [],
     };
+    redeployRequired =
+      redeployRequired ||
+      checkSectionEnvVarsExist([...mongoVarNames, ...dynamoVarNames]);
   } else {
     switch (envVars.database.provider) {
       case "MongoDB": {
-        const errors = [];
-        const dbVars = ["MONGO_URI"];
-
-        if (!envVars.database.mongo?.uri) {
-          errors.push("Mongo uri is not configured");
-        }
         validation.database = {
-          setupComplete:
-            errors.length === 0 ||
-            dbVars.every((v) => findEnvVar(providerEnvVars, v)),
-          errors: errors,
+          setupComplete: mongoVarNames.every((v) =>
+            findEnvVar(providerEnvVars, v)
+          ),
+          errors: [],
         };
-        redeployRequired = redeployRequired || checkRedeployNeeded(dbVars);
+        redeployRequired =
+          redeployRequired || checkRedeployNeeded(mongoVarNames);
         break;
       }
       case "DynamoDB": {
         const errors = [];
-        const dbVars = [
-          "DYNAMODB_ACCESS_KEY_ID",
-          "DYNAMODB_ACCESS_SECRET_KEY",
-          "DYNAMODB_REGION",
-          "DYNAMODB_TABLE_NAME",
-        ];
-
         if (!envVars.database.dynamo?.accessKeyId) {
           errors.push("Access key ID not configured");
         }
@@ -170,10 +212,11 @@ export async function validateSetup({
         validation.database = {
           setupComplete:
             errors.length === 0 ||
-            dbVars.every((v) => findEnvVar(providerEnvVars, v)),
+            dynamoVarNames.every((v) => findEnvVar(providerEnvVars, v)),
           errors: errors,
         };
-        redeployRequired = redeployRequired || checkRedeployNeeded(dbVars);
+        redeployRequired =
+          redeployRequired || checkRedeployNeeded(dynamoVarNames);
         break;
       }
       default: {
@@ -186,27 +229,34 @@ export async function validateSetup({
     }
   }
 
+  const providersVar = findEnvVar(providerEnvVars, "SIMPL_CMS_OAUTH_PROVIDERS");
+  const oauthSetupInProvider =
+    providersVar &&
+    googleOauthVarNames.every((v) => findEnvVar(providerEnvVars, v));
+
   if (!envVars.oauth) {
+    // Even if server env vars don't have OAuth, check if it's properly set in provider
     validation.oauth = {
-      setupComplete: false,
+      setupComplete: oauthSetupInProvider,
       errors: [],
     };
+    redeployRequired =
+      redeployRequired || checkRedeployNeeded(googleOauthVarNames);
   } else if (envVars.oauth.length === 0) {
+    // Same here - check provider env vars
     validation.oauth = {
-      setupComplete: false,
-      errors: ["No OAuth providers configured"],
+      setupComplete: oauthSetupInProvider,
+      errors: oauthSetupInProvider ? [] : ["No OAuth providers configured"],
     };
+    redeployRequired =
+      redeployRequired || checkRedeployNeeded(googleOauthVarNames);
   } else {
     const errors: string[] = [];
     const oauthVars: string[] = [];
-
     envVars.oauth.forEach((oauthConfig) => {
       switch (oauthConfig.provider) {
         case "Google": {
-          oauthVars.push(
-            "GOOGLE_OAUTH_CLIENT_ID",
-            "GOOGLE_OAUTH_CLIENT_SECRET"
-          );
+          oauthVars.push(...googleOauthVarNames);
           if (!oauthConfig.google?.clientId) {
             errors.push("Google OAuth client ID not configured");
           }
@@ -222,45 +272,49 @@ export async function validateSetup({
         }
       }
     });
+
+    // Check both server env vars and provider env vars
     validation.oauth = {
       setupComplete:
         errors.length === 0 ||
-        oauthVars.every((v) => findEnvVar(providerEnvVars, v)),
+        oauthVars.every((v) => findEnvVar(providerEnvVars, v)) ||
+        oauthSetupInProvider,
       errors: errors,
     };
     redeployRequired = redeployRequired || checkRedeployNeeded(oauthVars);
   }
 
+  // Media storage validation
   if (!envVars.mediaStorage) {
     validation.mediaStorage = {
       setupComplete: false,
       errors: [],
     };
+    redeployRequired =
+      redeployRequired ||
+      checkSectionEnvVarsExist([...cloudinaryVarNames, ...s3VarNames]);
   } else if (envVars.mediaStorage.length === 0) {
     validation.mediaStorage = {
       setupComplete: false,
       errors: ["No media storage providers configured"],
     };
+    redeployRequired =
+      redeployRequired ||
+      checkSectionEnvVarsExist([...cloudinaryVarNames, ...s3VarNames]);
   } else {
     const errors: string[] = [];
     const storageVars: string[] = [];
-
     envVars.mediaStorage.forEach((storageConfig) => {
       switch (storageConfig.provider) {
         case "Cloudinary": {
-          storageVars.push("CLOUDINARY_URL");
+          storageVars.push(...cloudinaryVarNames);
           if (!storageConfig.cloudinary?.uri) {
             errors.push("Cloudinary URI not configured");
           }
           break;
         }
         case "AWS S3": {
-          storageVars.push(
-            "AWS_S3_BUCKET_NAME",
-            "AWS_S3_REGION",
-            "AWS_S3_ACCESS_KEY_ID",
-            "AWS_S3_ACCESS_SECRET_KEY"
-          );
+          storageVars.push(...s3VarNames);
           if (!storageConfig.s3?.bucketName) {
             errors.push("S3 bucket name not configured");
           }
@@ -291,18 +345,34 @@ export async function validateSetup({
     redeployRequired = redeployRequired || checkRedeployNeeded(storageVars);
   }
 
+  // Admin user validation
   if (!validation.database?.setupComplete) {
     validation.adminUser = {
       setupComplete: false,
       errors: [],
     };
   } else {
-    const users = await user.getAllUsers();
+    console.log("setupData", JSON.stringify(setupData, null, 2));
+
+    const users = await user.getAllUsers(
+      setupData?.database?.mongo?.uri
+        ? setupData?.database?.mongo?.uri
+        : undefined
+    );
+    console.log("USERS", JSON.stringify(users, null, 2));
     const adminUser = users.some((user) => user.role === "admin");
     validation.adminUser = {
       setupComplete: adminUser,
       errors: [],
     };
+  }
+
+  // Redeploy validation
+  if (
+    !validation.database?.setupComplete ||
+    !validation.mediaStorage?.setupComplete
+  ) {
+    redeployRequired = true;
   }
 
   validation.redeploy = {
