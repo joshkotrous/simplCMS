@@ -1,6 +1,10 @@
-import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
+import connectToDatabase, {
+  disconnectFromDatabase,
+  getDatabaseUriEnvVariable,
+} from "@/db";
 import { UserModel } from "@/db/schema";
 import { User, userSchema } from "@/types/types";
+import mongoose from "mongoose";
 export async function createUser(
   userData: Partial<User>,
   dbUri?: string
@@ -47,15 +51,17 @@ export async function getUser(user: Partial<User>): Promise<User> {
 
 export async function getAllUsers(dbUri?: string): Promise<User[]> {
   try {
+    console.log("URI", dbUri);
     if (!dbUri) {
       dbUri = getDatabaseUriEnvVariable();
     }
 
-    await connectToDatabase(dbUri);
+    const db = await connectToDatabase(dbUri);
     const users = await UserModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
-    console.log(JSON.stringify(users, null, 2));
+    console.log("USERS RAW", JSON.stringify(users, null, 2));
+    await disconnectFromDatabase(db);
     return userSchema.array().parse(users);
   } catch (error) {
     console.error(`Could not get all users ${error}`);

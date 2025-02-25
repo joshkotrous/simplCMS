@@ -10,6 +10,7 @@ import { connectDbToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../setupContextProvider";
 import { SimplCMSPlatformConfiguration } from "@/types/types";
+import { Label } from "@/components/ui/label";
 
 export default function SetupMongoForm({
   platformConfiguration,
@@ -19,10 +20,61 @@ export default function SetupMongoForm({
   const router = useRouter();
   const { setupData, setSetupData } = useSetupData();
   const [testSuccessful, setTestSuccessful] = useState(false);
+  const [dbName, setDbName] = useState("simplCms");
+
+  const updateUriWithDbName = (uri: string, dbName: string): string => {
+    if (!uri) return uri;
+
+    if (uri.includes("/?")) {
+      return uri.replace(/\/([^/?]*)?(\?|$)/, `/${dbName}$2`);
+    } else if (uri.includes("?")) {
+      return uri.replace(/\?/, `/${dbName}?`);
+    } else {
+      return `${uri}/${dbName}`;
+    }
+  };
+
+  const handleUriChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newUri = e.target.value;
+    const uriWithDbName = updateUriWithDbName(newUri, dbName);
+
+    setSetupData((prev) => ({
+      ...prev,
+      database: {
+        provider: "MongoDB",
+        mongo: { uri: uriWithDbName },
+      },
+    }));
+  };
+
+  const handleDbNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDbName = e.target.value;
+    setDbName(newDbName);
+
+    if (setupData.database?.mongo?.uri) {
+      const baseUri = setupData.database.mongo.uri.replace(
+        /\/([^/?]*)?(\?|$)/,
+        "/$2"
+      );
+      const updatedUri = updateUriWithDbName(baseUri, newDbName);
+
+      setSetupData((prev) => ({
+        ...prev,
+        database: {
+          provider: "MongoDB",
+          mongo: { uri: updatedUri },
+        },
+      }));
+    }
+  };
+
   async function testDBConnection() {
     if (!setupData.database?.mongo?.uri)
       throw new Error("Mongo uri is not configured");
-    toast.promise(testConnection(setupData.database?.mongo?.uri), {
+
+    const uriToTest = updateUriWithDbName(setupData.database.mongo.uri, dbName);
+
+    toast.promise(testConnection(uriToTest), {
       loading: "Testing connection...",
       success: () => {
         setTestSuccessful(true);
@@ -54,6 +106,13 @@ export default function SetupMongoForm({
       throw new Error("Mongo uri is not configured");
     if (!setupData.database.provider)
       throw new Error("Database provider not configured");
+
+    // Make sure URI has database name before connecting
+    const uriToConnect = updateUriWithDbName(
+      setupData.database.mongo.uri,
+      dbName
+    );
+
     toast.promise(
       connectDbToApplication(
         platformConfiguration.host?.vercel?.token! ??
@@ -63,7 +122,7 @@ export default function SetupMongoForm({
         platformConfiguration.host?.vercel?.projectId! ??
           setupData.host?.vercel?.projectId,
         setupData.database.provider,
-        setupData.database?.mongo?.uri
+        uriToConnect
       ),
       {
         loading: "Connecting database to SimplCMS...",
@@ -78,6 +137,14 @@ export default function SetupMongoForm({
     );
   }
 
+  // Display the current connection string with sensitive parts masked
+  const displayUri = setupData.database?.mongo?.uri
+    ? setupData.database.mongo.uri.replace(
+        /(mongodb:\/\/)([^@]+)@/,
+        "$1***:***@"
+      )
+    : "";
+
   return (
     <Card>
       <CardHeader className="text-center">
@@ -87,24 +154,46 @@ export default function SetupMongoForm({
         Connect your MongoDB to SimplCMS
       </CardHeader>
       <CardContent className="space-y-4">
-        <Input
-          value={setupData.database?.mongo?.uri ?? ""}
-          onChange={(e) =>
-            setSetupData((prev) => ({
-              ...prev,
-              database: {
-                provider: "MongoDB",
-                mongo: { uri: e.target.value },
-              },
-            }))
-          }
-          placeholder="Database URI..."
-        />
+        <div className="space-y-2">
+          <Label htmlFor="mongodb-uri">MongoDB Connection URI</Label>
+          <Input
+            id="mongodb-uri"
+            value={
+              setupData.database?.mongo?.uri
+                ? setupData.database.mongo.uri.replace(
+                    /\/([^/?]*)?(\?|$)/,
+                    "/$2"
+                  )
+                : ""
+            }
+            onChange={handleUriChange}
+            placeholder="mongodb://username:password@hostname:port/"
+          />
+          <p className="text-xs text-muted-foreground">
+            Your connection URI format should look like:
+            mongodb://username:password@hostname:port/
+          </p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="db-name">Database Name</Label>
+          <Input
+            id="db-name"
+            value={dbName}
+            onChange={handleDbNameChange}
+            placeholder="Database name"
+          />
+          <p className="text-xs text-muted-foreground">
+            This is the name of your MongoDB database (default: simplCms)
+          </p>
+        </div>
+
         <Button
           onClick={testDBConnection}
           disabled={
             !setupData.database?.mongo?.uri ||
-            setupData.database?.mongo?.uri === ""
+            setupData.database?.mongo?.uri === "" ||
+            !dbName
           }
           variant="secondary"
           className="w-full"
@@ -116,6 +205,7 @@ export default function SetupMongoForm({
           disabled={
             !setupData.database?.mongo?.uri ||
             setupData.database?.mongo?.uri === "" ||
+            !dbName ||
             !testSuccessful
           }
           className="w-full"

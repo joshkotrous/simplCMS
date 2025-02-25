@@ -97,8 +97,10 @@ export default function RedeployForm() {
   }
 
   useEffect(() => {
-    getData();
-  }, []);
+    if (setupData.host?.vercel?.token) {
+      getData();
+    }
+  }, [setupData]);
 
   useEffect(() => {
     if (currentDeployment) {
@@ -108,8 +110,8 @@ export default function RedeployForm() {
   }, [currentDeployment]);
 
   return (
-    <Card>
-      <CardContent className="flex flex-col gap-4">
+    <Card className="transition-all">
+      <CardContent className="flex flex-col gap-4 transition-all">
         <CardHeader className="text-center space-y-4 pb-0">
           <div className="flex w-full justify-center">
             <VercelLogo />

@@ -1,18 +1,22 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose, { Connection } from "mongoose";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 export default async function connectToDatabase(
   uri: string
-): Promise<Mongoose> {
+): Promise<Connection> {
   try {
-    const db = await mongoose.connect(uri);
+    const db = mongoose.createConnection(uri);
     return db;
   } catch (error) {
     console.error(`Unable to connect to DB: ${error}`);
     throw error;
   }
+}
+
+export async function disconnectFromDatabase(db: Connection) {
+  await db.close();
 }
 
 export function getDatabaseUriEnvVariable(): string {

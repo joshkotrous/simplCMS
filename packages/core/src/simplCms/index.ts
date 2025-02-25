@@ -355,9 +355,7 @@ export async function validateSetup({
     console.log("setupData", JSON.stringify(setupData, null, 2));
 
     const users = await user.getAllUsers(
-      setupData?.database?.mongo?.uri
-        ? setupData?.database?.mongo?.uri
-        : undefined
+      setupData?.database?.mongo?.uri ?? undefined
     );
     console.log("USERS", JSON.stringify(users, null, 2));
     const adminUser = users.some((user) => user.role === "admin");

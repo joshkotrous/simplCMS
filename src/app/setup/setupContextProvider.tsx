@@ -19,29 +19,52 @@ export const SetupContext = createContext<{
   setSetupData: React.Dispatch<
     React.SetStateAction<SimplCMSPlatformConfiguration>
   >;
+  isInitialized: boolean; // Add a flag to track initialization status
 }>({
   setupData: defaultSetupData,
   setSetupData: () => {},
+  isInitialized: false,
 });
 
-function getDefaultSetupData() {
-  const localValue = localStorage.getItem(SETUP_DATA_KEY);
-  if (localValue) {
-    return simplCMSPlatformConfigurationObject.parse(JSON.parse(localValue));
-  } else {
-    return defaultSetupData;
+function getDataFromLocalStorage(): SimplCMSPlatformConfiguration | null {
+  if (typeof window === "undefined") {
+    return null; // Return null during server-side rendering
   }
+
+  try {
+    const localValue = localStorage.getItem(SETUP_DATA_KEY);
+    if (localValue) {
+      return simplCMSPlatformConfigurationObject.parse(JSON.parse(localValue));
+    }
+  } catch (error) {
+    console.error("Error reading from localStorage:", error);
+  }
+
+  return null;
 }
 
 export function SetupProvider({ children }: { children: React.ReactNode }) {
-  const [setupData, setSetupData] = useState<SimplCMSPlatformConfiguration>(
-    getDefaultSetupData()
-  );
-  const value = { setupData, setSetupData };
+  const [setupData, setSetupData] =
+    useState<SimplCMSPlatformConfiguration>(defaultSetupData);
+  const [isInitialized, setIsInitialized] = useState(false);
 
+  // Use useEffect to safely access localStorage after component mount
   useEffect(() => {
-    localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(setupData));
-  }, [setupData]);
+    const storedData = getDataFromLocalStorage();
+    if (storedData) {
+      setSetupData(storedData);
+    }
+    setIsInitialized(true);
+  }, []);
+
+  // Only save to localStorage after initialization and when setupData changes
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(setupData));
+    }
+  }, [setupData, isInitialized]);
+
+  const value = { setupData, setSetupData, isInitialized };
 
   return (
     <SetupContext.Provider value={value}>{children}</SetupContext.Provider>
