@@ -13,6 +13,8 @@ export async function generateStaticParams() {
     return allPosts.map((post) => ({
       slug: post.slug.replace(/\.md$/, ""),
     }));
+  } else {
+    return [];
   }
 }
 
