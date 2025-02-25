@@ -15,9 +15,7 @@ export const setupStepSchema = z.enum([
 export type SetupStep = z.infer<typeof setupStepSchema>;
 
 export const userSchema = z.object({
-  _id: z
-    .preprocess((val: any) => JSON.stringify(val._id), z.string())
-    .transform((id) => ({ id })),
+  _id: z.preprocess((val: any) => JSON.stringify(val._id), z.string()),
   email: z.string().email(),
   imageUrl: z.string().url(),
   name: z.string().nullable(),
