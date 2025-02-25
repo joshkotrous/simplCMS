@@ -4,12 +4,16 @@ import { notFound } from "next/navigation";
 import { ComponentProps } from "react";
 import remarkGfm from "remark-gfm";
 import ReactMarkdown, { Components } from "react-markdown";
+import { getServerEnvVars } from "@/packages/core/src/simplCms";
 
 export async function generateStaticParams() {
-  const allPosts = await posts.getAllPosts();
-  return allPosts.map((post) => ({
-    slug: post.slug.replace(/\.md$/, ""),
-  }));
+  const platformConfiguration = getServerEnvVars();
+  if (platformConfiguration.database) {
+    const allPosts = await posts.getAllPosts();
+    return allPosts.map((post) => ({
+      slug: post.slug.replace(/\.md$/, ""),
+    }));
+  }
 }
 
 export async function generateMetadata({
