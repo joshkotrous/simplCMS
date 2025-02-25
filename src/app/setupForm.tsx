@@ -179,13 +179,11 @@ export default function SetupForm({
     }
   }
 
-  // Get setup validation when localStorageData is loaded
   useEffect(() => {
     async function getValidation() {
       try {
         setIsLoading(true);
 
-        // We'll use the data from localStorage which we've verified exists
         if (!localStorageData) {
           console.log("Waiting for localStorage data...");
           return;

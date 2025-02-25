@@ -1,7 +1,4 @@
-import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import SetupVercelForm from "./setupVercelForm";
-import { connect, getProjects } from "@/packages/core/src/vercel";
-import { redirect } from "next/navigation";
 import { getServerEnvVars } from "@/packages/core/src/simplCms";
 
 export default async function SetupVercelPage() {

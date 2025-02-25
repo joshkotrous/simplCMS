@@ -19,7 +19,7 @@ export const SetupContext = createContext<{
   setSetupData: React.Dispatch<
     React.SetStateAction<SimplCMSPlatformConfiguration>
   >;
-  isInitialized: boolean; // Add a flag to track initialization status
+  isInitialized: boolean;
 }>({
   setupData: defaultSetupData,
   setSetupData: () => {},
@@ -28,7 +28,7 @@ export const SetupContext = createContext<{
 
 function getDataFromLocalStorage(): SimplCMSPlatformConfiguration | null {
   if (typeof window === "undefined") {
-    return null; // Return null during server-side rendering
+    return null;
   }
 
   try {
@@ -48,7 +48,6 @@ export function SetupProvider({ children }: { children: React.ReactNode }) {
     useState<SimplCMSPlatformConfiguration>(defaultSetupData);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Use useEffect to safely access localStorage after component mount
   useEffect(() => {
     const storedData = getDataFromLocalStorage();
     if (storedData) {
@@ -57,7 +56,6 @@ export function SetupProvider({ children }: { children: React.ReactNode }) {
     setIsInitialized(true);
   }, []);
 
-  // Only save to localStorage after initialization and when setupData changes
   useEffect(() => {
     if (isInitialized && typeof window !== "undefined") {
       localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(setupData));

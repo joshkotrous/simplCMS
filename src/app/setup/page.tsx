@@ -1,7 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { VercelLogo } from "@/components/logos";
 import HostProviderForm from "./hostProviderForm";
 
 export default async function HostSetupPage() {
