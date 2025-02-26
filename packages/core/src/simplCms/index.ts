@@ -140,20 +140,26 @@ export async function validateSetup({
 
   // Host validation
   if (!envVars.host) {
+    // Check if host vars exist in Vercel
+    const hostVarsExistInProvider = checkSectionEnvVarsExist(hostVarNames);
+
     validation.host = {
-      setupComplete: false,
+      setupComplete: hostVarsExistInProvider, // True if found in provider
       errors: [],
     };
-    // Check if host vars exist in Vercel but not locally
-    redeployRequired =
-      redeployRequired || checkSectionEnvVarsExist(hostVarNames);
+
+    // Still need to redeploy if vars exist in provider but not locally
+    redeployRequired = redeployRequired || hostVarsExistInProvider;
   } else if (envVars.host.provider === null) {
+    const hostVarsExistInProvider = checkSectionEnvVarsExist(hostVarNames);
+
     validation.host = {
-      setupComplete: false,
+      setupComplete: hostVarsExistInProvider, // True if found in provider
       errors: [],
     };
-    redeployRequired =
-      redeployRequired || checkSectionEnvVarsExist(hostVarNames);
+
+    // Still need to redeploy if vars exist in provider but not locally
+    redeployRequired = redeployRequired || hostVarsExistInProvider;
   } else {
     switch (envVars.host.provider) {
       case "Vercel": {
