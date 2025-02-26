@@ -195,21 +195,29 @@ export async function validateSetup({
 
   // Database validation
   if (!envVars.database) {
+    const dbVarsExistInProvider = checkSectionEnvVarsExist([
+      ...mongoVarNames,
+      ...dynamoVarNames,
+    ]);
+
     validation.database = {
-      setupComplete: false,
+      setupComplete: dbVarsExistInProvider,
       errors: [],
     };
-    redeployRequired =
-      redeployRequired ||
-      checkSectionEnvVarsExist([...mongoVarNames, ...dynamoVarNames]);
+
+    redeployRequired = redeployRequired || dbVarsExistInProvider;
   } else if (envVars.database.provider === null) {
+    const dbVarsExistInProvider = checkSectionEnvVarsExist([
+      ...mongoVarNames,
+      ...dynamoVarNames,
+    ]);
+
     validation.database = {
-      setupComplete: false,
+      setupComplete: dbVarsExistInProvider,
       errors: [],
     };
-    redeployRequired =
-      redeployRequired ||
-      checkSectionEnvVarsExist([...mongoVarNames, ...dynamoVarNames]);
+
+    redeployRequired = redeployRequired || dbVarsExistInProvider;
   } else {
     switch (envVars.database.provider) {
       case "MongoDB": {
@@ -347,13 +355,17 @@ export async function validateSetup({
 
   // Media storage validation
   if (!envVars.mediaStorage) {
+    const storageVarsExistInProvider = checkSectionEnvVarsExist([
+      ...cloudinaryVarNames,
+      ...s3VarNames,
+    ]);
+
     validation.mediaStorage = {
-      setupComplete: false,
+      setupComplete: storageVarsExistInProvider,
       errors: [],
     };
-    redeployRequired =
-      redeployRequired ||
-      checkSectionEnvVarsExist([...cloudinaryVarNames, ...s3VarNames]);
+
+    redeployRequired = redeployRequired || storageVarsExistInProvider;
   } else if (envVars.mediaStorage.length === 0) {
     validation.mediaStorage = {
       setupComplete: false,
