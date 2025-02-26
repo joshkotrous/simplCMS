@@ -1,5 +1,9 @@
-import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
-import { SiteConfigModel } from "@/db/schema";
+import {
+  connectToDatabase,
+  disconnectFromDatabase,
+  getDatabaseUriEnvVariable,
+  getModels,
+} from "@/db";
 import {
   CreateSiteConfig,
   HostProvider,
@@ -54,7 +58,6 @@ export async function validateSetup({
   setupData?: SimplCMSPlatformConfiguration;
 }): Promise<Partial<SetupValidation>> {
   const envVars = getServerEnvVars();
-  console.log("SERVER ENV VARS", JSON.stringify(envVars, null, 2));
 
   if (!vercelConfig)
     return {
@@ -68,26 +71,45 @@ export async function validateSetup({
       adminUser: { setupComplete: false, errors: [] },
       redeploy: { setupComplete: false, errors: [] },
     };
+  let validation: Partial<SetupValidation> = {};
 
   const vercelClient = vercel.connect(vercelConfig.token);
-  const providerEnvVars = await vercel.getProjectEnvVars({
-    vercel: vercelClient,
-    projectId: vercelConfig?.projectId,
-    teamId: vercelConfig?.teamId,
-  });
-  console.log("PROVIDER ENV VARS", JSON.stringify(providerEnvVars, null, 2));
+  let providerEnvVars: FilterProjectEnvsResponseBody | null = null;
+  try {
+    providerEnvVars = await vercel.getProjectEnvVars({
+      vercel: vercelClient,
+      projectId: vercelConfig?.projectId,
+      teamId: vercelConfig?.teamId,
+    });
+  } catch (error: any) {
+    const errorMessage = JSON.parse(error.body).error.message;
+    return {
+      host: {
+        setupComplete: false,
+        errors: [errorMessage],
+      },
+      database: { setupComplete: false, errors: [] },
+      mediaStorage: { setupComplete: false, errors: [] },
+      oauth: { setupComplete: false, errors: [] },
+      adminUser: { setupComplete: false, errors: [] },
+      redeploy: { setupComplete: false, errors: [] },
+    };
+  }
 
   function checkRedeployNeeded(requiredVars: string[]): boolean {
+    if (!providerEnvVars) throw new Error("Provider env vars is empty");
+
     return requiredVars.some(
       (varName) => findEnvVar(providerEnvVars, varName) && !process.env[varName]
     );
   }
 
   function checkSectionEnvVarsExist(sectionVars: string[]): boolean {
+    if (!providerEnvVars) throw new Error("Provider env vars is empty");
+
     return sectionVars.some((varName) => findEnvVar(providerEnvVars, varName));
   }
 
-  let validation: Partial<SetupValidation> = {};
   let redeployRequired = false;
 
   const hostVarNames = ["VERCEL_TOKEN", "VERCEL_PROJECT_ID", "VERCEL_TEAM_ID"];
@@ -185,12 +207,44 @@ export async function validateSetup({
   } else {
     switch (envVars.database.provider) {
       case "MongoDB": {
+        const errors = [];
+        let dbConnectionSuccessful = false;
+
+        // Check if we have a URI to test with
+        const mongoUri =
+          setupData?.database?.mongo?.uri ?? process.env.MONGO_URI;
+
+        if (!mongoUri) {
+          errors.push("MongoDB URI is not configured");
+        } else {
+          try {
+            console.log("Testing MongoDB connection with URI");
+            const db = await connectToDatabase(mongoUri);
+            await disconnectFromDatabase(db);
+            console.log("MongoDB connection successful");
+            dbConnectionSuccessful = true;
+          } catch (error: any) {
+            console.error("MongoDB connection error:", error);
+            errors.push(
+              `Failed to connect to MongoDB: ${
+                error.message || "Unknown error"
+              }`
+            );
+            dbConnectionSuccessful = false;
+          }
+        }
+
+        // Check if env vars are set in Vercel or locally
+        const envVarsSetup = mongoVarNames.every(
+          (v) => findEnvVar(providerEnvVars, v) || process.env[v]
+        );
+
         validation.database = {
-          setupComplete: mongoVarNames.every((v) =>
-            findEnvVar(providerEnvVars, v)
-          ),
-          errors: [],
+          setupComplete: dbConnectionSuccessful && envVarsSetup,
+          errors: errors,
         };
+
+        // If MongoDB is set up in provider but not locally, redeploy is needed
         redeployRequired =
           redeployRequired || checkRedeployNeeded(mongoVarNames);
         break;
@@ -209,6 +263,7 @@ export async function validateSetup({
         if (!envVars.database.dynamo?.tableName) {
           errors.push("Table name is not configured");
         }
+
         validation.database = {
           setupComplete:
             errors.length === 0 ||
@@ -308,9 +363,7 @@ export async function validateSetup({
       switch (storageConfig.provider) {
         case "Cloudinary": {
           storageVars.push(...cloudinaryVarNames);
-          if (!storageConfig.cloudinary?.uri) {
-            errors.push("Cloudinary URI not configured");
-          }
+
           break;
         }
         case "AWS S3": {
@@ -352,17 +405,21 @@ export async function validateSetup({
       errors: [],
     };
   } else {
-    console.log("setupData", JSON.stringify(setupData, null, 2));
-
-    const users = await user.getAllUsers(
-      setupData?.database?.mongo?.uri ?? undefined
-    );
-    console.log("USERS", JSON.stringify(users, null, 2));
-    const adminUser = users.some((user) => user.role === "admin");
-    validation.adminUser = {
-      setupComplete: adminUser,
-      errors: [],
-    };
+    try {
+      const mongoUri = setupData?.database?.mongo?.uri || process.env.MONGO_URI;
+      const users = await user.getAllUsers(mongoUri);
+      console.log("USERS", JSON.stringify(users, null, 2));
+      const adminUser = users.some((user) => user.role === "admin");
+      validation.adminUser = {
+        setupComplete: adminUser,
+        errors: [],
+      };
+    } catch (error: any) {
+      validation.adminUser = {
+        setupComplete: false,
+        errors: [error.message],
+      };
+    }
   }
 
   // Redeploy validation
@@ -524,10 +581,10 @@ export async function getSiteConfig(): Promise<SiteConfig | null> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
-
+    const db = await connectToDatabase(uri);
+    const { SiteConfigModel } = getModels(db);
     const config = await SiteConfigModel.findOne().select("-__v");
-
+    await disconnectFromDatabase(db);
     return siteConfigSchema.nullable().parse(config);
   } catch (error) {
     console.error(`Could not get site config ${error}`);
@@ -541,7 +598,9 @@ export async function initSiteConfig(): Promise<void> {
     const uri = getDatabaseUriEnvVariable();
     if (!host || !database || !mediaStorage || !oauth)
       throw new Error("Setup is not completed");
-    await connectToDatabase(uri);
+
+    const db = await connectToDatabase(uri);
+    const { SiteConfigModel } = getModels(db);
     const data: CreateSiteConfig = {
       logo: null,
       simplCMSHostProvider: host.provider,
@@ -552,6 +611,8 @@ export async function initSiteConfig(): Promise<void> {
       simplCMSOauthProviders: oauth.map((provider) => provider.provider),
     };
     const config = new SiteConfigModel(data);
+    await disconnectFromDatabase(db);
+
     await config.save();
   } catch (error) {
     console.error(`Could not create site configuration: ${error}`);

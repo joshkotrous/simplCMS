@@ -1,8 +1,9 @@
-import connectToDatabase, {
+import {
+  connectToDatabase,
   disconnectFromDatabase,
   getDatabaseUriEnvVariable,
+  getModels,
 } from "@/db";
-import { UserModel } from "@/db/schema";
 import { User, userSchema } from "@/types/types";
 import mongoose from "mongoose";
 export async function createUser(
@@ -13,10 +14,13 @@ export async function createUser(
     if (!dbUri) {
       dbUri = getDatabaseUriEnvVariable();
     }
+    const db = await connectToDatabase(dbUri);
 
-    await connectToDatabase(dbUri);
+    const { UserModel } = getModels(db);
+
     const newUser = new UserModel(userData);
     await newUser.save();
+    disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not create user ${error}`);
     throw error;
@@ -27,7 +31,9 @@ export async function getUser(user: Partial<User>): Promise<User> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
+    const db = await connectToDatabase(uri);
+
+    const { UserModel } = getModels(db);
     let query = {};
     if (user.email) {
       query = { email: user.email };
@@ -41,6 +47,7 @@ export async function getUser(user: Partial<User>): Promise<User> {
     if (!foundUser) {
       throw new Error("User not found");
     }
+    disconnectFromDatabase(db);
 
     return userSchema.parse(JSON.stringify(foundUser));
   } catch (error) {
@@ -51,12 +58,11 @@ export async function getUser(user: Partial<User>): Promise<User> {
 
 export async function getAllUsers(dbUri?: string): Promise<User[]> {
   try {
-    console.log("URI", dbUri);
     if (!dbUri) {
       dbUri = getDatabaseUriEnvVariable();
     }
-
     const db = await connectToDatabase(dbUri);
+    const { UserModel } = getModels(db);
     const users = await UserModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
@@ -73,8 +79,10 @@ export async function getUserByEmail(email: string): Promise<User> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
+    const db = await connectToDatabase(uri);
+    const { UserModel } = getModels(db);
     const user = await UserModel.findOne({ email }).select("-__v");
+    await disconnectFromDatabase(db);
     return userSchema.parse(user);
   } catch (error) {
     console.error(`Could not get user by email ${error}`);
@@ -84,9 +92,6 @@ export async function getUserByEmail(email: string): Promise<User> {
 
 export async function userHasAccess(user: User): Promise<boolean> {
   try {
-    const uri = getDatabaseUriEnvVariable();
-
-    await connectToDatabase(uri);
     const allUsers = await getAllUsers();
     const hasAccess = allUsers.some((_user) => user.email === _user.email);
     return hasAccess;
@@ -100,7 +105,8 @@ export async function deleteUser(user: User): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
+    const db = await connectToDatabase(uri);
+    const { UserModel } = getModels(db);
     let query = {};
     if (user.email) {
       query = { email: user.email };
@@ -109,11 +115,11 @@ export async function deleteUser(user: User): Promise<void> {
     } else {
       throw new Error("Either email or _id must be provided");
     }
-
     const result = await UserModel.deleteOne(query);
     if (result.deletedCount === 0) {
       throw new Error("User not found");
     }
+    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not delete user: ${error}`);
     throw error;
@@ -123,8 +129,9 @@ export async function deleteUser(user: User): Promise<void> {
 export async function updateUser(user: Partial<User>): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
-    await connectToDatabase(uri);
 
+    const db = await connectToDatabase(uri);
+    const { UserModel } = getModels(db);
     let query = {};
     if (user.email) {
       query = { email: user.email };
@@ -147,6 +154,7 @@ export async function updateUser(user: Partial<User>): Promise<void> {
     if (result.modifiedCount === 0) {
       throw new Error("No changes were made to the user");
     }
+    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not update user: ${error}`);
     throw error;

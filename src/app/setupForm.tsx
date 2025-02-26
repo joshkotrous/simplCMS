@@ -1,12 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSetupData } from "./setup/setupContextProvider";
 import { validateSetupAction } from "./actions/simplCms";
-import {
-  SetupStep,
-  SimplCMSPlatformConfiguration,
-  simplCMSPlatformConfigurationObject,
-} from "@/types/types";
+import { SetupStep, SimplCMSPlatformConfiguration } from "@/types/types";
 import {
   SetupValidation,
   SetupValidationComponent,
@@ -54,8 +50,12 @@ export default function SetupForm({
 }: {
   serverConfiguration: SimplCMSPlatformConfiguration;
 }) {
-  const [localStorageData, setLocalStorageData] =
-    useState<SimplCMSPlatformConfiguration | null>(null);
+  // State for UI
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Start with server configuration
+  const [configData, setConfigData] =
+    useState<SimplCMSPlatformConfiguration>(serverConfiguration);
   const [currentStep, setCurrentStep] = useState<{
     complete: boolean;
     step: SetupStep;
@@ -63,34 +63,103 @@ export default function SetupForm({
   const [nextStep, setNextStep] = useState<{
     url: string;
     text: string;
-  }>(getNextStep(currentStep.step));
+  }>(getNextStep("adminUser"));
   const [setupValidation, setSetupValidation] =
     useState<Partial<SetupValidation> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // Track initialization status
+  const initialized = useRef(false);
+
+  // Get setup context
+  const setupContext = useSetupData();
+
+  // Initialize data - SIMPLIFIED approach that prioritizes localStorage
   useEffect(() => {
-    const readFromLocalStorage = () => {
+    if (initialized.current) return;
+
+    const initData = async () => {
+      console.log("Initializing data...");
+
       try {
+        // DIRECTLY access localStorage first
         if (typeof window !== "undefined") {
           const rawData = localStorage.getItem(SETUP_DATA_KEY);
           if (rawData) {
-            const parsedData = JSON.parse(rawData);
-            console.log("LOCALSTORAGE FOUND:", parsedData);
-            // Validate the data format (optional)
-            const validatedData =
-              simplCMSPlatformConfigurationObject.parse(parsedData);
-            setLocalStorageData(validatedData);
-          } else {
-            console.log("NO LOCALSTORAGE DATA FOUND");
+            try {
+              const localData = JSON.parse(rawData);
+              console.log("Found data in localStorage:", localData);
+
+              // Use localStorage data DIRECTLY without merging
+              setConfigData(localData);
+
+              // Also update context for consistency
+              if (setupContext && setupContext.setSetupData) {
+                setupContext.setSetupData(localData);
+              }
+
+              // Run validation with localStorage data
+              await runValidation(localData);
+              return;
+            } catch (e) {
+              console.error("Error parsing localStorage data:", e);
+            }
           }
         }
+
+        // If no localStorage data, use server config
+        console.log("Using server configuration");
+        await runValidation(serverConfiguration);
       } catch (error) {
-        console.error("Error reading localStorage:", error);
+        console.error("Error initializing:", error);
+        setIsLoading(false);
       }
     };
 
-    readFromLocalStorage();
-  }, []);
+    initialized.current = true;
+    initData();
+  }, [serverConfiguration, setupContext]);
+
+  // Function to run validation
+  const runValidation = async (config: SimplCMSPlatformConfiguration) => {
+    try {
+      console.log("Running validation with config:", config);
+
+      const vercelConfig = (() => {
+        const token = config.host?.vercel?.token;
+        const projectId = config.host?.vercel?.projectId;
+        const teamId = config.host?.vercel?.teamId;
+        if (!token || !projectId || !teamId) {
+          return undefined;
+        }
+        return {
+          token,
+          projectId,
+          teamId,
+        };
+      })();
+
+      const validation = await validateSetupAction({
+        provider: config.host?.provider,
+        vercelConfig,
+        setupData: config,
+      });
+
+      console.log(
+        "SETUP VALIDATION RESULT:",
+        JSON.stringify(validation, null, 2)
+      );
+
+      if (validation) {
+        const currentStep = getSetupStep(validation);
+        const nextStep = getNextStep(currentStep.step);
+        setCurrentStep(currentStep);
+        setNextStep(nextStep);
+        setSetupValidation(validation);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   function getStepValidation(
     step: SetupStep,
@@ -179,80 +248,17 @@ export default function SetupForm({
     }
   }
 
-  useEffect(() => {
-    async function getValidation() {
-      try {
-        setIsLoading(true);
-
-        if (!localStorageData) {
-          console.log("Waiting for localStorage data...");
-          return;
-        }
-
-        console.log(
-          "Using localStorage data for validation:",
-          localStorageData
-        );
-
-        const vercelConfig = (() => {
-          const token =
-            serverConfiguration.host?.vercel?.token ??
-            localStorageData.host?.vercel?.token;
-          const projectId =
-            serverConfiguration.host?.vercel?.projectId ??
-            localStorageData.host?.vercel?.projectId;
-          const teamId =
-            serverConfiguration.host?.vercel?.teamId ??
-            localStorageData.host?.vercel?.teamId;
-          if (!token || !projectId || !teamId) {
-            return undefined;
-          }
-          return {
-            token,
-            projectId,
-            teamId,
-          };
-        })();
-
-        const validation = await validateSetupAction({
-          provider:
-            serverConfiguration.host?.provider ??
-            localStorageData.host?.provider,
-          vercelConfig,
-          setupData: localStorageData,
-        });
-
-        console.log(
-          "SETUP VALIDATION RESULT:",
-          JSON.stringify(validation, null, 2)
-        );
-
-        if (validation) {
-          const currentStep = getSetupStep(validation);
-          const nextStep = getNextStep(currentStep.step);
-
-          setCurrentStep(currentStep);
-          setNextStep(nextStep);
-          setSetupValidation(validation);
-        }
-      } catch (error) {
-        console.error("Error fetching setup validation:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    getValidation();
-  }, [localStorageData, serverConfiguration]);
-
-  if (isLoading && !setupValidation) {
+  // Show loading state
+  if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center h-40">
         <Loader2 className="h-8 w-8 animate-spin mb-4" />
+        <p className="text-sm text-gray-500">Validating setup...</p>
       </div>
     );
   }
 
+  // Show error if validation failed
   if (!setupValidation) {
     return (
       <div className="text-center">
@@ -260,6 +266,12 @@ export default function SetupForm({
         <p className="text-sm text-gray-600 mb-4">
           This could be due to missing configuration data.
         </p>
+        <div className="text-xs text-left bg-gray-100 p-3 mb-4 rounded max-w-md mx-auto">
+          <p>Debug info:</p>
+          <pre className="overflow-auto mt-1 p-2 bg-white rounded text-[10px]">
+            {JSON.stringify(configData, null, 2)}
+          </pre>
+        </div>
         <Button onClick={() => window.location.reload()} className="mt-4">
           Refresh Page
         </Button>

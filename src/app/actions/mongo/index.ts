@@ -1,6 +1,6 @@
 "use server";
 
-import connectToDatabase from "@/db";
+import { connectToDatabase } from "@/db";
 
 export async function testConnection(uri: string): Promise<void> {
   try {

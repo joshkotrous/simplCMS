@@ -2,13 +2,24 @@ import MediaPopover from "@/components/mediaPopover";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cloudinary } from "@/packages/core/src/cloudinary";
-import { simplCms } from "@/packages/core/src/simplCms";
+import { getServerEnvVars, simplCms } from "@/packages/core/src/simplCms";
 import { ImageIcon } from "lucide-react";
 import { InitSiteConfig } from "./initSiteConfig";
+import { CloudinaryMedia, SiteConfig } from "@/types/types";
 
 export default async function SiteSettings() {
-  const media = await cloudinary.getMedia();
-  const siteConfig = await simplCms.getSiteConfig();
+  let media: CloudinaryMedia[] = [];
+  let siteConfig: SiteConfig | null = null;
+  const platformConfiguration = getServerEnvVars();
+  if (
+    platformConfiguration.mediaStorage?.find((i) => i.provider === "Cloudinary")
+  ) {
+    media = await cloudinary.getMedia();
+  }
+
+  if (platformConfiguration.database) {
+    siteConfig = await simplCms.getSiteConfig();
+  }
   return (
     <div className="container mx-auto p-6 space-y-8">
       <div className="space-y-4">

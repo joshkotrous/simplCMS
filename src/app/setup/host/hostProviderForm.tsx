@@ -3,7 +3,7 @@
 import { VercelLogo } from "@/components/logos";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { useSetupData } from "./setupContextProvider";
+import { useSetupData } from "../setupContextProvider";
 
 export default function HostProviderForm() {
   const { setSetupData } = useSetupData();

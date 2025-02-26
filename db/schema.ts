@@ -1,7 +1,7 @@
 import { Post, User, SiteConfig, HostProvider } from "@/types/types";
 import mongoose, { Schema } from "mongoose";
 
-const SiteConfigSchema: Schema = new Schema<SiteConfig>({
+export const SiteConfigSchema: Schema = new Schema<SiteConfig>({
   logo: { type: String },
   simplCMSHostProvider: {
     type: String,
@@ -29,7 +29,7 @@ const SiteConfigSchema: Schema = new Schema<SiteConfig>({
   ],
 });
 
-const UserSchema: Schema = new Schema<User>({
+export const UserSchema: Schema = new Schema<User>({
   email: { type: String, required: true },
   role: { type: String, enum: ["user", "admin"], default: "user" },
   imageUrl: { type: String, required: true, default: null },
@@ -37,7 +37,7 @@ const UserSchema: Schema = new Schema<User>({
   createdAt: { type: Date, default: Date.now },
 });
 
-const PostSchema: Schema = new Schema<Post>({
+export const PostSchema: Schema = new Schema<Post>({
   title: { type: String, required: true },
   content: { type: String, required: true },
   author: { type: String, required: true },
@@ -48,12 +48,12 @@ const PostSchema: Schema = new Schema<Post>({
   draft: { type: Boolean, required: true, default: false },
 });
 
-const UserModel =
-  mongoose.models.User || mongoose.model<User>("User", UserSchema);
-const PostModel =
-  mongoose.models.Post || mongoose.model<Post>("Post", PostSchema);
-const SiteConfigModel =
-  mongoose.models.SiteConfig ||
-  mongoose.model<SiteConfig>("SiteConfig", SiteConfigSchema);
+// const UserModel =
+//   mongoose.models.User || mongoose.model<User>("User", UserSchema);
+// const PostModel =
+//   mongoose.models.Post || mongoose.model<Post>("Post", PostSchema);
+// const SiteConfigModel =
+//   mongoose.models.SiteConfig ||
+//   mongoose.model<SiteConfig>("SiteConfig", SiteConfigSchema);
 
-export { UserModel, PostModel, SiteConfigModel };
+// export { UserModel, PostModel, SiteConfigModel };

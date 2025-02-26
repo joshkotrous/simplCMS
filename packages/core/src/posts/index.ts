@@ -1,5 +1,9 @@
-import connectToDatabase, { getDatabaseUriEnvVariable } from "@/db";
-import { PostModel } from "@/db/schema";
+import {
+  connectToDatabase,
+  disconnectFromDatabase,
+  getDatabaseUriEnvVariable,
+  getModels,
+} from "@/db";
 import { CreatePost, Post, postSchema } from "@/types/types";
 
 function createSlug(title: string): string {
@@ -14,14 +18,16 @@ function createSlug(title: string): string {
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
     const uri = getDatabaseUriEnvVariable();
-    await connectToDatabase(uri);
+
+    const db = await connectToDatabase(uri);
+    const { PostModel } = getModels(db);
 
     const post = await PostModel.findOne({ slug }).select("-__v");
 
     if (!post) {
       return null;
     }
-
+    await disconnectFromDatabase(db);
     return postSchema.parse(post);
   } catch (error) {
     console.error(`Could not get post by slug: ${error}`);
@@ -32,7 +38,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export async function createPost(post: CreatePost): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
-    await connectToDatabase(uri);
+
+    const db = await connectToDatabase(uri);
+    const { PostModel } = getModels(db);
 
     const slug = createSlug(post.title);
 
@@ -40,8 +48,8 @@ export async function createPost(post: CreatePost): Promise<void> {
       ...post,
       slug,
     };
-
     const newPost = new PostModel(postWithSlug);
+    await disconnectFromDatabase(db);
     await newPost.save();
   } catch (error) {
     console.error(`Could not create post ${error}`);
@@ -53,10 +61,12 @@ export async function getAllPosts(): Promise<Post[]> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
+    const db = await connectToDatabase(uri);
+    const { PostModel } = getModels(db);
     const posts = await PostModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
+    await disconnectFromDatabase(db);
 
     return postSchema.array().parse(posts);
   } catch (error) {
@@ -69,8 +79,8 @@ export async function getPost(post: Partial<Post>): Promise<Post> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
-
+    const db = await connectToDatabase(uri);
+    const { PostModel } = getModels(db);
     let query = {};
 
     if (post._id) {
@@ -94,6 +104,7 @@ export async function getPost(post: Partial<Post>): Promise<Post> {
     if (!foundPost) {
       throw new Error("Post not found");
     }
+    await disconnectFromDatabase(db);
 
     return postSchema.parse(foundPost);
   } catch (error) {
@@ -106,13 +117,14 @@ export async function deletePost(post: Post): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
-
+    const db = await connectToDatabase(uri);
+    const { PostModel } = getModels(db);
     const result = await PostModel.deleteOne({ _id: post._id });
 
     if (result.deletedCount === 0) {
       throw new Error("Post not found");
     }
+    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not delete post: ${error}`);
     throw error;
@@ -126,8 +138,8 @@ export async function updatePost(
   try {
     const uri = getDatabaseUriEnvVariable();
 
-    await connectToDatabase(uri);
-
+    const db = await connectToDatabase(uri);
+    const { PostModel } = getModels(db);
     const updatedPost = await PostModel.findByIdAndUpdate(
       postId,
       { $set: updates },
