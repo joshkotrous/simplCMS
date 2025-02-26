@@ -25,12 +25,12 @@ export default function SetupMongoForm({
   const updateUriWithDbName = (uri: string, dbName: string): string => {
     if (!uri) return uri;
 
-    if (uri.includes("/?")) {
-      return uri.replace(/\/([^/?]*)?(\?|$)/, `/${dbName}$2`);
-    } else if (uri.includes("?")) {
-      return uri.replace(/\?/, `/${dbName}?`);
+    const baseUri = uri.replace(/\/([^/?]+)(?=[/?]|$)/, "");
+
+    if (baseUri.includes("?")) {
+      return baseUri.replace("?", `/${dbName}?`);
     } else {
-      return `${uri}/${dbName}`;
+      return `${baseUri}/${dbName}`;
     }
   };
 
