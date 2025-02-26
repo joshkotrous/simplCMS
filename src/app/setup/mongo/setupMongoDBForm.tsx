@@ -23,14 +23,50 @@ export default function SetupMongoForm({
   const [dbName, setDbName] = useState("simplCms");
 
   const updateUriWithDbName = (uri: string, dbName: string): string => {
-    if (!uri) return uri;
+    if (!uri || !dbName) return uri;
 
-    const baseUri = uri.replace(/\/([^/?]+)(?=[/?]|$)/, "");
+    // Parse the URI into components
+    try {
+      const url = new URL(uri);
 
-    if (baseUri.includes("?")) {
-      return baseUri.replace("?", `/${dbName}?`);
-    } else {
-      return `${baseUri}/${dbName}`;
+      // Check if the path already contains a database name
+      // MongoDB URI path will be empty or start with / followed by the database name
+      const pathSegments = url.pathname.split("/").filter(Boolean);
+
+      if (pathSegments.length > 0) {
+        // Database name is already present, replace it
+        url.pathname = "/" + dbName;
+      } else {
+        // No database name, add it
+        url.pathname = "/" + dbName;
+      }
+
+      return url.toString();
+    } catch (e) {
+      // Handle URIs that aren't standard URLs
+      // For connection strings like mongodb://user:pass@host:port
+
+      // Match for checking if there's already a database name in the URI
+      const dbNamePattern = /mongodb(\+srv)?:\/\/[^/]+(\/([^/?]+))?/;
+      const match = uri.match(dbNamePattern);
+
+      if (match && match[3]) {
+        // Database name exists, replace it
+        return uri.replace(
+          dbNamePattern,
+          `mongodb$1://${uri.split("://")[1].split("/")[0]}/${dbName}`
+        );
+      }
+
+      // No database name found, add it
+      if (uri.includes("?")) {
+        // If there are query parameters, insert dbName before them
+        const [base, query] = uri.split("?");
+        return `${base}/${dbName}?${query}`;
+      } else {
+        // No query parameters, simply append dbName
+        return `${uri}/${dbName}`;
+      }
     }
   };
 

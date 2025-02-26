@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useSetupData } from "./setup/setupContextProvider";
 import { validateSetupAction } from "./actions/simplCms";
 import { SetupStep, SimplCMSPlatformConfiguration } from "@/types/types";
@@ -7,7 +7,14 @@ import {
   SetupValidation,
   SetupValidationComponent,
 } from "@/packages/core/src/simplCms";
-import { ArrowUp, Check, Loader2, Square, TriangleAlert } from "lucide-react";
+import {
+  ArrowUp,
+  Check,
+  Loader2,
+  Square,
+  TriangleAlert,
+  RefreshCw,
+} from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -19,30 +26,12 @@ import { Button } from "@/components/ui/button";
 const SETUP_DATA_KEY = "setupData";
 
 const setupSteps: { step: SetupStep; description: string }[] = [
-  {
-    step: "host",
-    description: "Setup host provder",
-  },
-  {
-    step: "database",
-    description: "Setup database provider",
-  },
-  {
-    step: "mediaStorage",
-    description: "Setup media storage provider",
-  },
-  {
-    step: "oauth",
-    description: "Setup OAuth provider",
-  },
-  {
-    step: "adminUser",
-    description: "Add Admin user",
-  },
-  {
-    step: "redeploy",
-    description: "Redeploy",
-  },
+  { step: "host", description: "Setup host provder" },
+  { step: "database", description: "Setup database provider" },
+  { step: "mediaStorage", description: "Setup media storage provider" },
+  { step: "oauth", description: "Setup OAuth provider" },
+  { step: "adminUser", description: "Add Admin user" },
+  { step: "redeploy", description: "Redeploy" },
 ];
 
 export default function SetupForm({
@@ -52,8 +41,7 @@ export default function SetupForm({
 }) {
   // State for UI
   const [isLoading, setIsLoading] = useState(true);
-
-  // Start with server configuration
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [configData, setConfigData] =
     useState<SimplCMSPlatformConfiguration>(serverConfiguration);
   const [currentStep, setCurrentStep] = useState<{
@@ -67,21 +55,66 @@ export default function SetupForm({
   const [setupValidation, setSetupValidation] =
     useState<Partial<SetupValidation> | null>(null);
 
-  // Track initialization status
-  const initialized = useRef(false);
-
   // Get setup context
   const setupContext = useSetupData();
 
-  // Initialize data - SIMPLIFIED approach that prioritizes localStorage
-  useEffect(() => {
-    if (initialized.current) return;
+  // Extract Vercel config helper function
+  const extractVercelConfig = useCallback(
+    (config: SimplCMSPlatformConfiguration) => {
+      const token = config.host?.vercel?.token;
+      const projectId = config.host?.vercel?.projectId;
+      const teamId = config.host?.vercel?.teamId;
 
+      if (!token || !projectId || !teamId) {
+        return undefined;
+      }
+
+      return { token, projectId, teamId };
+    },
+    []
+  );
+
+  // Function to run validation - now a callback to prevent recreation
+  const runValidation = useCallback(
+    async (config: SimplCMSPlatformConfiguration) => {
+      try {
+        console.log("Running validation with config:", config);
+        const vercelConfig = extractVercelConfig(config);
+
+        const validation = await validateSetupAction({
+          provider: config.host?.provider,
+          vercelConfig,
+          setupData: config,
+        });
+
+        console.log(
+          "SETUP VALIDATION RESULT:",
+          JSON.stringify(validation, null, 2)
+        );
+
+        if (validation) {
+          const currentStep = getSetupStep(validation);
+          const nextStep = getNextStep(currentStep.step);
+          setCurrentStep(currentStep);
+          setNextStep(nextStep);
+          setSetupValidation(validation);
+        }
+      } catch (error) {
+        console.error("Validation error:", error);
+      } finally {
+        setIsLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [extractVercelConfig]
+  );
+
+  // Initialize data
+  useEffect(() => {
     const initData = async () => {
       console.log("Initializing data...");
-
       try {
-        // DIRECTLY access localStorage first
+        // First try to get data from localStorage
         if (typeof window !== "undefined") {
           const rawData = localStorage.getItem(SETUP_DATA_KEY);
           if (rawData) {
@@ -89,7 +122,7 @@ export default function SetupForm({
               const localData = JSON.parse(rawData);
               console.log("Found data in localStorage:", localData);
 
-              // Use localStorage data DIRECTLY without merging
+              // Use localStorage data
               setConfigData(localData);
 
               // Also update context for consistency
@@ -108,59 +141,46 @@ export default function SetupForm({
 
         // If no localStorage data, use server config
         console.log("Using server configuration");
+        setConfigData(serverConfiguration);
         await runValidation(serverConfiguration);
       } catch (error) {
         console.error("Error initializing:", error);
         setIsLoading(false);
+        setIsRefreshing(false);
       }
     };
 
-    initialized.current = true;
     initData();
-  }, [serverConfiguration, setupContext]);
+  }, [serverConfiguration, setupContext, runValidation]);
 
-  // Function to run validation
-  const runValidation = async (config: SimplCMSPlatformConfiguration) => {
-    try {
-      console.log("Running validation with config:", config);
+  // Add a function to manually refresh validation
+  const refreshValidation = async () => {
+    setIsRefreshing(true);
 
-      const vercelConfig = (() => {
-        const token = config.host?.vercel?.token;
-        const projectId = config.host?.vercel?.projectId;
-        const teamId = config.host?.vercel?.teamId;
-        if (!token || !projectId || !teamId) {
-          return undefined;
+    // Get the latest data from localStorage if available
+    let dataToValidate = configData;
+    if (typeof window !== "undefined") {
+      const rawData = localStorage.getItem(SETUP_DATA_KEY);
+      if (rawData) {
+        try {
+          const localData = JSON.parse(rawData);
+          dataToValidate = localData;
+          setConfigData(localData);
+
+          // Update context
+          if (setupContext && setupContext.setSetupData) {
+            setupContext.setSetupData(localData);
+          }
+        } catch (e) {
+          console.error("Error parsing localStorage data during refresh:", e);
         }
-        return {
-          token,
-          projectId,
-          teamId,
-        };
-      })();
-
-      const validation = await validateSetupAction({
-        provider: config.host?.provider,
-        vercelConfig,
-        setupData: config,
-      });
-
-      console.log(
-        "SETUP VALIDATION RESULT:",
-        JSON.stringify(validation, null, 2)
-      );
-
-      if (validation) {
-        const currentStep = getSetupStep(validation);
-        const nextStep = getNextStep(currentStep.step);
-        setCurrentStep(currentStep);
-        setNextStep(nextStep);
-        setSetupValidation(validation);
       }
-    } finally {
-      setIsLoading(false);
     }
+
+    await runValidation(dataToValidate);
   };
 
+  // Helper functions for setup steps
   function getStepValidation(
     step: SetupStep,
     setupValidation: Partial<SetupValidation>
@@ -194,10 +214,12 @@ export default function SetupForm({
       "adminUser",
       "redeploy",
     ];
+
     const isComplete = checkSetupCompleted(setupValidation);
     const currentStep =
       steps.find((step) => !setupValidation[step]?.setupComplete) ||
       "adminUser";
+
     return {
       complete: isComplete,
       step: currentStep,
@@ -206,45 +228,20 @@ export default function SetupForm({
 
   function getNextStep(step: SetupStep): { url: string; text: string } {
     switch (step) {
-      case "host": {
-        return {
-          url: "/setup/host",
-          text: "Setup Host",
-        };
-      }
-      case "database": {
-        return {
-          url: "/setup/database",
-          text: "Setup Database",
-        };
-      }
-      case "mediaStorage": {
-        return {
-          url: "/setup/media-storage",
-          text: "Setup Media Storage",
-        };
-      }
-      case "oauth": {
-        return {
-          url: "/setup/oauth",
-          text: "Setup Oauth",
-        };
-      }
-      case "adminUser": {
-        return {
-          url: "/setup/add-user",
-          text: "Setup Admin User",
-        };
-      }
-      case "redeploy": {
-        return {
-          url: "/setup/redeploy",
-          text: "Redeploy",
-        };
-      }
-      default: {
+      case "host":
+        return { url: "/setup/host", text: "Setup Host" };
+      case "database":
+        return { url: "/setup/database", text: "Setup Database" };
+      case "mediaStorage":
+        return { url: "/setup/media-storage", text: "Setup Media Storage" };
+      case "oauth":
+        return { url: "/setup/oauth", text: "Setup Oauth" };
+      case "adminUser":
+        return { url: "/setup/add-user", text: "Setup Admin User" };
+      case "redeploy":
+        return { url: "/setup/redeploy", text: "Redeploy" };
+      default:
         throw new Error("Unsupported step");
-      }
     }
   }
 
@@ -272,8 +269,18 @@ export default function SetupForm({
             {JSON.stringify(configData, null, 2)}
           </pre>
         </div>
-        <Button onClick={() => window.location.reload()} className="mt-4">
-          Refresh Page
+        <Button onClick={refreshValidation} className="mt-4">
+          {isRefreshing ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Refreshing...
+            </>
+          ) : (
+            <>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh Validation
+            </>
+          )}
         </Button>
       </div>
     );
@@ -326,7 +333,7 @@ export default function SetupForm({
             <Button className="w-full">
               {nextStep.text}
               <div className="rotate-90">
-                <ArrowUp className="animate-bounce " />
+                <ArrowUp className="animate-bounce" />
               </div>
             </Button>
           </Link>
