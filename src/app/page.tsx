@@ -1,10 +1,70 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getServerEnvVars } from "@/packages/core/src/simplCms";
 import SetupForm from "./setupForm";
+import { Page } from "@/types/types";
+import PageRenderer from "./pageRenderer";
 
 export default async function Home() {
   const platformConfiguration = getServerEnvVars();
-
+  const homePageConfig: Page = {
+    _id: "",
+    createdAt: new Date(),
+    publishedAt: new Date(),
+    updatedAt: new Date(),
+    status: "published",
+    elements: [
+      {
+        type: "h1",
+        content: "SimplCms",
+        children: [],
+        attributes: null,
+        styles: [
+          { property: "textAlign", value: "center" },
+          { property: "fontSize", value: "64px" },
+          { property: "fontWeight", value: "bold" },
+        ],
+      },
+      {
+        type: "div",
+        content: null,
+        children: [
+          {
+            type: "p",
+            content: "Go to the ",
+            attributes: [{ name: "href", value: "/" }],
+            children: [],
+            styles: [{ property: "alignContent", value: "center" }],
+          },
+          {
+            type: "a",
+            content: "dashboard",
+            attributes: [{ name: "href", value: "/admin" }],
+            children: [],
+            styles: [{ property: "alignContent", value: "center" }],
+          },
+          {
+            type: "p",
+            content: "to edit this page",
+            attributes: [{ name: "href", value: "/" }],
+            children: [],
+            styles: [{ property: "alignContent", value: "center" }],
+          },
+        ],
+        attributes: null,
+        styles: [
+          { property: "textAlign", value: "center" },
+          { property: "flexBasis", value: "" },
+        ],
+      },
+    ],
+    metadata: {
+      description: "",
+      keywords: [""],
+      ogImage: "",
+      title: "",
+    },
+    route: "/",
+  };
   return (
     <TooltipProvider>
       <div className="size-full flex justify-center items-center overflow-hidden font-[family-name:var(--font-geist-sans)] bg-[linear-gradient(215deg,rgba(0,0,0,0.25)_0%,transparent_40%)] bg-background dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)]">
@@ -20,6 +80,7 @@ export default async function Home() {
           >
             Read our docs
           </a>
+          <PageRenderer page={homePageConfig} />
         </main>
       </div>
     </TooltipProvider>

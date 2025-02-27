@@ -144,10 +144,8 @@ export default function RedeployForm() {
               )}
             </div>
             {currentDeployment.status === "READY" && (
-              <Link href="/setup/add-user">
-                <Button className=" w-full hover:underline">
-                  Create your first user
-                </Button>
+              <Link href="/login">
+                <Button className=" w-full hover:underline">Login</Button>
               </Link>
             )}
           </div>

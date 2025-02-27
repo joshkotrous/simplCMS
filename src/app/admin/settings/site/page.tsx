@@ -11,8 +11,10 @@ export default async function SiteSettings() {
   let media: CloudinaryMedia[] = [];
   let siteConfig: SiteConfig | null = null;
   const platformConfiguration = getServerEnvVars();
+
   if (
-    platformConfiguration.mediaStorage?.find((i) => i.provider === "Cloudinary")
+    Array.isArray(platformConfiguration.mediaStorage) &&
+    platformConfiguration.mediaStorage.find((i) => i.provider === "Cloudinary")
   ) {
     media = await cloudinary.getMedia();
   }

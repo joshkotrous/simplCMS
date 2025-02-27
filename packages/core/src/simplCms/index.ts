@@ -24,6 +24,7 @@ import {
   ResponseBodyEnvs,
 } from "@vercel/sdk/models/filterprojectenvsop.js";
 import { user } from "../user";
+import * as pages from "./pages";
 
 export type SetupValidationComponent = {
   setupComplete: boolean;
@@ -355,65 +356,78 @@ export async function validateSetup({
 
   // Media storage validation
   if (!envVars.mediaStorage) {
-    const storageVarsExistInProvider = checkSectionEnvVarsExist([
-      ...cloudinaryVarNames,
-      ...s3VarNames,
-    ]);
+    if (
+      setupData?.mediaStorage &&
+      "skipped" in setupData.mediaStorage &&
+      setupData.mediaStorage.skipped === true
+    ) {
+      validation.mediaStorage = {
+        setupComplete: true,
+        errors: [],
+      };
+    } else {
+      const storageVarsExistInProvider = checkSectionEnvVarsExist([
+        ...cloudinaryVarNames,
+        ...s3VarNames,
+      ]);
+      validation.mediaStorage = {
+        setupComplete: storageVarsExistInProvider,
+        errors: [],
+      };
+      redeployRequired = redeployRequired || storageVarsExistInProvider;
+    }
+  } else if (Array.isArray(envVars.mediaStorage)) {
+    // Handle the array case
+    if (envVars.mediaStorage.length === 0) {
+      validation.mediaStorage = {
+        setupComplete: false,
+        errors: ["No media storage providers configured"],
+      };
+      redeployRequired =
+        redeployRequired ||
+        checkSectionEnvVarsExist([...cloudinaryVarNames, ...s3VarNames]);
+    } else {
+      const errors: string[] = [];
+      const storageVars: string[] = [];
 
-    validation.mediaStorage = {
-      setupComplete: storageVarsExistInProvider,
-      errors: [],
-    };
+      envVars.mediaStorage.forEach((storageConfig) => {
+        switch (storageConfig.provider) {
+          case "Cloudinary": {
+            storageVars.push(...cloudinaryVarNames);
+            break;
+          }
+          case "AWS S3": {
+            storageVars.push(...s3VarNames);
+            if (!storageConfig.s3?.bucketName) {
+              errors.push("S3 bucket name not configured");
+            }
+            if (!storageConfig.s3?.region) {
+              errors.push("S3 region not configured");
+            }
+            if (!storageConfig.s3?.accessKeyId) {
+              errors.push("S3 access key ID not configured");
+            }
+            if (!storageConfig.s3?.accessSecretKey) {
+              errors.push("S3 access secret key not configured");
+            }
+            break;
+          }
+          default: {
+            errors.push(
+              `Invalid media storage provider configured: ${storageConfig.provider}`
+            );
+          }
+        }
+      });
 
-    redeployRequired = redeployRequired || storageVarsExistInProvider;
-  } else if (envVars.mediaStorage.length === 0) {
-    validation.mediaStorage = {
-      setupComplete: false,
-      errors: ["No media storage providers configured"],
-    };
-    redeployRequired =
-      redeployRequired ||
-      checkSectionEnvVarsExist([...cloudinaryVarNames, ...s3VarNames]);
-  } else {
-    const errors: string[] = [];
-    const storageVars: string[] = [];
-    envVars.mediaStorage.forEach((storageConfig) => {
-      switch (storageConfig.provider) {
-        case "Cloudinary": {
-          storageVars.push(...cloudinaryVarNames);
-
-          break;
-        }
-        case "AWS S3": {
-          storageVars.push(...s3VarNames);
-          if (!storageConfig.s3?.bucketName) {
-            errors.push("S3 bucket name not configured");
-          }
-          if (!storageConfig.s3?.region) {
-            errors.push("S3 region not configured");
-          }
-          if (!storageConfig.s3?.accessKeyId) {
-            errors.push("S3 access key ID not configured");
-          }
-          if (!storageConfig.s3?.accessSecretKey) {
-            errors.push("S3 access secret key not configured");
-          }
-          break;
-        }
-        default: {
-          errors.push(
-            `Invalid media storage provider configured: ${storageConfig.provider}`
-          );
-        }
-      }
-    });
-    validation.mediaStorage = {
-      setupComplete:
-        errors.length === 0 ||
-        storageVars.every((v) => findEnvVar(providerEnvVars, v)),
-      errors: errors,
-    };
-    redeployRequired = redeployRequired || checkRedeployNeeded(storageVars);
+      validation.mediaStorage = {
+        setupComplete:
+          errors.length === 0 ||
+          storageVars.every((v) => findEnvVar(providerEnvVars, v)),
+        errors: errors,
+      };
+      redeployRequired = redeployRequired || checkRedeployNeeded(storageVars);
+    }
   }
 
   // Admin user validation
@@ -443,7 +457,8 @@ export async function validateSetup({
   // Redeploy validation
   if (
     !validation.database?.setupComplete ||
-    !validation.mediaStorage?.setupComplete
+    !validation.mediaStorage?.setupComplete ||
+    !validation.oauth.setupComplete
   ) {
     redeployRequired = true;
   }
@@ -619,18 +634,37 @@ export async function initSiteConfig(): Promise<void> {
 
     const db = await connectToDatabase(uri);
     const { SiteConfigModel } = getModels(db);
+
+    // Handle the union type for mediaStorage
+    let mediaStorageProviders: ("Cloudinary" | "AWS S3" | null)[] = [];
+
+    if (Array.isArray(mediaStorage)) {
+      // If it's an array, map it and ensure the type is correct
+      mediaStorageProviders = mediaStorage.map((provider) => {
+        // Only return the exact values expected by the type or null
+        if (
+          provider.provider === "Cloudinary" ||
+          provider.provider === "AWS S3"
+        ) {
+          return provider.provider;
+        }
+        return null;
+      });
+    } else if (mediaStorage.skipped) {
+      // If media storage is skipped, use an empty array
+      mediaStorageProviders = [];
+    }
+
     const data: CreateSiteConfig = {
       logo: null,
       simplCMSHostProvider: host.provider,
       simplCMSDbProvider: database.provider,
-      simplCMSMediaStorageProviders: mediaStorage.map(
-        (provider) => provider.provider
-      ),
+      simplCMSMediaStorageProviders: mediaStorageProviders,
       simplCMSOauthProviders: oauth.map((provider) => provider.provider),
     };
+
     const config = new SiteConfigModel(data);
     await disconnectFromDatabase(db);
-
     await config.save();
   } catch (error) {
     console.error(`Could not create site configuration: ${error}`);
@@ -833,4 +867,13 @@ export async function getProviderSiteConfig({
   }
 }
 
-export * as simplCms from ".";
+export const simplCms = {
+  pages,
+  validateSetup,
+  checkSetupCompleted,
+  getSetupStep,
+  getServerEnvVars,
+  getSiteConfig,
+  initSiteConfig,
+  getProviderSiteConfig,
+};

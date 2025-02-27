@@ -1,5 +1,4 @@
 "use client";
-
 import { AWSS3Logo, CloudinaryLogo, SupabaseLogo } from "@/components/logos";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
@@ -7,19 +6,38 @@ import { useSetupData } from "../setupContextProvider";
 
 export default function MediaStorageProviderForm() {
   const { setSetupData } = useSetupData();
+
   return (
     <div className="flex gap-4 flex-col items-center">
       <p>Select a Media Storage Provider</p>
       <div className="grid grid-cols-3 gap-4 w-[44rem]">
         <Link
           onClick={() =>
-            setSetupData((prev) => ({
-              ...prev,
-              mediaStorage: [
-                ...(prev.mediaStorage || []),
-                { provider: "Cloudinary" },
-              ],
-            }))
+            setSetupData((prev) => {
+              // Handle the union type properly
+              let newMediaStorage;
+
+              if (prev.mediaStorage) {
+                if (Array.isArray(prev.mediaStorage)) {
+                  // If it's already an array, add to it
+                  newMediaStorage = [
+                    ...prev.mediaStorage,
+                    { provider: "Cloudinary" as const },
+                  ];
+                } else {
+                  // If it has the skipped property, convert to array
+                  newMediaStorage = [{ provider: "Cloudinary" as const }];
+                }
+              } else {
+                // If it's null, create a new array
+                newMediaStorage = [{ provider: "Cloudinary" as const }];
+              }
+
+              return {
+                ...prev,
+                mediaStorage: newMediaStorage,
+              };
+            })
           }
           href="/setup/media-storage/cloudinary"
         >
@@ -31,13 +49,31 @@ export default function MediaStorageProviderForm() {
         </Link>
         <Link
           onClick={() =>
-            setSetupData((prev) => ({
-              ...prev,
-              mediaStorage: [
-                ...(prev.mediaStorage || []),
-                { provider: "AWS S3" },
-              ],
-            }))
+            setSetupData((prev) => {
+              // Handle the union type properly
+              let newMediaStorage;
+
+              if (prev.mediaStorage) {
+                if (Array.isArray(prev.mediaStorage)) {
+                  // If it's already an array, add to it
+                  newMediaStorage = [
+                    ...prev.mediaStorage,
+                    { provider: "AWS S3" as const },
+                  ];
+                } else {
+                  // If it has the skipped property, convert to array
+                  newMediaStorage = [{ provider: "AWS S3" as const }];
+                }
+              } else {
+                // If it's null, create a new array
+                newMediaStorage = [{ provider: "AWS S3" as const }];
+              }
+
+              return {
+                ...prev,
+                mediaStorage: newMediaStorage,
+              };
+            })
           }
           href="/setup/media-storage/s3"
         >

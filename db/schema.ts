@@ -1,5 +1,5 @@
-import { Post, User, SiteConfig, HostProvider } from "@/types/types";
-import mongoose, { Schema } from "mongoose";
+import { Post, User, SiteConfig, Page } from "@/types/types";
+import { Schema } from "mongoose";
 
 export const SiteConfigSchema: Schema = new Schema<SiteConfig>({
   logo: { type: String },
@@ -48,12 +48,93 @@ export const PostSchema: Schema = new Schema<Post>({
   draft: { type: Boolean, required: true, default: false },
 });
 
-// const UserModel =
-//   mongoose.models.User || mongoose.model<User>("User", UserSchema);
-// const PostModel =
-//   mongoose.models.Post || mongoose.model<Post>("Post", PostSchema);
-// const SiteConfigModel =
-//   mongoose.models.SiteConfig ||
-//   mongoose.model<SiteConfig>("SiteConfig", SiteConfigSchema);
+const elementSchemaDefinition = {
+  type: {
+    type: String,
+    enum: [
+      "div",
+      "p",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "img",
+      "a",
+      "button",
+      "section",
+      "nav",
+      "footer",
+      "header",
+    ],
+    required: true,
+  },
+  styles: {
+    type: Map,
+    of: String,
+    default: null,
+  },
+  attributes: {
+    type: Map,
+    of: String,
+    default: null,
+  },
+  content: {
+    type: String,
+    default: null,
+  },
+  children: [Schema.Types.Mixed],
+};
 
-// export { UserModel, PostModel, SiteConfigModel };
+export const PageSchema = new Schema<Page>({
+  route: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  metadata: {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    keywords: {
+      type: [String],
+      default: null,
+    },
+    ogImage: {
+      type: String,
+      default: null,
+    },
+  },
+  elements: [elementSchemaDefinition],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
+  publishedAt: {
+    type: Date,
+    default: null,
+  },
+  status: {
+    type: String,
+    enum: ["draft", "published", "archived"],
+    required: true,
+    default: "draft",
+  },
+});
+
+PageSchema.pre("save", function (next) {
+  if (this.isModified()) {
+    this.updatedAt = new Date();
+  }
+  next();
+});

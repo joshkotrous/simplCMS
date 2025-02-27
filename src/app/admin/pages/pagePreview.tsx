@@ -1,12 +1,12 @@
 "use client";
-import { PageInfo } from "@/types/types";
+import { Page } from "@/types/types";
 import VerticalTreeMenu from "./pagesList";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
-export default function PagePreview({ routes }: { routes: PageInfo[] }) {
+export default function PagePreview({ routes }: { routes: Page[] }) {
   const homeRoute = routes.find((route) => route.route === "/");
-  if (!homeRoute) throw new Error("Could not find base route.");
+  if (!homeRoute) return;
 
   const [selectedRoute, setSelectedRoute] = useState<string>(homeRoute.route);
   const [isLoading, setIsLoading] = useState(true);

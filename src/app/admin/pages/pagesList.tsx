@@ -9,7 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { PageInfo } from "@/types/types";
+import { Page } from "@/types/types";
 
 const hiddenRoutes = ["admin", "login", "setup"];
 
@@ -28,7 +28,7 @@ export interface TreeNode {
   hasBasePage?: boolean;
 }
 
-export function parseRoutes(routes: PageInfo[]): TreeNode[] {
+export function parseRoutes(routes: Page[]): TreeNode[] {
   const tree: TreeNode[] = [];
 
   // Add home page first
@@ -218,7 +218,7 @@ export default function VerticalTreeMenu({
   selectedRoute,
   onRouteSelect,
 }: {
-  routes: PageInfo[];
+  routes: Page[];
   selectedRoute: string | null;
   onRouteSelect: (route: string) => void;
 }) {

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { attributeSchema, styleSchema } from "./styles";
 
 export const hostProviderSchema = z.enum(["Vercel"]);
 export const dbProviderSchema = z.enum(["MongoDB", "DynamoDB"]);
@@ -15,7 +16,10 @@ export const setupStepSchema = z.enum([
 export type SetupStep = z.infer<typeof setupStepSchema>;
 
 export const userSchema = z.object({
-  _id: z.preprocess((val: any) => JSON.stringify(val._id), z.string()),
+  _id: z.preprocess(
+    (val: any) => JSON.stringify(val._id).replaceAll('"', ""),
+    z.string()
+  ),
   email: z.string().email(),
   imageUrl: z.string().url(),
   name: z.string().nullable(),
@@ -24,7 +28,10 @@ export const userSchema = z.object({
 });
 
 export const postSchema = z.object({
-  _id: z.preprocess((val: any) => JSON.stringify(val._id), z.string()),
+  _id: z.preprocess(
+    (val: any) => JSON.stringify(val._id).replaceAll('"', ""),
+    z.string()
+  ),
   title: z.string(),
   content: z.string(),
   author: z.string(),
@@ -35,11 +42,59 @@ export const postSchema = z.object({
   slug: z.string(),
 });
 
-export const pageInfoSchema = z.object({
+export const elementTypeSchema = z.enum([
+  "div",
+  "p",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "img",
+  "a",
+  "button",
+  "section",
+  "nav",
+  "footer",
+  "header",
+]);
+
+export type ElementType = z.infer<typeof elementTypeSchema>;
+
+export interface Element {
+  type: ElementType;
+  styles: Record<string, string> | null;
+  attributes: Record<string, string> | null;
+  content: string | null;
+  children: any[];
+}
+
+export const elementSchema = z.object({
+  type: elementTypeSchema,
+  styles: z.array(styleSchema).nullable(),
+  content: z.string().nullable(),
+  attributes: z.array(attributeSchema).nullable(),
+  children: z.array(z.any()).default([]),
+});
+
+export const pageSchema = z.object({
+  _id: z.preprocess(
+    (val: any) => JSON.stringify(val._id).replaceAll('"', ""),
+    z.string()
+  ),
   route: z.string(),
-  filePath: z.string(),
-  type: z.enum(["static", "dynamic"]),
-  lastModified: z.date(),
+  metadata: z.object({
+    title: z.string(),
+    description: z.string(),
+    keywords: z.array(z.string()).nullable(),
+    ogImage: z.string().nullable(),
+  }),
+  elements: z.array(elementSchema),
+  createdAt: z.date().nullable(),
+  updatedAt: z.date().nullable(),
+  publishedAt: z.date().nullable(),
+  status: z.enum(["draft", "published", "archived"]),
 });
 
 export const cloudinaryMediaSchema = z.object({
@@ -100,13 +155,17 @@ export const simplCMSOAuthObject = z
     google: googleOauthConfig.optional(),
   })
   .array();
-export const simplCMSMediaStorageObject = z
-  .object({
-    provider: mediaStorageProviderSchema,
-    cloudinary: cloudinaryConfig.optional(),
-    s3: awsS3Config.optional(),
-  })
-  .array();
+export const simplCMSMediaStorageObject = z.union([
+  z
+    .object({
+      provider: mediaStorageProviderSchema.optional(),
+      cloudinary: cloudinaryConfig.optional(),
+      s3: awsS3Config.optional(),
+    })
+    .array()
+    .nullable(),
+  z.object({ skipped: z.boolean().optional() }),
+]);
 
 export const simplCMSHostConfigurationObject = z.object({
   host: simplCMSHostObject,
@@ -125,16 +184,29 @@ export const simplCMSPlatformConfigurationObject = z.object({
   host: simplCMSHostObject.nullable(),
   database: simplCMSDBObject.nullable(),
   oauth: simplCMSOAuthObject.nullable(),
-  mediaStorage: simplCMSMediaStorageObject.nullable(),
+  mediaStorage: z.union([
+    simplCMSMediaStorageObject.nullable(),
+    z.object({ skipped: z.boolean().optional() }),
+  ]),
 });
 
 export const siteConfigSchema = z.object({
-  _id: z.string().transform((id) => ({ _id: id.toString() })),
+  _id: z.preprocess(
+    (val: any) => JSON.stringify(val._id).replaceAll('"', ""),
+    z.string()
+  ),
   logo: z.string().nullable(),
   simplCMSHostProvider: hostProviderSchema,
   simplCMSDbProvider: dbProviderSchema,
   simplCMSOauthProviders: oauthProviderSchema.array(),
-  simplCMSMediaStorageProviders: mediaStorageProviderSchema.array(),
+  simplCMSMediaStorageProviders: mediaStorageProviderSchema.nullable().array(),
+});
+
+export const createPageSchema = pageSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+  publishedAt: true,
 });
 
 export const userDocumentSchema = userSchema;
@@ -161,7 +233,6 @@ export type DBProvider = z.infer<typeof dbProviderSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
 export type User = z.infer<typeof userSchema>;
 export type Post = z.infer<typeof postSchema>;
-export type PageInfo = z.infer<typeof pageInfoSchema>;
 export type CloudinaryMedia = z.infer<typeof cloudinaryMediaSchema>;
 
 export type CreateSiteConfig = z.infer<typeof createSiteConfigSchema>;
@@ -173,3 +244,9 @@ export type UpdatePost = z.infer<typeof updatePostSchema>;
 export type SimplCMSPlatformConfiguration = z.infer<
   typeof simplCMSPlatformConfigurationObject
 >;
+export type SimplCMSMediaStorageConfiguration = z.infer<
+  typeof simplCMSMediaStorageObject
+>;
+
+export type Page = z.infer<typeof pageSchema>;
+export type CreatePage = z.infer<typeof createPageSchema>;

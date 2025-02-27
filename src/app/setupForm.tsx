@@ -226,6 +226,39 @@ export default function SetupForm({
     };
   }
 
+  const handleSkipMediaStorage = useCallback(async () => {
+    console.log("Skip Media Storage button clicked");
+
+    // Capture the current config for direct manipulation
+    const currentConfig = { ...configData };
+    currentConfig.mediaStorage = { skipped: true };
+
+    // Update the config state and context
+    setConfigData(currentConfig);
+
+    // Update the context
+    setupContext.setSetupData(currentConfig);
+
+    // Also directly update localStorage for redundancy
+    if (typeof window !== "undefined") {
+      try {
+        console.log(
+          "Writing directly to localStorage:",
+          JSON.stringify(currentConfig)
+        );
+        localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(currentConfig));
+      } catch (e) {
+        console.error("Error updating localStorage:", e);
+      }
+    }
+
+    // Wait a moment for state updates to propagate
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Then refresh validation to update the UI
+    refreshValidation();
+  }, [configData, setupContext, refreshValidation]);
+
   function getNextStep(step: SetupStep): { url: string; text: string } {
     switch (step) {
       case "host":
@@ -337,6 +370,15 @@ export default function SetupForm({
               </div>
             </Button>
           </Link>
+          {currentStep.step === "mediaStorage" && (
+            <Button
+              className="w-full"
+              onClick={handleSkipMediaStorage}
+              variant="secondary"
+            >
+              Skip Media Storage Setup
+            </Button>
+          )}
         </>
       )}
       {currentStep.complete && (

@@ -1,9 +1,7 @@
-// db-utils.ts
 import mongoose, { Connection } from "mongoose";
 import { UserSchema, PostSchema, SiteConfigSchema } from "./schema";
-import { User, Post, SiteConfig } from "@/types/types";
+import { User, Post, SiteConfig, Page } from "@/types/types";
 
-// Connection cache to reuse connections
 const connectionCache: Record<string, Connection> = {};
 
 export async function connectToDatabase(uri: string): Promise<Connection> {
@@ -39,7 +37,6 @@ export async function disconnectFromDatabase(
   connection: Connection
 ): Promise<void> {
   try {
-    // Remove from cache and close
     Object.keys(connectionCache).forEach((key) => {
       if (connectionCache[key] === connection) {
         delete connectionCache[key];
@@ -52,7 +49,6 @@ export async function disconnectFromDatabase(
   }
 }
 
-// Get models for a specific connection
 export function getModels(connection: Connection) {
   return {
     UserModel:
@@ -62,6 +58,9 @@ export function getModels(connection: Connection) {
     SiteConfigModel:
       connection.models.SiteConfig ||
       connection.model<SiteConfig>("SiteConfig", SiteConfigSchema),
+    PageModel:
+      connection.models.Page ||
+      connection.model<Page>("Page", SiteConfigSchema),
   };
 }
 
