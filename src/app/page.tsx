@@ -8,10 +8,13 @@ import { defaultHomePageConfig } from "@/lib/utils";
 export default async function Home() {
   const platformConfiguration = getServerEnvVars();
   let pageConfig: Page = defaultHomePageConfig;
-  const page = await simplCms.pages.getPageByRoute("/");
-  if (page) {
-    pageConfig = page;
+  if (platformConfiguration.database) {
+    const page = await simplCms.pages.getPageByRoute("/");
+    if (page) {
+      pageConfig = page;
+    }
   }
+
   return (
     <TooltipProvider>
       <div className="size-full flex justify-center items-center overflow-hidden font-[family-name:var(--font-geist-sans)] pt-20">

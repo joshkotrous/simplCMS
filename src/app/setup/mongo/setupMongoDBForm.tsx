@@ -163,7 +163,7 @@ export default function SetupMongoForm({
       {
         loading: "Connecting database to SimplCMS...",
         success: () => {
-          router.push("/");
+          router.push("/setup");
           return "Database connected successfully.";
         },
         error: () => {
