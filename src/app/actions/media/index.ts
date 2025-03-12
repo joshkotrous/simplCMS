@@ -1,15 +1,22 @@
 "use server";
 
 import { cloudinary } from "@/packages/core/src/cloudinary";
-
-export async function uploadToCloudinary(files: File[]) {
+import { s3 } from "@/packages/core/src/s3";
+import { getServerEnvVars, simplCms } from "@/packages/core/src/simplCms";
+import {
+  SimplCMSMedia,
+  SimplCMSMediaStorageConfiguration,
+} from "@/types/types";
+export async function uploadMediaAction(
+  files: File[]
+): Promise<SimplCMSMedia[]> {
+  const platformConfiguration = getServerEnvVars();
   try {
-    if (files.length === 0) {
-      throw new Error("No files provided");
-    }
-
-    await cloudinary.uploadFiles(files);
-    return { success: true };
+    const uploadedMedia = await simplCms.media.uploadMedia(
+      files,
+      platformConfiguration.mediaStorage
+    );
+    return uploadedMedia;
   } catch (error) {
     console.error("Server upload error:", error);
     throw error;

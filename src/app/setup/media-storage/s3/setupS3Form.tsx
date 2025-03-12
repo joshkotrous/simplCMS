@@ -9,6 +9,7 @@ import { connectMediaStorageToApplication } from "@/app/actions/setup";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../../setupContextProvider";
 import { SimplCMSPlatformConfiguration } from "@/types/types";
+import { testS3ConnectionAction } from "@/app/actions/s3";
 
 type S3ProviderConfig = {
   provider: "AWS S3";
@@ -155,24 +156,16 @@ export default function SetupS3Form({
     if (!region || !bucketName || !accessKeyId || !accessSecretKey)
       throw new Error("AWS S3 configuration is incomplete");
 
-    // For testing purposes, let's assume the connection is successful
-    setTestSuccessful(true);
-    toast.success("Successfully connected to AWS S3 (simulated).");
-
-    // When you implement actual testing, uncomment this:
-    // toast.promise(
-    //   testS3ConnectionAction(s3Connection.s3),
-    //   {
-    //     loading: "Testing AWS S3 connection...",
-    //     success: () => {
-    //       setTestSuccessful(true);
-    //       return "Successfully connected to AWS S3.";
-    //     },
-    //     error: () => {
-    //       return "Error connecting to AWS S3.";
-    //     },
-    //   }
-    // );
+    toast.promise(testS3ConnectionAction(s3Connection.s3), {
+      loading: "Testing AWS S3 connection...",
+      success: () => {
+        setTestSuccessful(true);
+        return "Successfully connected to AWS S3.";
+      },
+      error: () => {
+        return "Error connecting to AWS S3.";
+      },
+    });
   }
 
   async function connectS3() {
@@ -198,7 +191,6 @@ export default function SetupS3Form({
       throw new Error("AWS S3 configuration is incomplete");
 
     // You need to serialize the S3 config to pass to the action
-    const s3ConfigString = JSON.stringify(s3Connection.s3);
     toast.promise(
       connectMediaStorageToApplication(
         platformConfiguration.host?.vercel?.token! ??
@@ -208,7 +200,9 @@ export default function SetupS3Form({
         platformConfiguration.host?.vercel?.teamId! ??
           setupData.host?.vercel?.teamId!,
         "AWS S3",
-        s3ConfigString
+        {
+          s3: s3Connection.s3,
+        }
       ),
       {
         loading: "Connecting AWS S3 to SimplCMS...",

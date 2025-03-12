@@ -1,4 +1,4 @@
-import { CloudinaryMedia } from "@/types/types";
+import { CloudinaryMedia, SimplCMSMedia } from "@/types/types";
 import { v2 as cloudinary } from "cloudinary";
 
 function parseCloudinaryUrl(cloudinaryUrl: string) {
@@ -46,13 +46,28 @@ export async function testConnection(url?: string) {
 
 export async function getMedia(
   resourceType?: "image" | "video"
-): Promise<CloudinaryMedia[]> {
+): Promise<SimplCMSMedia[]> {
   try {
+    // Configure cloudinary
     cloudinary.config();
+
+    // Fetch resources from Cloudinary
     const result = await cloudinary.api.resources({
       resource_type: resourceType,
     });
-    return JSON.parse(JSON.stringify(result.resources));
+
+    // Transform Cloudinary resources to match SimplCMSMedia schema
+    const mediaItems = result.resources.map((resource: CloudinaryMedia) => {
+      return {
+        id: resource.asset_id,
+        name: resource.display_name,
+        url: resource.secure_url,
+        type: resource.resource_type === "video" ? "video" : "image",
+        source: "Cloudinary" as const,
+      };
+    });
+
+    return mediaItems;
   } catch (error) {
     const _error = error as { error: { message: string } };
     console.error(
@@ -62,7 +77,6 @@ export async function getMedia(
     throw error;
   }
 }
-
 export async function uploadFiles(files: Blob[]): Promise<void> {
   try {
     cloudinary.config();

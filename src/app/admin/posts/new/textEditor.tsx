@@ -2,7 +2,15 @@
 
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Bold, Italic, Heading, List, ListOrdered, Quote } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  Heading,
+  List,
+  ListOrdered,
+  Quote,
+  Image,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,12 +25,13 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
-import { CreatePost } from "@/types/types";
+import { CreatePost, SimplCMSMedia } from "@/types/types";
 import { createNewPost } from "@/app/actions/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import MediaPopover from "@/components/mediaPopover";
 
-export function MarkdownEditor() {
+export function MarkdownEditor({ media }: { media: SimplCMSMedia[] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [postData, setPostData] = useState<CreatePost>({
@@ -120,7 +129,7 @@ export function MarkdownEditor() {
 
       <div className="container mx-auto p-4 border rounded-lg">
         <div className="flex gap-2 items-center justify-between">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Button
               variant="ghost"
               onClick={() => insertMarkdown("**", "**")}
@@ -163,6 +172,11 @@ export function MarkdownEditor() {
             >
               <Quote className="h-4 w-4" />
             </Button>
+            <MediaPopover media={media}>
+              <Button variant="ghost" size="sm">
+                <Image className="size-4" />
+              </Button>
+            </MediaPopover>
           </div>
 
           <TabsList className="">

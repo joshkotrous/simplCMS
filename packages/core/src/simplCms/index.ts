@@ -25,7 +25,7 @@ import {
 } from "@vercel/sdk/models/filterprojectenvsop.js";
 import { user } from "../user";
 import * as pages from "./pages";
-
+import * as media from "./media";
 export type SetupValidationComponent = {
   setupComplete: boolean;
   errors: string[];
@@ -134,9 +134,9 @@ export async function validateSetup({
   ];
   const s3VarNames = [
     "AWS_S3_BUCKET_NAME",
-    "AWS_S3_REGION",
+    "AWS_S3_BUCKET_REGION",
     "AWS_S3_ACCESS_KEY_ID",
-    "AWS_S3_ACCESS_SECRET_KEY",
+    "AWS_S3_ACCESS_KEY_SECRET",
   ];
 
   // Host validation
@@ -591,10 +591,10 @@ export function getServerEnvVars(): SimplCMSPlatformConfiguration {
                 trimmedProvider === "AWS S3"
                   ? {
                       bucketName: process.env.AWS_S3_BUCKET_NAME ?? null,
-                      region: process.env.AWS_S3_REGION ?? null,
+                      region: process.env.AWS_S3_BUCKET_REGION ?? null,
                       accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID ?? null,
                       accessSecretKey:
-                        process.env.AWS_S3_ACCESS_SECRET_KEY ?? null,
+                        process.env.AWS_S3_ACCESS_KEY_SECRET ?? null,
                     }
                   : undefined,
             };
@@ -876,4 +876,5 @@ export const simplCms = {
   getSiteConfig,
   initSiteConfig,
   getProviderSiteConfig,
+  media,
 };

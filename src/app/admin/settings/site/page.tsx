@@ -8,16 +8,11 @@ import { InitSiteConfig } from "./initSiteConfig";
 import { CloudinaryMedia, SiteConfig } from "@/types/types";
 
 export default async function SiteSettings() {
-  let media: CloudinaryMedia[] = [];
   let siteConfig: SiteConfig | null = null;
   const platformConfiguration = getServerEnvVars();
-
-  if (
-    Array.isArray(platformConfiguration.mediaStorage) &&
-    platformConfiguration.mediaStorage.find((i) => i.provider === "Cloudinary")
-  ) {
-    media = await cloudinary.getMedia();
-  }
+  const media = await simplCms.media.getMedia(
+    platformConfiguration.mediaStorage
+  );
 
   if (platformConfiguration.database) {
     siteConfig = await simplCms.getSiteConfig();

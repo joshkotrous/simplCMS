@@ -5,7 +5,7 @@ export default function PostList({ posts }: { posts: Post[] }) {
   return (
     <div>
       {posts.map((post) => (
-        <Link href={`/blog/${post.slug}`}>
+        <Link key={post._id} href={`/blog/${post.slug}`}>
           <div className="flex flex-col gap-4 border-b pb-2">
             <div className="space-y-1">
               <div className="w-full flex justify-between items-center">

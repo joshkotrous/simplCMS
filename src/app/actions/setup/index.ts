@@ -2,7 +2,7 @@
 
 import { getVercelEnvVars, vercel } from "@/packages/core/src/vercel";
 import { generateSecret } from "@/lib/utils";
-import { MediaStorageProvider } from "@/types/types";
+import { AWSS3Config, MediaStorageProvider } from "@/types/types";
 
 export async function connectDbToApplication(
   vercelToken: string,
@@ -104,11 +104,15 @@ export async function connectMediaStorageToApplication(
   vercelProjectId: string,
   vercelTeamId: string,
   provider: MediaStorageProvider,
-  url: string
+  config: {
+    cloudinary?: {
+      url: string;
+    };
+    s3?: AWSS3Config;
+  }
 ) {
   try {
     const client = vercel.connect(vercelToken);
-
     vercel.addEnvToProject({
       vercel: client,
       key: "SIMPLCMS_MEDIA_STORAGE_PROVIDERS",
@@ -118,15 +122,70 @@ export async function connectMediaStorageToApplication(
       type: "plain",
       target: ["production"],
     });
-    vercel.addEnvToProject({
-      vercel: client,
-      key: "CLOUDINARY_URL",
-      value: url,
-      projectId: vercelProjectId,
-      teamId: vercelTeamId,
-      type: "plain",
-      target: ["production"],
-    });
+    switch (provider) {
+      case "Cloudinary":
+        if (!config.cloudinary?.url)
+          throw new Error("Cloudinary url not provided");
+
+        vercel.addEnvToProject({
+          vercel: client,
+          key: "CLOUDINARY_URL",
+          value: config.cloudinary?.url,
+          projectId: vercelProjectId,
+          teamId: vercelTeamId,
+          type: "plain",
+          target: ["production"],
+        });
+        break;
+
+      case "AWS S3":
+        if (!config.s3?.region)
+          throw new Error("Config is missing bucket region");
+        if (!config.s3?.accessKeyId)
+          throw new Error("Config is missing access key id");
+        if (!config.s3?.accessSecretKey)
+          throw new Error("Config is missing access key secret");
+
+        if (!config.s3?.bucketName)
+          throw new Error("Config is missing bucket name");
+
+        vercel.addEnvToProject({
+          vercel: client,
+          key: "AWS_S3_BUCKET_REGION",
+          value: config.s3?.region,
+          projectId: vercelProjectId,
+          teamId: vercelTeamId,
+          type: "plain",
+          target: ["production"],
+        });
+        vercel.addEnvToProject({
+          vercel: client,
+          key: "AWS_S3_BUCKET_NAME",
+          value: config.s3?.bucketName,
+          projectId: vercelProjectId,
+          teamId: vercelTeamId,
+          type: "plain",
+          target: ["production"],
+        });
+        vercel.addEnvToProject({
+          vercel: client,
+          key: "AWS_S3_ACCESS_KEY_ID",
+          value: config.s3?.accessKeyId,
+          projectId: vercelProjectId,
+          teamId: vercelTeamId,
+          type: "plain",
+          target: ["production"],
+        });
+        vercel.addEnvToProject({
+          vercel: client,
+          key: "AWS_S3_ACCESS_KEY_SECRET",
+          value: config.s3?.accessSecretKey,
+          projectId: vercelProjectId,
+          teamId: vercelTeamId,
+          type: "plain",
+          target: ["production"],
+        });
+    }
   } catch (error) {
     console.error(error);
     throw error;

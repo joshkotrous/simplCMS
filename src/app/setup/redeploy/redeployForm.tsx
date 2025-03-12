@@ -67,6 +67,7 @@ export default function RedeployForm() {
         success: (data) => {
           if (!data) throw new Error("Could not trigger redeploy");
           console.log(data);
+          localStorage.removeItem("setupData");
           setCurrentDeployment({ id: data.id, status: data.status });
           return "Successfully triggered redeployment";
         },

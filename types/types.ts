@@ -105,6 +105,14 @@ export const cloudinaryMediaSchema = z.object({
   format: z.string(),
 });
 
+export const simplCMSMediaSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  url: z.string(),
+  type: z.enum(["image", "video"]),
+  source: mediaStorageProviderSchema,
+});
+
 const vercelConfig = z.object({
   token: z.string().nullable(),
   teamId: z.string().nullable(),
@@ -234,6 +242,7 @@ export type SiteConfig = z.infer<typeof siteConfigSchema>;
 export type User = z.infer<typeof userSchema>;
 export type Post = z.infer<typeof postSchema>;
 export type CloudinaryMedia = z.infer<typeof cloudinaryMediaSchema>;
+export type SimplCMSMedia = z.infer<typeof simplCMSMediaSchema>;
 
 export type CreateSiteConfig = z.infer<typeof createSiteConfigSchema>;
 export type UpdateSiteConfig = z.infer<typeof updateSiteConfigSchema>;
@@ -247,6 +256,7 @@ export type SimplCMSPlatformConfiguration = z.infer<
 export type SimplCMSMediaStorageConfiguration = z.infer<
   typeof simplCMSMediaStorageObject
 >;
+export type AWSS3Config = z.infer<typeof awsS3Config>;
 
 export type Page = z.infer<typeof pageSchema>;
 export type CreatePage = z.infer<typeof createPageSchema>;
