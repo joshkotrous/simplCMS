@@ -75,7 +75,7 @@ export async function getAllUsers(dbUri?: string): Promise<User[]> {
   }
 }
 
-export async function getUserByEmail(email: string): Promise<User> {
+export async function getUserByEmail(email: string): Promise<User | null> {
   try {
     const uri = getDatabaseUriEnvVariable();
 
@@ -83,6 +83,7 @@ export async function getUserByEmail(email: string): Promise<User> {
     const { UserModel } = getModels(db);
     const user = await UserModel.findOne({ email }).select("-__v");
     await disconnectFromDatabase(db);
+    if (!user) return null;
     return userSchema.parse(user);
   } catch (error) {
     console.error(`Could not get user by email ${error}`);

@@ -2,8 +2,8 @@ import SetupVercelForm from "./setupVercelForm";
 import { getServerEnvVars } from "@/packages/core/src/simplCms";
 
 export default async function SetupVercelPage() {
-  const siteUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+  const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : process.env.NEXT_PUBLIC_SITE_URL ?? null;
   const platformConfiguration = getServerEnvVars();
   return (
