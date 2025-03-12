@@ -80,7 +80,7 @@ export async function setupGoogleOauth(
     });
     vercel.addEnvToProject({
       vercel: client,
-      key: "SIMPL_CMS_OAUTH_PROVIDERS",
+      key: "SIMPLCMS_OAUTH_PROVIDERS",
       value: "Google",
       projectId: vercelProjectId,
       teamId: vercelTeamId,

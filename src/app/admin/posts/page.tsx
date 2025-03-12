@@ -6,6 +6,7 @@ import { getAllPosts } from "@/packages/core/src/posts";
 export default async function PostsPage() {
   const posts = await getAllPosts();
   const publishedPosts = posts.filter((post) => !post.draft);
+
   return (
     <div className="flex flex-col h-full">
       <div className="w-full flex justify-between items-center p-4">
@@ -14,7 +15,7 @@ export default async function PostsPage() {
           <Button>New Post</Button>
         </Link>
       </div>
-      <div className="flex-1 flex justify-center overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         <PostsList posts={publishedPosts} />
       </div>
     </div>

@@ -19,21 +19,44 @@ export async function generateStaticParams() {
   }
 }
 
+import type { Metadata } from "next";
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
-}) {
+}): Promise<Metadata> {
   const { slug } = await params;
 
   const post = await posts.getPostBySlug(slug);
   if (!post) {
     return { title: "SimplCMS | Blog" };
   }
-  return {
+
+  const metadata: Metadata = {
     title: `SimplCMS | ${post.title}`,
     description: post.subtitle,
+    openGraph: {
+      title: `SimplCMS | ${post.title}`,
+      description: post.metadata.description ?? post.subtitle ?? "",
+    },
   };
+
+  if (post.metadata.ogImage) {
+    metadata.openGraph = {
+      ...metadata.openGraph,
+      images: [
+        {
+          url: post.metadata.ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title || "Blog post image",
+        },
+      ],
+    };
+  }
+
+  return metadata;
 }
 
 export default async function BlogPost({

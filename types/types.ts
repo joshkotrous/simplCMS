@@ -69,10 +69,26 @@ export const elementTypeSchema = z.enum([
 export type ElementType = z.infer<typeof elementTypeSchema>;
 
 export interface Element {
-  type: ElementType;
-  styles: StyleEntry;
-  attributes: Record<string, string> | null;
+  type:
+    | "a"
+    | "button"
+    | "div"
+    | "footer"
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
+    | "h6"
+    | "header"
+    | "img"
+    | "nav"
+    | "p"
+    | "section"
+    | "BlogPostList";
   content: string | null;
+  styles: StyleEntry[] | null; // Changed to array or null
+  attributes: AttributeEntry[] | null; // Changed to array or null
   children: any[];
 }
 

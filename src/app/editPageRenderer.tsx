@@ -106,23 +106,28 @@ const ElementEditor: React.FC<{
     setAttributes(attributes.filter((_, i) => i !== index));
   };
 
-  // Save changes
   const handleSave = () => {
-    // Convert properties to the format expected by the ElementRenderer
-    const formattedStyles = styles.map((style) => ({
-      property: style.name,
-      value: style.value,
-    }));
+    // Convert properties to the format expected by the Element type
+    const formattedStyles =
+      styles.length > 0
+        ? styles.map((style) => ({
+            property: style.name,
+            value: style.value,
+          }))
+        : null;
 
-    const formattedAttributes = attributes.map((attr) => ({
-      name: attr.name,
-      value: attr.value,
-    }));
+    const formattedAttributes =
+      attributes.length > 0
+        ? attributes.map((attr) => ({
+            name: attr.name,
+            value: attr.value,
+          }))
+        : null;
 
     const updatedElement = {
       ...editedElement,
-      styles: formattedStyles.length > 0 ? formattedStyles : null,
-      attributes: formattedAttributes.length > 0 ? formattedAttributes : null,
+      styles: formattedStyles,
+      attributes: formattedAttributes,
     };
 
     onSave(updatedElement);
@@ -497,21 +502,24 @@ const PageEditor: React.FC<{
     return newElements;
   };
 
-  // Add child element to an element or to the root
   const addNewElement = (path: number[] | null) => {
+    // Create a new element with compatible types
     const newElement = {
       type: "div",
       content: "New Element",
-      styles: [],
-      attributes: [],
+      styles: null, // Use null instead of empty array if that's what the type expects
+      attributes: null, // Use null instead of empty array if that's what the type expects
       children: [],
     };
 
     if (!path) {
-      // Add to root level
+      // Add to root level - use type assertion to ensure compatibility
       setWorkingPage({
         ...workingPage,
-        elements: [...(workingPage.elements as Element[]), newElement],
+        elements: [
+          ...workingPage.elements,
+          newElement,
+        ] as typeof workingPage.elements,
       });
       return;
     }

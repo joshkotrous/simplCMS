@@ -9,6 +9,9 @@ import {
   Quote,
   Image,
   Share2,
+  Code,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,6 +26,19 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Link from "next/link";
 import { CreatePost, Post, SimplCMSMedia } from "@/types/types";
 import { createNewPost } from "@/app/actions/post";
@@ -37,10 +53,32 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown } from "lucide-react";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 import * as vercelActions from "@/app/actions/vercel";
 import * as postActions from "@/app/actions/post";
+import useRedeployToast from "@/components/redeploymentToast";
+
+// Language options for code blocks
+const LANGUAGE_OPTIONS = [
+  { value: "javascript", label: "JavaScript" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "jsx", label: "JSX" },
+  { value: "tsx", label: "TSX" },
+  { value: "css", label: "CSS" },
+  { value: "html", label: "HTML" },
+  { value: "json", label: "JSON" },
+  { value: "markdown", label: "Markdown" },
+  { value: "python", label: "Python" },
+  { value: "java", label: "Java" },
+  { value: "c", label: "C" },
+  { value: "cpp", label: "C++" },
+  { value: "csharp", label: "C#" },
+  { value: "go", label: "Go" },
+  { value: "rust", label: "Rust" },
+  { value: "bash", label: "Bash" },
+  { value: "sql", label: "SQL" },
+  { value: "plaintext", label: "Plain Text" },
+];
 
 export function MarkdownEditor({
   media,
@@ -68,7 +106,6 @@ export function MarkdownEditor({
       },
     }
   );
-
   const [hasOgImage, setHasOgImage] = useState(false);
   const { triggerRedeploy } = useRedeployToast();
 
@@ -88,7 +125,54 @@ export function MarkdownEditor({
         ...previousState,
         content: newText,
       }));
-      textarea.focus();
+      // Set cursor position after insertion
+      setTimeout(() => {
+        textarea.focus();
+        const newPosition = selectionStart + start.length + selectedText.length;
+        textarea.setSelectionRange(newPosition, newPosition);
+      }, 0);
+    }
+  }
+
+  function insertHeading(level: number) {
+    const prefix = "#".repeat(level) + " ";
+    insertMarkdown(prefix);
+  }
+
+  function insertCodeBlock(language: string = "") {
+    const start = "```" + language + "\n";
+    const end = "\n```";
+
+    const textarea = document.querySelector("textarea");
+    if (textarea) {
+      const selectionStart = textarea.selectionStart;
+      const selectionEnd = textarea.selectionEnd;
+      const selectedText = postData.content.substring(
+        selectionStart,
+        selectionEnd
+      );
+
+      // If text is selected, wrap it in code block
+      if (selectedText) {
+        insertMarkdown(start, end);
+      } else {
+        // If no text is selected, insert an empty code block and position cursor inside
+        const textBefore = postData.content.substring(0, selectionStart);
+        const textAfter = postData.content.substring(selectionEnd);
+        const newText = `${textBefore}${start}${end}${textAfter}`;
+
+        setPostData((previousState) => ({
+          ...previousState,
+          content: newText,
+        }));
+
+        // Set cursor position inside the code block
+        setTimeout(() => {
+          textarea.focus();
+          const newPosition = selectionStart + start.length;
+          textarea.setSelectionRange(newPosition, newPosition);
+        }, 0);
+      }
     }
   }
 
@@ -113,60 +197,60 @@ export function MarkdownEditor({
   async function submit(draft: boolean) {
     try {
       setLoading(true);
+      // Case 1: Updating an existing post
       if (post) {
-        toast.promise(
+        await toast.promise(
           postActions.updatePostAction(post._id, { draft: draft }),
           {
             loading: "Updating post...",
             success: () => {
-              router.refresh();
               return draft
-                ? "Sucessfully saved post as draft."
-                : "Sucessfully published post.";
+                ? "Successfully saved post as draft."
+                : "Successfully published post.";
             },
             error: () => {
               return "Error updating post.";
             },
           }
         );
-      } else {
+        if (latestDeployment && !draft) {
+          triggerRedeploy(latestDeployment);
+        }
+        router.refresh();
+        router.push("/admin/posts");
+      }
+      // Case 2: Creating a new post
+      else {
         const preparedMetadata = {
           title: postData.metadata?.title || postData.title || "",
           description: postData.metadata?.description || "",
           ogImage: postData.metadata?.ogImage || "",
         };
-
         const data = {
           ...postData,
           draft: draft,
           metadata: preparedMetadata,
         };
-
-        const toastPromise = createNewPost(data);
-
-        toast.promise(toastPromise, {
+        // Create the post first and await the result
+        await toast.promise(createNewPost(data), {
           loading: "Creating post...",
-          success: () => {
-            router.push("/admin/posts");
-
-            return "New post created";
-          },
+          success: () => "New post created",
           error: (err) => {
             console.error("Error creating post:", err);
             return "Error creating post";
           },
         });
-
-        await toastPromise;
-      }
-      if (latestDeployment) {
-        setTimeout(() => {
+        // After post creation is complete, trigger the deployment
+        if (latestDeployment && !draft) {
           triggerRedeploy(latestDeployment);
-        }, 500);
+        }
+        // Only navigate after both operations are initialized
+        router.refresh();
+        router.push("/admin/posts");
       }
     } catch (error) {
-      console.error("Unhandled error in createPost:", error);
-      toast.error("Failed to create post");
+      console.error("Unhandled error in submit:", error);
+      toast.error("Failed to create/update post");
     } finally {
       setLoading(false);
     }
@@ -245,7 +329,6 @@ export function MarkdownEditor({
           </div>
         </div>
       </div>
-
       {/* SEO Metadata Section */}
       <Collapsible className="border border-zinc-800 rounded-md">
         <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-zinc-800 rounded-md">
@@ -317,7 +400,6 @@ export function MarkdownEditor({
           </div>
         </CollapsibleContent>
       </Collapsible>
-
       <Tabs defaultValue="edit" className="space-y-4">
         <div className="border rounded-lg">
           <div className="flex gap-2 items-center justify-between p-2 border-b">
@@ -338,14 +420,30 @@ export function MarkdownEditor({
               >
                 <Italic className="h-4 w-4" />
               </Button>
-              <Button
-                variant="ghost"
-                onClick={() => insertMarkdown("# ")}
-                size="sm"
-                title="Heading"
-              >
-                <Heading className="h-4 w-4" />
-              </Button>
+
+              {/* Heading Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" title="Heading">
+                    <Heading className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => insertHeading(1)}>
+                    Heading 1
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => insertHeading(2)}>
+                    Heading 2
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => insertHeading(3)}>
+                    Heading 3
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => insertHeading(4)}>
+                    Heading 4
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <Button
                 variant="ghost"
                 onClick={() => insertMarkdown("- ")}
@@ -370,6 +468,30 @@ export function MarkdownEditor({
               >
                 <Quote className="h-4 w-4" />
               </Button>
+
+              {/* Code Block Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" title="Code Block">
+                    <Code className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
+                  <DropdownMenuItem onClick={() => insertCodeBlock()}>
+                    Plain Code Block
+                  </DropdownMenuItem>
+                  <Separator className="my-1" />
+                  {LANGUAGE_OPTIONS.map((lang) => (
+                    <DropdownMenuItem
+                      key={lang.value}
+                      onClick={() => insertCodeBlock(lang.value)}
+                    >
+                      {lang.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <MediaPopover media={media} onSelect={handleMediaSelect}>
                 <Button variant="ghost" size="sm" title="Insert Image">
                   <Image className="size-4" />
@@ -409,7 +531,6 @@ export function MarkdownEditor({
           </div>
         </div>
       </Tabs>
-
       <div className="flex justify-between">
         <AlertDialog>
           <AlertDialogTrigger asChild>
@@ -418,19 +539,18 @@ export function MarkdownEditor({
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
-            <AlertDialogTitle>Discard Post</AlertDialogTitle>
+            <AlertDialogTitle>Discard Changes</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to discard this post?
+              Are you sure you want to discard changes?
             </AlertDialogDescription>
             <div className="w-full flex justify-end gap-2 mt-4">
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <Link href="/admin/posts">
-                <AlertDialogAction>Discard Post</AlertDialogAction>
+                <AlertDialogAction>Discard Changes</AlertDialogAction>
               </Link>
             </div>
           </AlertDialogContent>
         </AlertDialog>
-
         <div className="flex gap-2">
           <Button
             onClick={() => submit(true)}
@@ -450,109 +570,4 @@ export function MarkdownEditor({
       </div>
     </div>
   );
-}
-
-interface CurrentDeployment {
-  id: string;
-  status: string;
-}
-
-export function useRedeployToast() {
-  const [currentDeployment, setCurrentDeployment] =
-    useState<CurrentDeployment | null>(null);
-  const [isCompleted, setIsCompleted] = useState(false);
-
-  async function getRunningDeployment() {
-    try {
-      if (!currentDeployment) return;
-
-      const deployment = await vercelActions.getDeploymentAction(
-        currentDeployment.id
-      );
-
-      setCurrentDeployment({ id: deployment.id, status: deployment.status });
-
-      toast.loading(
-        `Optimization status: ${deployment.status
-          .charAt(0)
-          .toUpperCase()}${deployment.status.slice(1).toLowerCase()}`,
-        {
-          id: "deployment-status",
-        }
-      );
-
-      if (
-        ["READY", "ERROR", "CANCELED", "FAILED"].includes(deployment.status)
-      ) {
-        setIsCompleted(true);
-
-        if (deployment.status === "READY") {
-          toast.success("Optimization completed successfully", {
-            id: "deployment-status",
-            duration: 3000,
-          });
-        } else {
-          toast.error(
-            `Optimization status: ${deployment.status.toLowerCase()}`,
-            {
-              id: "deployment-status",
-              duration: 5000,
-            }
-          );
-        }
-      }
-    } catch (error) {
-      toast.error(`Error checking optimization status: ${String(error)}`, {
-        id: "deployment-status",
-      });
-      setIsCompleted(true);
-    }
-  }
-
-  useEffect(() => {
-    if (currentDeployment && !isCompleted) {
-      getRunningDeployment();
-
-      const interval = setInterval(getRunningDeployment, 2000);
-
-      return () => clearInterval(interval);
-    }
-  }, [currentDeployment, isCompleted]);
-
-  const triggerRedeploy = async (latestDeployment: Deployments) => {
-    if (!latestDeployment) {
-      toast.error("Could not get latest deployment");
-      return;
-    }
-
-    const toastId = toast.loading("Initiating SEO optimization...");
-
-    try {
-      const data = await vercelActions.triggerRedeployAction(
-        latestDeployment.uid
-      );
-
-      if (!data) throw new Error("Could not trigger redeploy");
-      console.log("Redeployment triggered:", data);
-
-      setCurrentDeployment({ id: data.id, status: data.status });
-      toast.success("Optimization started successfully", { id: toastId });
-      toast.loading(`Optimization status: ${data.status}`, {
-        id: "deployment-status",
-        duration: Infinity,
-      });
-
-      return data;
-    } catch (error) {
-      toast.error("Error triggering optimization", { id: toastId });
-      console.error("Redeployment error:", error);
-      throw error;
-    }
-  };
-
-  return {
-    triggerRedeploy,
-    currentDeployment,
-    isCompleted,
-  };
 }

@@ -14,7 +14,7 @@ export default async function DraftsPage() {
           <Button>New Post</Button>
         </Link>
       </div>
-      <div className="flex-1 flex justify-center overflow-hidden">
+      <div className="flex-1 overflow-hidden">
         <PostsList posts={draftPosts} />
       </div>
     </div>

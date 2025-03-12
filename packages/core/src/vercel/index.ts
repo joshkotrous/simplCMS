@@ -286,4 +286,49 @@ export async function getProjectEnvVars({
   return envVars;
 }
 
+export async function getProjectById({
+  vercel,
+  projectId,
+  teamId,
+}: {
+  vercel: Vercel;
+  projectId: string;
+  teamId: string;
+}) {
+  try {
+    const projects = await vercel.projects.getProjects({ teamId: teamId });
+
+    const project = projects.projects.find(
+      (project) => project.id === projectId
+    );
+
+    if (!project) {
+      throw new Error(`Project with ID ${projectId} not found`);
+    }
+
+    return project;
+  } catch (error) {
+    console.error(`Could not get project ${projectId}: ${error}`);
+    throw error;
+  }
+}
+
+export async function getTeamById({
+  vercel,
+  teamId,
+}: {
+  vercel: Vercel;
+  teamId: string;
+}) {
+  try {
+    const team = await vercel.teams.getTeam({
+      teamId: teamId,
+    });
+    return team;
+  } catch (error) {
+    console.error(`Could not get team ${teamId}: ${error}`);
+    throw error;
+  }
+}
+
 export * as vercel from ".";

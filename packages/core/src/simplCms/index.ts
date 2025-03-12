@@ -124,7 +124,7 @@ export async function validateSetup({
   const googleOauthVarNames = [
     "GOOGLE_OAUTH_CLIENT_ID",
     "GOOGLE_OAUTH_CLIENT_SECRET",
-    "SIMPL_CMS_OAUTH_PROVIDERS", // Added this variable
+    "SIMPCMS_OAUTH_PROVIDERS", // Added this variable
     "NEXTAUTH_URL", // Added this variable
     "NEXTAUTH_SECRET", // Added this variable
   ];
@@ -299,7 +299,7 @@ export async function validateSetup({
     }
   }
 
-  const providersVar = findEnvVar(providerEnvVars, "SIMPL_CMS_OAUTH_PROVIDERS");
+  const providersVar = findEnvVar(providerEnvVars, "SIMPCMS_OAUTH_PROVIDERS");
   const oauthSetupInProvider =
     providersVar &&
     googleOauthVarNames.every((v) => findEnvVar(providerEnvVars, v));
