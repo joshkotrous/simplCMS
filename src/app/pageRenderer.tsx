@@ -61,23 +61,32 @@ const convertStyles = (styles: any): React.CSSProperties => {
   return {};
 };
 
-// Element renderer component
 const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
   const { type, content, styles, children } = element;
   const rawAttributes = element.attributes || null;
-
   // Convert attributes if needed
   const attributes = Array.isArray(rawAttributes)
     ? convertAttributes(rawAttributes)
     : rawAttributes || {};
   // Convert the styles to a React style object
   const styleObject = convertStyles(styles);
-
   // Create the props for the element
   const props = {
     style: styleObject,
     ...attributes,
   };
+
+  // If the element has no type, just render the content directly
+  if (!type || type === "") {
+    return (
+      <>
+        {content}
+        {children?.map((child: any, i: number) => (
+          <ElementRenderer key={i} element={child} />
+        ))}
+      </>
+    );
+  }
 
   // Render the appropriate element based on type
   switch (type) {
@@ -149,7 +158,6 @@ const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
       const href = attributes?.href || "/";
       // Remove href from props to avoid duplicate props
       const { href: _hrefProp, ...linkProps } = props;
-
       return (
         <Link href={href} {...linkProps}>
           {content}
@@ -164,7 +172,6 @@ const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
       const imgAlt = attributes?.alt || "";
       const width = parseInt(attributes?.width || "100", 10);
       const height = parseInt(attributes?.height || "100", 10);
-
       // Remove these from props to avoid duplicates
       const {
         src: _srcProp,
@@ -173,7 +180,6 @@ const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
         height: _heightProp,
         ...imageProps
       } = props;
-
       return (
         <Image
           src={imgSrc}
@@ -227,6 +233,24 @@ const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
             <ElementRenderer key={i} element={child} />
           ))}
         </footer>
+      );
+    case "span":
+      return (
+        <span {...props}>
+          {content}
+          {children?.map((child: any, i: number) => (
+            <ElementRenderer key={i} element={child} />
+          ))}
+        </span>
+      );
+    case "div":
+      return (
+        <div {...props}>
+          {content}
+          {children?.map((child: any, i: number) => (
+            <ElementRenderer key={i} element={child} />
+          ))}
+        </div>
       );
     default:
       return (

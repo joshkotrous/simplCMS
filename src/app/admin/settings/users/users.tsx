@@ -59,8 +59,12 @@ export default function Users({ users }: { users: User[] }) {
             <span>{user.email}</span>
             <span className="flex justify-end">
               <AlertDialog>
-                <AlertDialogTrigger>
-                  <Trash className="size-4 hover:text-red-600 transition-all" />
+                <AlertDialogTrigger disabled={users.length === 1}>
+                  <Trash
+                    className={`size-4 hover:text-red-600 transition-all ${
+                      users.length === 1 && "text-zinc-400 hover:text-zinc-400"
+                    }`}
+                  />
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogTitle>Delete User</AlertDialogTitle>

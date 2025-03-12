@@ -42,13 +42,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
-      <body className="h-screen w-screen overflow-hidden">
+      <body className="h-screen w-screen overflow-hidden bg-background">
         <SiteProvider initialSettings={{ darkMode }}>
-          <div className="fixed w-screen top-0">
+          <div className="z-50 fixed w-screen top-0">
             <AdminToolbar />
             <Navigation />
           </div>
-
           {children}
           <Toaster
             toastOptions={{

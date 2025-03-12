@@ -151,7 +151,7 @@ export default function SetupForm({
     };
 
     initData();
-  }, [serverConfiguration, setupContext, runValidation]);
+  }, [serverConfiguration, runValidation]);
 
   // Add a function to manually refresh validation
   const refreshValidation = async () => {
@@ -386,10 +386,14 @@ export default function SetupForm({
           <span className="flex items-center gap-2 w-full justify-center text-2xl">
             <Check className="text-green-500" /> Setup Complete
           </span>
-          <span>
-            You can now edit this page via either the dashboard or by editing{" "}
-            <code>app/page.tsx</code>
-          </span>
+          <Link href="/admin" className="w-full">
+            <Button className="w-full">
+              Go to Dashboard
+              <div className="rotate-90">
+                <ArrowUp className="animate-bounce" />
+              </div>
+            </Button>
+          </Link>
         </div>
       )}
     </>

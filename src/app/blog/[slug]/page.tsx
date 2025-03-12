@@ -86,7 +86,7 @@ export default async function BlogPost({
   };
 
   return (
-    <div className="w-full flex min-h-screen justify-center pb-20 bg-background text-foreground">
+    <div className="w-full flex min-h-screen justify-center pb-20 bg-background text-foreground pt-20">
       <div
         id="blog"
         className="flex flex-col items-start max-w-5xl w-full p-4 gap-4"

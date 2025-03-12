@@ -38,19 +38,16 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export async function createPost(post: CreatePost): Promise<void> {
   try {
     const uri = getDatabaseUriEnvVariable();
-
     const db = await connectToDatabase(uri);
     const { PostModel } = getModels(db);
-
     const slug = createSlug(post.title);
-
     const postWithSlug = {
       ...post,
       slug,
     };
     const newPost = new PostModel(postWithSlug);
-    await disconnectFromDatabase(db);
     await newPost.save();
+    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not create post ${error}`);
     throw error;
@@ -153,7 +150,7 @@ export async function updatePost(
     if (!updatedPost) {
       throw new Error("Post not found");
     }
-
+    await disconnectFromDatabase(db);
     return postSchema.parse(updatedPost);
   } catch (error) {
     console.error(`Could not update post: ${error}`);

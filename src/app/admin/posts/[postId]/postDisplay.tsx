@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { Post } from "@/types/types";
+import { Post, SimplCMSMedia } from "@/types/types";
 import { Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -19,7 +19,13 @@ import { toast } from "sonner";
 import MarkdownEditor from "../new/markdownEditor";
 import { Button } from "@/components/ui/button";
 
-export default function PostDisplay({ post }: { post: Post }) {
+export default function PostDisplay({
+  post,
+  media,
+}: {
+  post: Post;
+  media: SimplCMSMedia[];
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [editedPost, setEditedPost] = useState<Post>(post);
@@ -171,6 +177,7 @@ export default function PostDisplay({ post }: { post: Post }) {
         </div>
 
         <MarkdownEditor
+          media={media}
           content={editedPost.content}
           onContentChange={(newContent) =>
             setEditedPost((prev) => ({ ...prev, content: newContent }))

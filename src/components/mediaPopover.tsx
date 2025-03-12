@@ -1,6 +1,5 @@
 "use client";
-
-import { CloudinaryMedia, SimplCMSMedia } from "@/types/types";
+import { SimplCMSMedia } from "@/types/types";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Image from "next/image";
 import { Input } from "./ui/input";
@@ -14,21 +13,24 @@ import Link from "next/link";
 export default function MediaPopover({
   media,
   children,
+  onSelect,
+  closeOnSelect = true,
 }: {
   media: SimplCMSMedia[];
   children: React.ReactNode;
+  onSelect?: (media: SimplCMSMedia) => void;
+  closeOnSelect?: boolean;
 }) {
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
-
     const files = Array.from(e.target.files);
     setFilesToUpload(files);
     setIsUploading(true);
-
     toast.promise(mediaActions.uploadMediaAction(files), {
       loading: "Uploading media...",
       success: () => {
@@ -43,12 +45,20 @@ export default function MediaPopover({
         return `Error uploading media: ${error.message}`;
       },
     });
-
     e.target.value = "";
   };
 
+  const handleSelectMedia = (item: SimplCMSMedia) => {
+    if (onSelect) {
+      onSelect(item);
+    }
+    if (closeOnSelect) {
+      setOpen(false);
+    }
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="h-64 overflow-scroll p-0">
         <div className="sticky top-0 p-1 px-2 text-sm flex justify-end z-50 bg-background">
@@ -64,6 +74,7 @@ export default function MediaPopover({
             <button
               key={item.id}
               className="relative aspect-square w-full overflow-hidden rounded-lg hover:ring-2 hover:ring-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={() => handleSelectMedia(item)}
             >
               <Image
                 alt={item.name}
@@ -87,7 +98,6 @@ export default function MediaPopover({
               disabled={isUploading}
             />
           )}
-
           {isUploading && (
             <p className="text-sm text-muted-foreground p-2">
               Uploading {filesToUpload.length} file(s)...

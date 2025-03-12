@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
@@ -62,6 +61,12 @@ export function MarkdownEditor({ media }: { media: SimplCMSMedia[] }) {
       textarea.focus();
     }
   }
+
+  const handleMediaSelect = (selectedMedia: SimplCMSMedia) => {
+    // Insert markdown for the selected image
+    const imageMarkdown = `![${selectedMedia.name}](${selectedMedia.url})`;
+    insertMarkdown(imageMarkdown);
+  };
 
   async function createPost(draft: boolean) {
     setLoading(true);
@@ -126,7 +131,6 @@ export function MarkdownEditor({ media }: { media: SimplCMSMedia[] }) {
           placeholder="Author(s)..."
         />
       </div>
-
       <div className="container mx-auto p-4 border rounded-lg">
         <div className="flex gap-2 items-center justify-between">
           <div className="flex gap-2 items-center">
@@ -172,19 +176,17 @@ export function MarkdownEditor({ media }: { media: SimplCMSMedia[] }) {
             >
               <Quote className="h-4 w-4" />
             </Button>
-            <MediaPopover media={media}>
+            <MediaPopover media={media} onSelect={handleMediaSelect}>
               <Button variant="ghost" size="sm">
                 <Image className="size-4" />
               </Button>
             </MediaPopover>
           </div>
-
           <TabsList className="">
             <TabsTrigger value="edit">Edit</TabsTrigger>
             <TabsTrigger value="preview">Preview</TabsTrigger>
           </TabsList>
         </div>
-
         <TabsContent value="edit">
           <Textarea
             value={postData.content}

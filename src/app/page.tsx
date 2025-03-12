@@ -25,27 +25,27 @@ export default async function Home() {
         ],
       },
       {
-        type: "div",
+        type: "p",
         content: null,
         children: [
           {
-            type: "p",
-            content: "Go to the ",
-            attributes: [{ name: "href", value: "/" }],
+            type: "",
+            content: "Go to the",
             children: [],
-            styles: [{ property: "alignContent", value: "center" }],
           },
           {
             type: "a",
-            content: "dashboard",
+            content: " dashboard ",
             attributes: [{ name: "href", value: "/admin" }],
             children: [],
-            styles: [{ property: "alignContent", value: "center" }],
+            styles: [
+              { property: "alignContent", value: "center" },
+              { property: "fontWeight", value: "bold" },
+            ],
           },
           {
-            type: "p",
+            type: "",
             content: "to edit this page",
-            attributes: [{ name: "href", value: "/" }],
             children: [],
             styles: [{ property: "alignContent", value: "center" }],
           },
@@ -67,19 +67,9 @@ export default async function Home() {
   };
   return (
     <TooltipProvider>
-      <div className="size-full flex justify-center items-center overflow-hidden font-[family-name:var(--font-geist-sans)] bg-[linear-gradient(215deg,rgba(0,0,0,0.25)_0%,transparent_40%)] bg-background dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)]">
-        <main className="flex gap-4 items-center flex-col text-foreground">
-          <h1 className="text-4xl font-bold">SimplCMS</h1>
-          <SetupForm serverConfiguration={platformConfiguration} />
-
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 text-foreground"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      <div className="size-full flex justify-center items-center overflow-hidden font-[family-name:var(--font-geist-sans)] pt-20">
+        <div className="size-full absolute top-0 left-0 z-0 bg-[linear-gradient(215deg,rgba(0,0,0,0.25)_0%,transparent_40%)] bg-background dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)]" />
+        <main className="flex gap-4 items-center flex-col z-50 text-foreground">
           <PageRenderer page={homePageConfig} />
         </main>
       </div>
