@@ -42,7 +42,7 @@ export async function connectDbToApplication(
     }
 
     const pageConfig = createPageSchema.parse(defaultHomePageConfig);
-    await simplCms.pages.createPage(pageConfig);
+    await simplCms.pages.createPage(pageConfig, uri);
   } catch (error) {
     console.error(error);
     throw error;

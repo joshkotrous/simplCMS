@@ -22,9 +22,14 @@ export async function getAllPages(): Promise<Page[]> {
     throw error;
   }
 }
-export async function createPage(page: CreatePage): Promise<Page> {
+export async function createPage(
+  page: CreatePage,
+  uri?: string
+): Promise<Page> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    if (!uri) {
+      uri = getDatabaseUriEnvVariable();
+    }
     const db = await connectToDatabase(uri);
     const { PageModel } = getModels(db);
     const newPage = await PageModel.create(page);
