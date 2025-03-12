@@ -57,10 +57,10 @@ export default function RedeployForm() {
     if (!latestDeployment) throw new Error("Could not get latest deployment");
     toast.promise(
       vercelActions.triggerRedeployAction(
+        latestDeployment.uid,
         setupData.host.vercel.token,
         setupData.host.vercel.projectId,
-        setupData.host.vercel?.teamId,
-        latestDeployment.uid
+        setupData.host.vercel?.teamId
       ),
       {
         loading: "Redeploying...",
@@ -87,8 +87,8 @@ export default function RedeployForm() {
       if (!setupData.host?.vercel?.teamId)
         throw new Error("Could not get vercel team");
       const deployment = await vercelActions.getDeploymentAction(
-        setupData.host.vercel.token,
         currentDeployment?.id,
+        setupData.host.vercel.token,
         setupData.host.vercel.teamId
       );
       setCurrentDeployment({ id: deployment.id, status: deployment.status });

@@ -177,4 +177,103 @@ export async function deleteCloudinaryMedia(
   }
 }
 
+export async function updateCloudinaryMediaName(
+  media: SimplCMSMedia,
+  newName: string,
+  mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
+): Promise<SimplCMSMedia> {
+  // Find Cloudinary configuration in the media storage configuration
+  if (!Array.isArray(mediaStorageConfiguration)) {
+    throw new Error("Invalid media storage configuration");
+  }
+
+  const cloudinaryConfigEntry = mediaStorageConfiguration.find(
+    (config) => config.provider === "Cloudinary"
+  );
+
+  if (!cloudinaryConfigEntry || !cloudinaryConfigEntry.cloudinary) {
+    throw new Error("Cloudinary configuration not found");
+  }
+
+  const cloudinaryConfig = cloudinaryConfigEntry.cloudinary;
+
+  // Validate Cloudinary configuration
+  if (!cloudinaryConfig.uri) {
+    throw new Error("Cloudinary config is missing URI");
+  }
+
+  // Configure Cloudinary with the credentials from the URI
+  const { apiKey, apiSecret, cloudName } = parseCloudinaryUrl(
+    cloudinaryConfig.uri
+  );
+
+  cloudinary.config({
+    api_key: apiKey,
+    api_secret: apiSecret,
+    cloud_name: cloudName,
+  });
+
+  try {
+    // Extract the public ID from the media URL
+    // Cloudinary URLs typically look like:
+    // https://res.cloudinary.com/{cloud_name}/image/upload/v{version}/{public_id}.{format}
+    const url = new URL(media.url);
+    const pathParts = url.pathname.split("/");
+
+    // The public ID is usually after 'upload' and may include a version prefix
+    let publicIdWithExtension = "";
+    const uploadIndex = pathParts.findIndex((part) => part === "upload");
+
+    if (uploadIndex !== -1 && uploadIndex < pathParts.length - 1) {
+      // Get everything after 'upload', but skip the version part if present
+      const afterUpload = pathParts.slice(uploadIndex + 1).join("/");
+      // If there's a version prefix (v1234567890), skip it
+      if (afterUpload.startsWith("v") && /^v\d+\//.test(afterUpload)) {
+        publicIdWithExtension = afterUpload.replace(/^v\d+\//, "");
+      } else {
+        publicIdWithExtension = afterUpload;
+      }
+    } else {
+      // Fall back to using the asset ID
+      publicIdWithExtension = media.id;
+    }
+
+    // Remove file extension if present
+    const publicId = publicIdWithExtension.replace(/\.[^/.]+$/, "");
+
+    // Get file extension from the original name
+    const fileExtMatch = media.name.match(/\.[^/.]+$/);
+    const fileExt = fileExtMatch ? fileExtMatch[0] : "";
+
+    // Determine resource type based on media type
+    const resourceType = media.type === "video" ? "video" : "image";
+
+    // Add extension to new name if it doesn't have one
+    const finalNewName =
+      !newName.includes(".") && fileExt ? `${newName}${fileExt}` : newName;
+
+    // Update the media metadata/context to include the new display name
+    // Using add_context method to update the display name
+    await cloudinary.uploader.add_context(
+      `display_name=${finalNewName}`,
+      [publicId],
+      {
+        resource_type: resourceType,
+      }
+    );
+
+    // Update the media object with the new name
+    // Note: The URL remains the same as the public_id hasn't changed
+    // Since we're only changing metadata, the actual asset on Cloudinary is unchanged
+    // In production, you may need to fetch the updated media list to confirm changes
+    return {
+      ...media,
+      name: finalNewName,
+    };
+  } catch (error) {
+    console.error("Error updating media name in Cloudinary:", error);
+    throw error;
+  }
+}
+
 export * as cloudinary from ".";

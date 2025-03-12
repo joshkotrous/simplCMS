@@ -38,14 +38,14 @@ export default function PagePreview({ routes }: { routes: Page[] }) {
             <Loader2 className="size-6 animate-spin text-gray-500" />
           </div>
         )} */}
-        {/* <iframe
+        <iframe
           src={previewUrl}
           className="w-full h-full border-0"
           sandbox="allow-scripts allow-same-origin"
           title="Page preview"
           onLoad={handleIframeLoad}
-        /> */}
-        <PageEditor onSave={() => {}} page={homeRoute} />
+        />
+        {/* <PageEditor onSave={() => {}} page={homeRoute} /> */}
       </div>
     </>
   );

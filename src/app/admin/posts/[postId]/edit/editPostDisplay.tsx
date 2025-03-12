@@ -17,18 +17,20 @@ import { Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import MarkdownEditor from "../../new/markdownEditor";
 import { Button } from "@/components/ui/button";
+import { MarkdownEditor } from "../../new/textEditor";
+import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 
 export default function EditPostDisplay({
   post,
   media,
+  latestDeployment,
 }: {
   post: Post;
   media: SimplCMSMedia[];
+  latestDeployment: Deployments | null;
 }) {
   const router = useRouter();
-  const [editedPost, setEditedPost] = useState<Post>(post);
 
   async function deletePost() {
     toast.promise(postActions.deletePostAction(post), {
@@ -40,19 +42,6 @@ export default function EditPostDisplay({
       },
       error: () => {
         return "Error deleting post.";
-      },
-    });
-  }
-
-  async function updatePost() {
-    toast.promise(postActions.updatePostAction(post._id, editedPost), {
-      loading: "Updating post...",
-      success: () => {
-        router.refresh();
-        return "Sucessfully updated post.";
-      },
-      error: () => {
-        return "Error updating post.";
       },
     });
   }
@@ -77,24 +66,6 @@ export default function EditPostDisplay({
       <div className="space-y-2">
         <div className="w-full flex justify-between gap-8">
           <div className="flex gap-4 items-center">
-            <div className="space-y-1">
-              <span className="text-zinc-200 dark:text-zinc-400 text-sm">
-                Title
-              </span>
-              <Input
-                placeholder="Title..."
-                style={{ fontSize: "1.875rem" }}
-                className="text-3xl font-bold py-6"
-                value={editedPost.title}
-                onChange={(e) =>
-                  setEditedPost((prev) => ({
-                    ...prev,
-                    title: e.target.value,
-                  }))
-                }
-              />
-            </div>
-
             {post.draft && (
               <div className="text-xs bg-zinc-200 dark:bg-zinc-800 w-fit p-1 rounded  left-2 top-2">
                 DRAFT
@@ -102,35 +73,6 @@ export default function EditPostDisplay({
             )}
           </div>
           <div className="flex gap-2 items-center">
-            <AlertDialog>
-              <AlertDialogTrigger className="w-fit text-nowrap p-2 bg-red-600 rounded-md text-sm">
-                Discard Changes
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogTitle>Discard changes?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to discard all changes?
-                </AlertDialogDescription>
-                <div className="flex gap-2 w-full justify-end">
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => router.push(`/admin/posts/${post._id}`)}
-                  >
-                    Discard
-                  </AlertDialogAction>
-                </div>
-              </AlertDialogContent>
-            </AlertDialog>
-            {post.draft ? (
-              <Button onClick={() => updateDraft(false)} variant="secondary">
-                Publish Post
-              </Button>
-            ) : (
-              <Button onClick={() => updateDraft(true)} variant="secondary">
-                Move to Drafts
-              </Button>
-            )}
-            <Button onClick={updatePost}>Save Changes</Button>
             <AlertDialog>
               <AlertDialogTrigger>
                 <Trash className="size-4" />
@@ -151,54 +93,13 @@ export default function EditPostDisplay({
             </AlertDialog>
           </div>
         </div>
-        <p>{new Date(post.createdAt).toLocaleDateString()}</p>
-        <div className="flex gap-1 items-center">
-          <div className="space-y-1">
-            <span className="text-zinc-200 dark:text-zinc-400 text-sm">
-              Author
-            </span>
-            <Input
-              placeholder="Author..."
-              value={editedPost.author}
-              onChange={(e) =>
-                setEditedPost((prev) => ({ ...prev, author: e.target.value }))
-              }
-            />
-          </div>
-        </div>
-        <div className="space-y-1">
-          <span className="text-zinc-200 dark:text-zinc-400 text-sm">
-            Category
-          </span>
-          <Input
-            placeholder="Category..."
-            value={editedPost.category ?? ""}
-            onChange={(e) =>
-              setEditedPost((prev) => ({ ...prev, category: e.target.value }))
-            }
-          />
-        </div>
-        <div className="space-y-1">
-          <span className="text-zinc-200 dark:text-zinc-400 text-sm">
-            Subtitle
-          </span>
-          <Input
-            placeholder="Subtitle..."
-            value={editedPost.subtitle ?? ""}
-            onChange={(e) =>
-              setEditedPost((prev) => ({ ...prev, subtitle: e.target.value }))
-            }
-          />
-        </div>
+        <p>Created on: {new Date(post.createdAt).toLocaleDateString()}</p>
+        <MarkdownEditor
+          latestDeployment={latestDeployment}
+          media={media}
+          post={post}
+        />
       </div>
-
-      <MarkdownEditor
-        media={media}
-        content={editedPost.content}
-        onContentChange={(newContent) =>
-          setEditedPost((prev) => ({ ...prev, content: newContent }))
-        }
-      />
     </div>
   );
 }

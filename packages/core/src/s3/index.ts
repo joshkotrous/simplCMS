@@ -10,6 +10,7 @@ import {
   ListObjectsV2CommandOutput,
   PutObjectCommand,
   DeleteObjectCommand,
+  CopyObjectCommand,
 } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 
@@ -278,6 +279,106 @@ export async function deleteS3Media(
 
   // Execute the delete command
   await s3Client.send(deleteCommand);
+}
+
+export async function updateS3MediaName(
+  media: SimplCMSMedia,
+  newName: string,
+  mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
+): Promise<SimplCMSMedia> {
+  // Find S3 configuration in the media storage configuration
+  if (!Array.isArray(mediaStorageConfiguration)) {
+    throw new Error("Invalid media storage configuration");
+  }
+
+  const s3ConfigEntry = mediaStorageConfiguration.find(
+    (config) => config.provider === "AWS S3"
+  );
+
+  if (!s3ConfigEntry || !s3ConfigEntry.s3) {
+    throw new Error("AWS S3 configuration not found");
+  }
+
+  const s3Config = s3ConfigEntry.s3;
+
+  // Validate S3 configuration
+  if (!s3Config.region) throw new Error("S3 config is missing region");
+  if (!s3Config.accessKeyId)
+    throw new Error("S3 config is missing access key id");
+  if (!s3Config.accessSecretKey)
+    throw new Error("S3 config is missing secret access key");
+  if (!s3Config.bucketName) throw new Error("S3 config is missing bucket name");
+
+  // Create an S3 client
+  const s3Client = new S3Client({
+    region: s3Config.region,
+    credentials: {
+      accessKeyId: s3Config.accessKeyId,
+      secretAccessKey: s3Config.accessSecretKey,
+    },
+  });
+
+  try {
+    // Get the original key (ID) and path components
+    const originalKey = media.id;
+    const keyParts = originalKey.split("/");
+
+    // Extract the file extension from the original name
+    const extensionMatch = media.name.match(/\.[^.]+$/);
+    const fileExtension = extensionMatch ? extensionMatch[0] : "";
+
+    // Create the new filename, preserving the extension
+    let finalNewName = newName;
+    if (fileExtension && !newName.includes(".")) {
+      finalNewName = `${newName}${fileExtension}`;
+    }
+
+    // Determine the new key based on whether the file is in a subfolder
+    let newKey: string;
+
+    if (keyParts.length > 1) {
+      // It's in a subfolder, preserve the path
+      const path = keyParts.slice(0, -1).join("/");
+      newKey = `${path}/${finalNewName}`;
+    } else {
+      // It's in the root directory
+      newKey = finalNewName;
+    }
+
+    // Copy the object to the new key
+    await s3Client.send(
+      new CopyObjectCommand({
+        Bucket: s3Config.bucketName,
+        Key: newKey,
+        CopySource: `${s3Config.bucketName}/${encodeURIComponent(originalKey)}`,
+        MetadataDirective: "COPY",
+      })
+    );
+
+    // Delete the original object
+    await s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: s3Config.bucketName,
+        Key: originalKey,
+      })
+    );
+
+    // Create a new URL for the renamed object
+    const newUrl = `https://${s3Config.bucketName}.s3.${
+      s3Config.region
+    }.amazonaws.com/${encodeURIComponent(newKey)}`;
+
+    // Return updated media object
+    return {
+      ...media,
+      id: newKey,
+      name: finalNewName,
+      url: newUrl,
+    };
+  } catch (error: any) {
+    console.error("Error updating media name in S3:", error);
+    throw error;
+  }
 }
 
 export * as s3 from ".";

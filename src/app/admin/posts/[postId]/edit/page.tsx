@@ -2,6 +2,7 @@ import { getPost } from "@/packages/core/src/posts";
 import { notFound } from "next/navigation";
 import EditPostDisplay from "./editPostDisplay";
 import { getServerEnvVars, simplCms } from "@/packages/core/src/simplCms";
+import { vercel } from "@/packages/core/src/vercel";
 
 export default async function EditPostPage(props: {
   params: Promise<{ postId: string }>;
@@ -13,9 +14,21 @@ export default async function EditPostPage(props: {
   const media = await simplCms.media.getMedia(
     platformConfiguration.mediaStorage
   );
+  const client = await vercel.connect(
+    platformConfiguration.host?.vercel?.token!
+  );
+  const latestDeployment = await vercel.getLatestDeployment({
+    vercel: client,
+    projectId: platformConfiguration.host?.vercel?.projectId!,
+    teamId: platformConfiguration.host?.vercel?.teamId!,
+  });
   return (
     <div className="p-4">
-      <EditPostDisplay media={media} post={post} />
+      <EditPostDisplay
+        latestDeployment={latestDeployment}
+        media={media}
+        post={post}
+      />
     </div>
   );
 }

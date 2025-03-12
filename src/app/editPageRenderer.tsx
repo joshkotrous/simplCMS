@@ -511,7 +511,7 @@ const PageEditor: React.FC<{
       // Add to root level
       setWorkingPage({
         ...workingPage,
-        elements: [...workingPage.elements, newElement],
+        elements: [...(workingPage.elements as Element[]), newElement],
       });
       return;
     }

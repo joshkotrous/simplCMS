@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { attributeSchema, styleSchema } from "./styles";
+import { attributeSchema, StyleEntry, styleSchema } from "./styles";
 
 export const hostProviderSchema = z.enum(["Vercel"]);
 export const dbProviderSchema = z.enum(["MongoDB", "DynamoDB"]);
@@ -40,6 +40,11 @@ export const postSchema = z.object({
   subtitle: z.string().nullable(),
   draft: z.boolean(),
   slug: z.string(),
+  metadata: z.object({
+    title: z.string(),
+    description: z.string(),
+    ogImage: z.string(),
+  }),
 });
 
 export const elementTypeSchema = z.enum([
@@ -65,7 +70,7 @@ export type ElementType = z.infer<typeof elementTypeSchema>;
 
 export interface Element {
   type: ElementType;
-  styles: Record<string, string> | null;
+  styles: StyleEntry;
   attributes: Record<string, string> | null;
   content: string | null;
   children: any[];

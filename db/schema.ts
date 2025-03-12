@@ -46,6 +46,11 @@ export const PostSchema: Schema = new Schema<Post>({
   subtitle: { type: String },
   slug: { type: String },
   draft: { type: Boolean, required: true, default: false },
+  metadata: {
+    title: { type: String },
+    description: { type: String },
+    ogImage: { type: String },
+  },
 });
 
 const elementSchemaDefinition = {

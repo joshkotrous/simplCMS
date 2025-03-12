@@ -27,3 +27,37 @@ export async function deleteMediaAction(media: SimplCMSMedia) {
   const platformConfiguration = getServerEnvVars();
   await simplCms.media.deleteMedia(media, platformConfiguration.mediaStorage);
 }
+
+export async function updateMediaNameAction(
+  media: SimplCMSMedia,
+  newName: string
+): Promise<SimplCMSMedia> {
+  try {
+    const platformConfiguration = getServerEnvVars();
+    const mediaStorage = platformConfiguration.mediaStorage;
+
+    if (!mediaStorage) {
+      throw new Error("Media storage configuration not found");
+    }
+
+    let updatedMedia: SimplCMSMedia;
+
+    // Update the media name based on the source
+    if (media.source === "AWS S3") {
+      updatedMedia = await s3.updateS3MediaName(media, newName, mediaStorage);
+    } else if (media.source === "Cloudinary") {
+      updatedMedia = await cloudinary.updateCloudinaryMediaName(
+        media,
+        newName,
+        mediaStorage
+      );
+    } else {
+      throw new Error(`Unsupported media source: ${media.source}`);
+    }
+
+    return updatedMedia;
+  } catch (error) {
+    console.error("Error updating media name:", error);
+    throw error;
+  }
+}

@@ -1,5 +1,6 @@
 "use server";
 
+import { getServerEnvVars } from "@/packages/core/src/simplCms";
 import {
   addEnvToProject,
   connect,
@@ -137,12 +138,28 @@ export async function getLatestDeploymentAction(
 }
 
 export async function triggerRedeployAction(
-  vercelToken: string,
-  projectId: string,
-  teamId: string,
-  deploymentId: string
+  deploymentId: string,
+  vercelToken?: string,
+  projectId?: string,
+  teamId?: string
 ): Promise<CreateDeploymentResponseBody> {
   try {
+    const platformConfiguration = getServerEnvVars();
+    if (!vercelToken) {
+      if (!platformConfiguration.host?.vercel?.token)
+        throw new Error("Vercel token is not configured");
+      vercelToken = platformConfiguration.host?.vercel?.token;
+    }
+    if (!projectId) {
+      if (!platformConfiguration.host?.vercel?.projectId)
+        throw new Error("Project id is not configured");
+      projectId = platformConfiguration.host?.vercel?.projectId;
+    }
+    if (!teamId) {
+      if (!platformConfiguration.host?.vercel?.teamId)
+        throw new Error("Team id is not configured");
+      teamId = platformConfiguration.host?.vercel?.teamId;
+    }
     const vercel = connect(vercelToken);
     const deployment = await triggerRedeploy({
       vercel,
@@ -158,11 +175,22 @@ export async function triggerRedeployAction(
 }
 
 export async function getDeploymentAction(
-  vercelToken: string,
   deploymentId: string,
-  teamId: string
+  vercelToken?: string,
+  teamId?: string
 ): Promise<GetDeploymentResponseBody> {
   try {
+    const platformConfiguration = getServerEnvVars();
+    if (!vercelToken) {
+      if (!platformConfiguration.host?.vercel?.token)
+        throw new Error("Vercel token is not configured");
+      vercelToken = platformConfiguration.host?.vercel?.token;
+    }
+    if (!teamId) {
+      if (!platformConfiguration.host?.vercel?.teamId)
+        throw new Error("Team id is not configured");
+      teamId = platformConfiguration.host?.vercel?.teamId;
+    }
     const vercel = connect(vercelToken);
     const deployment = await getDeploymentById({
       vercel,
