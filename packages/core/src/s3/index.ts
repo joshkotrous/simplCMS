@@ -1,10 +1,15 @@
-import { AWSS3Config, SimplCMSMedia } from "@/types/types";
+import {
+  AWSS3Config,
+  SimplCMSMedia,
+  SimplCMSMediaStorageConfiguration,
+} from "@/types/types";
 import {
   S3Client,
   ListObjectsV2Command,
   HeadBucketCommand,
   ListObjectsV2CommandOutput,
   PutObjectCommand,
+  DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 
@@ -223,6 +228,56 @@ export async function uploadFiles(
     console.error("Error uploading files to S3:", error);
     throw error;
   }
+}
+
+export async function deleteS3Media(
+  media: SimplCMSMedia,
+  mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
+): Promise<void> {
+  // Find S3 configuration in the media storage configuration
+  if (!Array.isArray(mediaStorageConfiguration)) {
+    throw new Error("Invalid media storage configuration");
+  }
+
+  const s3ConfigEntry = mediaStorageConfiguration.find(
+    (config) => config.provider === "AWS S3"
+  );
+
+  if (!s3ConfigEntry || !s3ConfigEntry.s3) {
+    throw new Error("AWS S3 configuration not found");
+  }
+
+  const s3Config = s3ConfigEntry.s3;
+
+  // Validate S3 configuration
+  if (!s3Config.region) throw new Error("S3 config is missing region");
+  if (!s3Config.accessKeyId)
+    throw new Error("S3 config is missing access key id");
+  if (!s3Config.accessSecretKey)
+    throw new Error("S3 config is missing secret access key");
+  if (!s3Config.bucketName) throw new Error("S3 config is missing bucket name");
+
+  // Create an S3 client
+  const s3Client = new S3Client({
+    region: s3Config.region,
+    credentials: {
+      accessKeyId: s3Config.accessKeyId,
+      secretAccessKey: s3Config.accessSecretKey,
+    },
+  });
+
+  // Extract the key from the media object
+  // The id field is the full key in S3
+  const key = media.id;
+
+  // Create delete command
+  const deleteCommand = new DeleteObjectCommand({
+    Bucket: s3Config.bucketName,
+    Key: key,
+  });
+
+  // Execute the delete command
+  await s3Client.send(deleteCommand);
 }
 
 export * as s3 from ".";

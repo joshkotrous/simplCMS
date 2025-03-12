@@ -3,6 +3,8 @@ import { Page } from "@/types/types";
 import VerticalTreeMenu from "./pagesList";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import PageRenderer from "@/app/pageRenderer";
+import PageEditor from "@/app/editPageRenderer";
 
 export default function PagePreview({ routes }: { routes: Page[] }) {
   const homeRoute = routes.find((route) => route.route === "/");
@@ -31,18 +33,19 @@ export default function PagePreview({ routes }: { routes: Page[] }) {
         onRouteSelect={handleRouteSelect}
       />
       <div className="relative w-full h-full">
-        {isLoading && (
+        {/* {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-zinc-900/50">
             <Loader2 className="size-6 animate-spin text-gray-500" />
           </div>
-        )}
-        <iframe
+        )} */}
+        {/* <iframe
           src={previewUrl}
           className="w-full h-full border-0"
           sandbox="allow-scripts allow-same-origin"
           title="Page preview"
           onLoad={handleIframeLoad}
-        />
+        /> */}
+        <PageEditor onSave={() => {}} page={homeRoute} />
       </div>
     </>
   );

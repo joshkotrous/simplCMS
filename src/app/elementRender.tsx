@@ -1,8 +1,8 @@
-import React from "react";
-import { Element, Page } from "@/types/types";
-import Link from "next/link";
-import Image from "next/image";
+"use server";
+
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 import PostList from "./blog/postList";
 
 function convertAttributes(
@@ -62,7 +62,7 @@ const convertStyles = (styles: any): React.CSSProperties => {
   return {};
 };
 
-export const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
+export default async function ElementRenderer({ element }: { element: any }) {
   const { type, content, styles, children } = element;
   const rawAttributes = element.attributes || null;
   // Convert attributes if needed
@@ -272,17 +272,4 @@ export const ElementRenderer: React.FC<{ element: any }> = ({ element }) => {
         </div>
       );
   }
-};
-
-// Page renderer component
-export default async function PageRenderer({ page }: { page: Page }) {
-  return (
-    <div className="page-renderer">
-      <main className="page-content">
-        {page.elements.map((element: any, index: number) => (
-          <ElementRenderer key={index} element={element} />
-        ))}
-      </main>
-    </div>
-  );
 }

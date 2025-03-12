@@ -58,6 +58,7 @@ export const elementTypeSchema = z.enum([
   "nav",
   "footer",
   "header",
+  "BlogPostList",
 ]);
 
 export type ElementType = z.infer<typeof elementTypeSchema>;

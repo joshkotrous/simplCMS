@@ -22,3 +22,8 @@ export async function uploadMediaAction(
     throw error;
   }
 }
+
+export async function deleteMediaAction(media: SimplCMSMedia) {
+  const platformConfiguration = getServerEnvVars();
+  await simplCms.media.deleteMedia(media, platformConfiguration.mediaStorage);
+}

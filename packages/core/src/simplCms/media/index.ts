@@ -135,3 +135,21 @@ export async function uploadMedia(
     throw error;
   }
 }
+
+export async function deleteMedia(
+  media: SimplCMSMedia,
+  mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
+): Promise<void> {
+  try {
+    if (media.source === "AWS S3") {
+      await s3.deleteS3Media(media, mediaStorageConfiguration);
+    } else if (media.source === "Cloudinary") {
+      await cloudinary.deleteCloudinaryMedia(media, mediaStorageConfiguration);
+    } else {
+      throw new Error(`Unsupported media source: ${media.source}`);
+    }
+  } catch (error: any) {
+    console.error("Error deleting media:", error);
+    throw error;
+  }
+}

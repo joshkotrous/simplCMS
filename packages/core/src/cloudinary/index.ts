@@ -1,4 +1,8 @@
-import { CloudinaryMedia, SimplCMSMedia } from "@/types/types";
+import {
+  CloudinaryMedia,
+  SimplCMSMedia,
+  SimplCMSMediaStorageConfiguration,
+} from "@/types/types";
 import { v2 as cloudinary } from "cloudinary";
 
 function parseCloudinaryUrl(cloudinaryUrl: string) {
@@ -93,6 +97,82 @@ export async function uploadFiles(files: Blob[]): Promise<void> {
     await Promise.all(uploadPromises);
   } catch (error) {
     console.error("Error uploading files to Cloudinary:", error);
+    throw error;
+  }
+}
+
+export async function deleteCloudinaryMedia(
+  media: SimplCMSMedia,
+  mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
+): Promise<void> {
+  // Find Cloudinary configuration in the media storage configuration
+  if (!Array.isArray(mediaStorageConfiguration)) {
+    throw new Error("Invalid media storage configuration");
+  }
+
+  const cloudinaryConfigEntry = mediaStorageConfiguration.find(
+    (config) => config.provider === "Cloudinary"
+  );
+
+  if (!cloudinaryConfigEntry || !cloudinaryConfigEntry.cloudinary) {
+    throw new Error("Cloudinary configuration not found");
+  }
+
+  const cloudinaryConfig = cloudinaryConfigEntry.cloudinary;
+
+  // Validate Cloudinary configuration
+  if (!cloudinaryConfig.uri) {
+    throw new Error("Cloudinary config is missing URI");
+  }
+
+  // Configure Cloudinary with the credentials from the URI
+  const { apiKey, apiSecret, cloudName } = parseCloudinaryUrl(
+    cloudinaryConfig.uri
+  );
+  cloudinary.config({
+    api_key: apiKey,
+    api_secret: apiSecret,
+    cloud_name: cloudName,
+  });
+
+  try {
+    // Extract the public ID from the media URL
+    // Cloudinary URLs typically look like:
+    // https://res.cloudinary.com/{cloud_name}/image/upload/v{version}/{public_id}.{format}
+    const url = new URL(media.url);
+    const pathParts = url.pathname.split("/");
+
+    // The public ID is usually after 'upload' and may include a version prefix
+    let publicIdWithExtension = "";
+    const uploadIndex = pathParts.findIndex((part) => part === "upload");
+
+    if (uploadIndex !== -1 && uploadIndex < pathParts.length - 1) {
+      // Get everything after 'upload', but skip the version part if present
+      const afterUpload = pathParts.slice(uploadIndex + 1).join("/");
+
+      // If there's a version prefix (v1234567890), skip it
+      if (afterUpload.startsWith("v") && /^v\d+\//.test(afterUpload)) {
+        publicIdWithExtension = afterUpload.replace(/^v\d+\//, "");
+      } else {
+        publicIdWithExtension = afterUpload;
+      }
+    } else {
+      // Fall back to using the asset ID
+      publicIdWithExtension = media.id;
+    }
+
+    // Remove file extension if present
+    const publicId = publicIdWithExtension.replace(/\.[^/.]+$/, "");
+
+    // Determine resource type based on media type
+    const resourceType = media.type === "video" ? "video" : "image";
+
+    // Delete the resource
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+  } catch (error) {
+    console.error("Error deleting media from Cloudinary:", error);
     throw error;
   }
 }

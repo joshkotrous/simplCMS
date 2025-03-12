@@ -1,10 +1,19 @@
+"use server";
+import { posts } from "@/packages/core/src/posts";
+import { getServerEnvVars } from "@/packages/core/src/simplCms";
 import { Post } from "@/types/types";
 import Link from "next/link";
 
-export default function PostList({ posts }: { posts: Post[] }) {
+export default async function PostList() {
+  const platformConfiguration = getServerEnvVars();
+  let publishedPosts: Post[] = [];
+  if (platformConfiguration.database) {
+    const allPosts = await posts.getAllPosts();
+    publishedPosts = allPosts.filter((post) => !post.draft);
+  }
   return (
     <div>
-      {posts.map((post) => (
+      {publishedPosts.map((post) => (
         <Link key={post._id} href={`/blog/${post.slug}`}>
           <div className="flex flex-col gap-4 border-b pb-2">
             <div className="space-y-1">
