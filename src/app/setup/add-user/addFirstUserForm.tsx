@@ -19,7 +19,7 @@ export default function AddFirstUserForm() {
     setLoading(true);
     toast.promise(
       userActions.createUserAction(
-        { email: email },
+        { email: email, role: "admin" },
         setupData.database?.mongo?.uri
       ),
       {

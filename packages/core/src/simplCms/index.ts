@@ -299,7 +299,7 @@ export async function validateSetup({
     }
   }
 
-  const providersVar = findEnvVar(providerEnvVars, "SIMPCMS_OAUTH_PROVIDERS");
+  const providersVar = findEnvVar(providerEnvVars, "SIMPLCMS_OAUTH_PROVIDERS");
   const oauthSetupInProvider =
     providersVar &&
     googleOauthVarNames.every((v) => findEnvVar(providerEnvVars, v));

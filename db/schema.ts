@@ -32,8 +32,8 @@ export const SiteConfigSchema: Schema = new Schema<SiteConfig>({
 export const UserSchema: Schema = new Schema<User>({
   email: { type: String, required: true },
   role: { type: String, enum: ["user", "admin"], default: "user" },
-  imageUrl: { type: String, required: true, default: null },
-  name: { type: String, required: true, default: null },
+  imageUrl: { type: String, required: false, default: null },
+  name: { type: String, required: false, default: null },
   createdAt: { type: Date, default: Date.now },
 });
 
