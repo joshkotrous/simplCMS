@@ -19,6 +19,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  TooltipProvider,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -320,9 +321,9 @@ export default function SetupForm({
   }
 
   return (
-    <>
+    <TooltipProvider>
       {!currentStep.complete && (
-        <>
+        <div className="flex flex-col items-center gap-4">
           <h2 className="text-xl text-zinc-400">
             Setup requires a few simple steps
           </h2>
@@ -379,7 +380,7 @@ export default function SetupForm({
               Skip Media Storage Setup
             </Button>
           )}
-        </>
+        </div>
       )}
       {currentStep.complete && (
         <div className="text-center flex flex-col gap-2">
@@ -396,6 +397,6 @@ export default function SetupForm({
           </Link>
         </div>
       )}
-    </>
+    </TooltipProvider>
   );
 }
