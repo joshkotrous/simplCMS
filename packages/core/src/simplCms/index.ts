@@ -124,9 +124,9 @@ export async function validateSetup({
   const googleOauthVarNames = [
     "GOOGLE_OAUTH_CLIENT_ID",
     "GOOGLE_OAUTH_CLIENT_SECRET",
-    "SIMPCMS_OAUTH_PROVIDERS", // Added this variable
-    "NEXTAUTH_URL", // Added this variable
-    "NEXTAUTH_SECRET", // Added this variable
+    "SIMPLCMS_OAUTH_PROVIDERS",
+    "NEXTAUTH_URL",
+    "NEXTAUTH_SECRET",
   ];
   const cloudinaryVarNames = [
     "CLOUDINARY_URL",
