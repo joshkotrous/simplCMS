@@ -173,14 +173,6 @@ export default function SetupMongoForm({
     );
   }
 
-  // Display the current connection string with sensitive parts masked
-  const displayUri = setupData.database?.mongo?.uri
-    ? setupData.database.mongo.uri.replace(
-        /(mongodb:\/\/)([^@]+)@/,
-        "$1***:***@"
-      )
-    : "";
-
   return (
     <Card>
       <CardHeader className="text-center">

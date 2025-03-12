@@ -1,6 +1,6 @@
 import mongoose, { Connection } from "mongoose";
-import { UserSchema, PostSchema, SiteConfigSchema } from "./schema";
-import { User, Post, SiteConfig, Page } from "@/types/types";
+import { UserSchema, PostSchema, SiteConfigSchema, PageSchema } from "./schema";
+import { User, Post, SiteConfig, Page, pageSchema } from "@/types/types";
 
 const connectionCache: Record<string, Connection> = {};
 
@@ -59,8 +59,7 @@ export function getModels(connection: Connection) {
       connection.models.SiteConfig ||
       connection.model<SiteConfig>("SiteConfig", SiteConfigSchema),
     PageModel:
-      connection.models.Page ||
-      connection.model<Page>("Page", SiteConfigSchema),
+      connection.models.Page || connection.model<Page>("Page", PageSchema),
   };
 }
 

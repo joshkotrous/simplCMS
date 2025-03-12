@@ -2,6 +2,7 @@
 import crypto from "crypto";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { Page } from "@/types/types";
 
 export function getEnvironment(): "dev" | "prod" {
   if (!process.env.NODE_ENV) throw new Error("NODE_ENV not configured");
@@ -29,3 +30,60 @@ export function getSiteUrl() {
   const siteUrl = process.env.NODE_PUBLIC_SITE_URL;
   return { siteUrl };
 }
+
+export const defaultHomePageConfig: Page = {
+  _id: "",
+  createdAt: new Date(),
+  publishedAt: new Date(),
+  updatedAt: new Date(),
+  status: "published",
+  elements: [
+    {
+      type: "h1",
+      content: "SimplCms",
+      children: [],
+      attributes: null,
+      styles: [
+        { property: "textAlign", value: "center" },
+        { property: "fontSize", value: "64px" },
+        { property: "fontWeight", value: "bold" },
+      ],
+    },
+    {
+      type: "p",
+      content: null,
+      children: [
+        {
+          type: "",
+          content: "Go to the",
+          children: [],
+        },
+        {
+          type: "a",
+          content: " dashboard ",
+          attributes: [{ name: "href", value: "/admin" }],
+          children: [],
+          styles: [
+            { property: "alignContent", value: "center" },
+            { property: "fontWeight", value: "bold" },
+          ],
+        },
+        {
+          type: "",
+          content: "to edit this page",
+          children: [],
+          styles: [{ property: "alignContent", value: "center" }],
+        },
+      ],
+      attributes: null,
+      styles: [{ property: "textAlign", value: "center" }],
+    },
+  ],
+  metadata: {
+    description: "Page",
+    keywords: [""],
+    ogImage: "",
+    title: "Page",
+  },
+  route: "/",
+};

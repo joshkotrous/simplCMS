@@ -1,4 +1,5 @@
 "use client";
+import MarkdownRenderer from "@/components/mardownRenderer";
 import MediaPopover from "@/components/mediaPopover";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -112,7 +113,7 @@ export default function MarkdownEditor({
         </TabsContent>
         <TabsContent value="preview">
           <div className="prose max-w-none rounded border dark:border-zinc-800 p-4">
-            <ReactMarkdown className="h-[32rem]">{content}</ReactMarkdown>
+            <MarkdownRenderer content={content} />
           </div>
         </TabsContent>
       </div>

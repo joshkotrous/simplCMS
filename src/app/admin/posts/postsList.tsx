@@ -30,6 +30,8 @@ import { usePathname } from "next/navigation";
 export default function PostsList({ posts }: { posts: Post[] }) {
   const path = usePathname();
   const isDrafts = path.endsWith("/drafts");
+  const categories = [...new Set(posts.map((post) => post.category))];
+
   return (
     <div className="w-[44rem] p-4 space-y-4 h-full">
       <div className="flex w-full border-b">
@@ -57,7 +59,11 @@ export default function PostsList({ posts }: { posts: Post[] }) {
         <Select>
           <SelectTrigger className="w-1/4">Category</SelectTrigger>
           <SelectContent>
-            <SelectItem value="category">Category</SelectItem>
+            {categories.map((category) => (
+              <SelectItem key={category} value={category ?? ""}>
+                {category}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

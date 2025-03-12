@@ -1,8 +1,13 @@
 "use server";
 
 import { getVercelEnvVars, vercel } from "@/packages/core/src/vercel";
-import { generateSecret } from "@/lib/utils";
-import { AWSS3Config, MediaStorageProvider } from "@/types/types";
+import { defaultHomePageConfig, generateSecret } from "@/lib/utils";
+import {
+  AWSS3Config,
+  createPageSchema,
+  MediaStorageProvider,
+} from "@/types/types";
+import { simplCms } from "@/packages/core/src/simplCms";
 
 export async function connectDbToApplication(
   vercelToken: string,
@@ -13,24 +18,31 @@ export async function connectDbToApplication(
 ): Promise<void> {
   try {
     const client = vercel.connect(vercelToken);
-    vercel.addEnvToProject({
-      vercel: client,
-      key: "MONGO_URI",
-      value: uri,
-      projectId: vercelProjectId,
-      teamId: vercelTeamId,
-      type: "encrypted",
-      target: ["production"],
-    });
-    vercel.addEnvToProject({
-      vercel: client,
-      key: "SIMPLCMS_DB_PROVIDER",
-      value: provider,
-      projectId: vercelProjectId,
-      teamId: vercelTeamId,
-      type: "encrypted",
-      target: ["production"],
-    });
+    try {
+      vercel.addEnvToProject({
+        vercel: client,
+        key: "MONGO_URI",
+        value: uri,
+        projectId: vercelProjectId,
+        teamId: vercelTeamId,
+        type: "encrypted",
+        target: ["production"],
+      });
+      vercel.addEnvToProject({
+        vercel: client,
+        key: "SIMPLCMS_DB_PROVIDER",
+        value: provider,
+        projectId: vercelProjectId,
+        teamId: vercelTeamId,
+        type: "encrypted",
+        target: ["production"],
+      });
+    } catch (error) {
+      console.error("Could not add vercel env vars");
+    }
+
+    const pageConfig = createPageSchema.parse(defaultHomePageConfig);
+    await simplCms.pages.createPage(pageConfig);
   } catch (error) {
     console.error(error);
     throw error;

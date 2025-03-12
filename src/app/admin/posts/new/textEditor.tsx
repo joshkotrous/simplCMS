@@ -29,6 +29,7 @@ import { createNewPost } from "@/app/actions/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import MediaPopover from "@/components/mediaPopover";
+import MarkdownRenderer from "@/components/mardownRenderer";
 
 export function MarkdownEditor({ media }: { media: SimplCMSMedia[] }) {
   const router = useRouter();
@@ -202,9 +203,7 @@ export function MarkdownEditor({ media }: { media: SimplCMSMedia[] }) {
         </TabsContent>
         <TabsContent value="preview">
           <div className="prose max-w-none rounded border p-4">
-            <ReactMarkdown className="h-[32rem]">
-              {postData.content}
-            </ReactMarkdown>
+            <MarkdownRenderer content={postData.content} />
           </div>
         </TabsContent>
       </div>

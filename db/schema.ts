@@ -71,8 +71,18 @@ const elementSchemaDefinition = {
     required: true,
   },
   styles: {
-    type: Map,
-    of: String,
+    type: [
+      {
+        property: {
+          type: String,
+          required: true,
+        },
+        value: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     default: null,
   },
   attributes: {
