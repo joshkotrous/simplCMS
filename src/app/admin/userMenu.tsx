@@ -13,7 +13,7 @@ export default function UserMenu({ user }: { user: User }) {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="rounded-md">
-          <AvatarImage alt="profile" src={user.imageUrl} />
+          {user.imageUrl && <AvatarImage alt="profile" src={user.imageUrl} />}
           <AvatarFallback className="uppercase">
             {user.name ? `${user.name[0]}${user.name[1]}` : ""}
           </AvatarFallback>

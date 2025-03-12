@@ -44,12 +44,15 @@ export default function Users({ users }: { users: User[] }) {
           >
             <span className="flex items-center gap-2">
               <Avatar className="size-8">
-                <Image
-                  alt={`user-profile-${user._id}`}
-                  width={100}
-                  height={100}
-                  src={user.imageUrl}
-                />
+                {user.imageUrl && (
+                  <Image
+                    alt={`user-profile-${user._id}`}
+                    width={100}
+                    height={100}
+                    src={user.imageUrl}
+                  />
+                )}
+
                 <AvatarFallback>
                   {user.name ? `${user.name[0]}${user.name[1]}` : ""}
                 </AvatarFallback>
