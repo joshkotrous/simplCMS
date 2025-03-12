@@ -167,7 +167,11 @@ export default function SetupCloudinaryForm({
         platformConfiguration.host?.vercel?.teamId! ??
           setupData.host?.vercel?.teamId!,
         "Cloudinary",
-        cloudinaryConnection.cloudinary.uri
+        {
+          cloudinary: {
+            url: cloudinaryConnection.cloudinary.uri,
+          },
+        }
       ),
       {
         loading: "Connecting Cloudinary to SimplCMS...",

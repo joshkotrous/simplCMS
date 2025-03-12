@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { attributeSchema, StyleEntry, styleSchema } from "./styles";
+import {
+  AttributeEntry,
+  attributeSchema,
+  StyleEntry,
+  styleSchema,
+} from "./styles";
 
 export const hostProviderSchema = z.enum(["Vercel"]);
 export const dbProviderSchema = z.enum(["MongoDB", "DynamoDB"]);
