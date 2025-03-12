@@ -37,10 +37,12 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const darkModeCookie = cookieStore.get("darkMode");
   const darkMode = darkModeCookie?.value === "true";
-  const session = await getServerSession();
   let user: User | null = null;
-  if (platformConfiguration.database && session?.user?.email) {
-    user = await getUserByEmail(session.user.email);
+  if (platformConfiguration.database && platformConfiguration.oauth) {
+    const session = await getServerSession();
+    if (session?.user?.email) {
+      user = await getUserByEmail(session.user.email);
+    }
   }
 
   return (
