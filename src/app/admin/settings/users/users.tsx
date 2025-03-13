@@ -72,7 +72,7 @@ export default function Users({ users }: { users: User[] }) {
                 <AlertDialogContent>
                   <AlertDialogTitle>Delete User</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Are you sure you want to delet {user.email}? They will lose
+                    Are you sure you want to delete {user.email}? They will lose
                     access to SimplCMS admin.
                   </AlertDialogDescription>
                   <AlertDialogAction onClick={() => deleteUser(user)}>
