@@ -24,8 +24,6 @@ export default async function ConnectionSettings() {
     vercel: client,
     teamId: platformConfiguration.host?.vercel?.teamId!,
   });
-  console.log("OAUTH", platformConfiguration.oauth);
-  console.log("MEDIA", platformConfiguration.mediaStorage);
 
   return (
     <div className="container mx-auto p-6 space-y-8">

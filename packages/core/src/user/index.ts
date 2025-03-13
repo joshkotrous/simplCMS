@@ -59,7 +59,6 @@ export async function getAllUsers(dbUri?: string): Promise<User[]> {
     const users = await UserModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
-    console.log("USERS RAW", JSON.stringify(users, null, 2));
 
     return userSchema.array().parse(users);
   } catch (error) {

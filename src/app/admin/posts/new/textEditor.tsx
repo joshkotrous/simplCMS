@@ -197,13 +197,29 @@ export function MarkdownEditor({
   async function submit(draft: boolean) {
     try {
       setLoading(true);
-      // Case 1: Updating an existing post
       if (post) {
+        const preparedMetadata = {
+          title: postData.metadata?.title || postData.title || "",
+          description: postData.metadata?.description || "",
+          ogImage: postData.metadata?.ogImage || "",
+        };
+
+        const updateData = {
+          ...postData,
+          draft: draft,
+          metadata: preparedMetadata,
+        };
+
         await toast.promise(
-          postActions.updatePostAction(post._id, { draft: draft }),
+          postActions.updatePostAction(post._id, updateData),
           {
             loading: "Updating post...",
             success: () => {
+              if (latestDeployment && !draft) {
+                triggerRedeploy(latestDeployment);
+              }
+              router.refresh();
+              router.push("/admin/posts");
               return draft
                 ? "Successfully saved post as draft."
                 : "Successfully published post.";
@@ -213,14 +229,7 @@ export function MarkdownEditor({
             },
           }
         );
-        if (latestDeployment && !draft) {
-          triggerRedeploy(latestDeployment);
-        }
-        router.refresh();
-        router.push("/admin/posts");
-      }
-      // Case 2: Creating a new post
-      else {
+      } else {
         const preparedMetadata = {
           title: postData.metadata?.title || postData.title || "",
           description: postData.metadata?.description || "",
@@ -231,22 +240,21 @@ export function MarkdownEditor({
           draft: draft,
           metadata: preparedMetadata,
         };
-        // Create the post first and await the result
         await toast.promise(createNewPost(data), {
           loading: "Creating post...",
-          success: () => "New post created",
+          success: () => {
+            if (latestDeployment && !draft) {
+              triggerRedeploy(latestDeployment);
+            }
+            router.refresh();
+            router.push("/admin/posts");
+            return "New post created";
+          },
           error: (err) => {
             console.error("Error creating post:", err);
             return "Error creating post";
           },
         });
-        // After post creation is complete, trigger the deployment
-        if (latestDeployment && !draft) {
-          triggerRedeploy(latestDeployment);
-        }
-        // Only navigate after both operations are initialized
-        router.refresh();
-        router.push("/admin/posts");
       }
     } catch (error) {
       console.error("Unhandled error in submit:", error);
