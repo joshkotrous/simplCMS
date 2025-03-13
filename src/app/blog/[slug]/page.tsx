@@ -24,11 +24,11 @@ import type { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }): Promise<Metadata> {
-  const { slug } = await params;
-
+  const { slug } = params;
   const post = await posts.getPostBySlug(slug);
+
   if (!post) {
     return { title: "SimplCMS | Blog" };
   }
@@ -62,10 +62,9 @@ export async function generateMetadata({
 export default async function BlogPost({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 }) {
-  const { slug } = await params;
-
+  const { slug } = params;
   const post = await posts.getPostBySlug(slug);
 
   if (!post) {
@@ -90,7 +89,6 @@ export default async function BlogPost({
             {post.title}
           </Link>
         </div>
-
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold">{post.title}</h1>
           <div className="flex gap-2 text-nowrap text-zinc-500">
@@ -100,9 +98,8 @@ export default async function BlogPost({
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-zinc-500">Share this article</p>
-          <div className="flex gap-2 items-center  ">{/*shareable */}</div>
+          <div className="flex gap-2 items-center">{/*shareable */}</div>
         </div>
-
         <MarkdownRenderer content={post.content} />
       </div>
     </div>
