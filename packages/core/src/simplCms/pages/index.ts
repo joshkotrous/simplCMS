@@ -1,9 +1,4 @@
-import {
-  connectToDatabase,
-  disconnectFromDatabase,
-  getDatabaseUriEnvVariable,
-  getModels,
-} from "@/db";
+import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
 import { CreatePage, Page, pageSchema } from "@/types/types";
 
 export async function getAllPages(): Promise<Page[]> {
@@ -14,7 +9,6 @@ export async function getAllPages(): Promise<Page[]> {
 
     const pages = await PageModel.find({}).select("-__v");
 
-    await disconnectFromDatabase(db);
     console.log("PAGES", pages);
     return pageSchema.array().parse(pages);
   } catch (error) {
@@ -33,7 +27,7 @@ export async function createPage(
     const db = await connectToDatabase(uri);
     const { PageModel } = getModels(db);
     const newPage = await PageModel.create(page);
-    await disconnectFromDatabase(db);
+
     return pageSchema.parse(newPage);
   } catch (error) {
     console.error(`Could not create page ${error}`);
@@ -48,8 +42,6 @@ export async function getPageByRoute(route: string): Promise<Page | null> {
     const { PageModel } = getModels(db);
 
     const page = await PageModel.findOne({ route });
-
-    await disconnectFromDatabase(db);
 
     if (!page) {
       return null;

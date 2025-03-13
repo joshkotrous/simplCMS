@@ -1,9 +1,4 @@
-import {
-  connectToDatabase,
-  disconnectFromDatabase,
-  getDatabaseUriEnvVariable,
-  getModels,
-} from "@/db";
+import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
 import {
   CreateSiteConfig,
   HostProvider,
@@ -235,7 +230,7 @@ export async function validateSetup({
           try {
             console.log("Testing MongoDB connection with URI");
             const db = await connectToDatabase(mongoUri);
-            await disconnectFromDatabase(db);
+
             console.log("MongoDB connection successful");
             dbConnectionSuccessful = true;
           } catch (error: any) {
@@ -617,7 +612,7 @@ export async function getSiteConfig(): Promise<SiteConfig | null> {
     const db = await connectToDatabase(uri);
     const { SiteConfigModel } = getModels(db);
     const config = await SiteConfigModel.findOne().select("-__v");
-    await disconnectFromDatabase(db);
+
     return siteConfigSchema.nullable().parse(config);
   } catch (error) {
     console.error(`Could not get site config ${error}`);
@@ -664,7 +659,7 @@ export async function initSiteConfig(): Promise<void> {
     };
 
     const config = new SiteConfigModel(data);
-    await disconnectFromDatabase(db);
+
     await config.save();
   } catch (error) {
     console.error(`Could not create site configuration: ${error}`);

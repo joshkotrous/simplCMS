@@ -1,51 +1,52 @@
-import mongoose, { Connection } from "mongoose";
+import mongoose, { Connection, Mongoose } from "mongoose";
 import { UserSchema, PostSchema, SiteConfigSchema, PageSchema } from "./schema";
-import { User, Post, SiteConfig, Page, pageSchema } from "@/types/types";
+import { User, Post, SiteConfig, Page } from "@/types/types";
 
-const connectionCache: Record<string, Connection> = {};
+let cachedMongoose: Mongoose | null = null;
 
 export async function connectToDatabase(uri: string): Promise<Connection> {
-  // Check if we already have this connection
-  if (connectionCache[uri] && connectionCache[uri].readyState === 1) {
-    return connectionCache[uri];
+  if (cachedMongoose && cachedMongoose.connection.readyState === 1) {
+    return cachedMongoose.connection;
+  }
+
+  if (mongoose.connections.length > 0) {
+    const existingConnection = mongoose.connections.find(
+      (conn) => conn.readyState === 1
+    );
+    if (existingConnection) {
+      cachedMongoose = mongoose;
+      return existingConnection;
+    }
   }
 
   try {
-    // Create new connection with better timeout settings
-    const connection = mongoose.createConnection(uri, {
+    mongoose.set("strictQuery", false);
+
+    await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
       connectTimeoutMS: 30000,
     });
 
-    // Wait for connection to be established
-    await new Promise<void>((resolve, reject) => {
-      connection.once("connected", () => resolve());
-      connection.once("error", (err) => reject(err));
-    });
+    cachedMongoose = mongoose;
 
-    // Cache the connection
-    connectionCache[uri] = connection;
-    return connection;
+    console.log("Connected to MongoDB");
+    return mongoose.connection;
   } catch (error) {
-    console.error(`Unable to connect to DB: ${error}`);
+    console.error(`MongoDB connection error: ${error}`);
     throw error;
   }
 }
 
-export async function disconnectFromDatabase(
-  connection: Connection
-): Promise<void> {
+export async function disconnectFromDatabase(): Promise<void> {
   try {
-    Object.keys(connectionCache).forEach((key) => {
-      if (connectionCache[key] === connection) {
-        delete connectionCache[key];
-      }
-    });
-
-    await connection.close();
+    if (cachedMongoose) {
+      await cachedMongoose.disconnect();
+      cachedMongoose = null;
+      console.log("Disconnected from MongoDB");
+    }
   } catch (error) {
-    console.error(`Error disconnecting from DB: ${error}`);
+    console.error(`Error disconnecting from MongoDB: ${error}`);
   }
 }
 

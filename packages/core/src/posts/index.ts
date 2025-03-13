@@ -1,9 +1,4 @@
-import {
-  connectToDatabase,
-  disconnectFromDatabase,
-  getDatabaseUriEnvVariable,
-  getModels,
-} from "@/db";
+import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
 import { CreatePost, Post, postSchema } from "@/types/types";
 
 function createSlug(title: string): string {
@@ -27,7 +22,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     if (!post) {
       return null;
     }
-    await disconnectFromDatabase(db);
+
     return postSchema.parse(post);
   } catch (error) {
     console.error(`Could not get post by slug: ${error}`);
@@ -47,7 +42,6 @@ export async function createPost(post: CreatePost): Promise<void> {
     };
     const newPost = new PostModel(postWithSlug);
     await newPost.save();
-    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not create post ${error}`);
     throw error;
@@ -63,7 +57,6 @@ export async function getAllPosts(): Promise<Post[]> {
     const posts = await PostModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
-    await disconnectFromDatabase(db);
 
     return postSchema.array().parse(posts);
   } catch (error) {
@@ -101,7 +94,6 @@ export async function getPost(post: Partial<Post>): Promise<Post> {
     if (!foundPost) {
       throw new Error("Post not found");
     }
-    await disconnectFromDatabase(db);
 
     return postSchema.parse(foundPost);
   } catch (error) {
@@ -121,7 +113,6 @@ export async function deletePost(post: Post): Promise<void> {
     if (result.deletedCount === 0) {
       throw new Error("Post not found");
     }
-    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not delete post: ${error}`);
     throw error;
@@ -150,7 +141,7 @@ export async function updatePost(
     if (!updatedPost) {
       throw new Error("Post not found");
     }
-    await disconnectFromDatabase(db);
+
     return postSchema.parse(updatedPost);
   } catch (error) {
     console.error(`Could not update post: ${error}`);

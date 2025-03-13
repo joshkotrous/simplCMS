@@ -1,9 +1,4 @@
-import {
-  connectToDatabase,
-  disconnectFromDatabase,
-  getDatabaseUriEnvVariable,
-  getModels,
-} from "@/db";
+import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
 import { User, userSchema } from "@/types/types";
 import mongoose from "mongoose";
 export async function createUser(
@@ -20,7 +15,6 @@ export async function createUser(
 
     const newUser = new UserModel(userData);
     await newUser.save();
-    disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not create user ${error}`);
     throw error;
@@ -47,7 +41,6 @@ export async function getUser(user: Partial<User>): Promise<User> {
     if (!foundUser) {
       throw new Error("User not found");
     }
-    disconnectFromDatabase(db);
 
     return userSchema.parse(JSON.stringify(foundUser));
   } catch (error) {
@@ -67,7 +60,7 @@ export async function getAllUsers(dbUri?: string): Promise<User[]> {
       .sort({ createdAt: -1 })
       .select("-__v");
     console.log("USERS RAW", JSON.stringify(users, null, 2));
-    await disconnectFromDatabase(db);
+
     return userSchema.array().parse(users);
   } catch (error) {
     console.error(`Could not get all users ${error}`);
@@ -82,7 +75,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     const db = await connectToDatabase(uri);
     const { UserModel } = getModels(db);
     const user = await UserModel.findOne({ email }).select("-__v");
-    await disconnectFromDatabase(db);
+
     if (!user) return null;
     return userSchema.parse(user);
   } catch (error) {
@@ -120,7 +113,6 @@ export async function deleteUser(user: User): Promise<void> {
     if (result.deletedCount === 0) {
       throw new Error("User not found");
     }
-    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not delete user: ${error}`);
     throw error;
@@ -155,7 +147,6 @@ export async function updateUser(user: Partial<User>): Promise<void> {
     if (result.modifiedCount === 0) {
       throw new Error("No changes were made to the user");
     }
-    await disconnectFromDatabase(db);
   } catch (error) {
     console.error(`Could not update user: ${error}`);
     throw error;
