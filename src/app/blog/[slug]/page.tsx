@@ -24,11 +24,11 @@ import type { Metadata } from "next";
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = params;
-  const post = await posts.getPostBySlug(slug);
+  const { slug } = await params;
 
+  const post = await posts.getPostBySlug(slug);
   if (!post) {
     return { title: "SimplCMS | Blog" };
   }
@@ -59,12 +59,32 @@ export async function generateMetadata({
   return metadata;
 }
 
+function formatDate(date: Date | string): string {
+  const d = new Date(date);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+}
+
 export default async function BlogPost({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const { slug } = params;
+  const { slug } = await params;
+
   const post = await posts.getPostBySlug(slug);
 
   if (!post) {
@@ -89,17 +109,19 @@ export default async function BlogPost({
             {post.title}
           </Link>
         </div>
+
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold">{post.title}</h1>
           <div className="flex gap-2 text-nowrap text-zinc-500">
-            <p>{post.createdAt.toLocaleDateString()}</p>
+            <p>{formatDate(post.createdAt)}</p>
             {post.author && <p>by {post.author}</p>}
           </div>
         </div>
         <div className="flex flex-col gap-1">
           <p className="text-zinc-500">Share this article</p>
-          <div className="flex gap-2 items-center">{/*shareable */}</div>
+          <div className="flex gap-2 items-center  ">{/*shareable */}</div>
         </div>
+
         <MarkdownRenderer content={post.content} />
       </div>
     </div>
