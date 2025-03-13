@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import EditPostDisplay from "./editPostDisplay";
 import { getServerEnvVars, simplCms } from "@/packages/core/src/simplCms";
 import { vercel } from "@/packages/core/src/vercel";
+import { SimplCMSMedia } from "@/types/types";
 
 export default async function EditPostPage(props: {
   params: Promise<{ postId: string }>;
@@ -11,9 +12,14 @@ export default async function EditPostPage(props: {
   const post = await getPost({ _id: params.postId });
   if (!post) return notFound();
   const platformConfiguration = getServerEnvVars();
-  const media = await simplCms.media.getMedia(
-    platformConfiguration.mediaStorage
-  );
+  let media: SimplCMSMedia[] = [];
+  if (
+    platformConfiguration.mediaStorage &&
+    !("skipped" in platformConfiguration.mediaStorage)
+  ) {
+    media = await simplCms.media.getMedia(platformConfiguration.mediaStorage);
+  }
+
   const client = await vercel.connect(
     platformConfiguration.host?.vercel?.token!
   );
