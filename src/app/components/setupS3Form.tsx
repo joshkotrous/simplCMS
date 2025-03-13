@@ -9,7 +9,7 @@ import { connectMediaStorageToApplication } from "@/app/serverActions/simplCms/s
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../../../../components/setupContextProvider";
 import { SimplCMSPlatformConfiguration } from "@/types/types";
-import { testS3ConnectionAction } from "@/app/serverActions/s3";
+import { testS3ConnectionAction } from "@/app/serverActions/providers/s3";
 
 type S3ProviderConfig = {
   provider: "AWS S3";

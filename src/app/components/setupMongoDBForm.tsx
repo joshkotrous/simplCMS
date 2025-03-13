@@ -5,7 +5,7 @@ import { Input } from "@/app/components/ui/input";
 import { Button } from "@/app/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testConnection } from "@/app/serverActions/mongo";
+import { testConnection } from "@/app/serverActions/providers/mongo";
 import { connectDbToApplication } from "@/app/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../../../components/setupContextProvider";

@@ -5,7 +5,7 @@ import { CloudinaryLogo } from "@/app/components/logos";
 import { Input } from "@/app/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testCloudinaryConnectionAction } from "@/app/serverActions/cloudinary";
+import { testCloudinaryConnectionAction } from "@/app/serverActions/providers/cloudinary";
 import { connectMediaStorageToApplication } from "@/app/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "../../../../components/setupContextProvider";
