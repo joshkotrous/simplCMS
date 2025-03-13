@@ -11,15 +11,29 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function AddUserButton() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   async function submit() {
     setLoading(true);
-    await userActions.createUserAction({ email: email });
-    setLoading(false);
+    toast.promise(userActions.createUserAction({ email: email }), {
+      loading: `Adding ${email}...`,
+      success: () => {
+        setLoading(false);
+        router.refresh();
+        return `Successfully added ${email}`;
+      },
+      error: () => {
+        setLoading(false);
+        return `Error adding ${email}`;
+      },
+    });
   }
   return (
     <AlertDialog>
