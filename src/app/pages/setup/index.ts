@@ -1,0 +1,12 @@
+export { default as SetupPage } from "./setupPage";
+export { default as SetupDatabasePage } from "./database/setupDatabasePage";
+export { default as SetupMongoPage } from "./database/setupMongoPage";
+export { default as SetupHostPage } from "./host/setupHostPage";
+export { default as SetupVercelPage } from "./host/setupVercelPage";
+export { default as SetupMediaStoragePage } from "./mediaStorage/setupMediaStoragePage";
+export { default as SetupCloudinaryPage } from "./mediaStorage/setupCloudinaryPage";
+export { default as SetupS3Page } from "./mediaStorage/setupS3Page";
+export { default as SetupOauthPage } from "./oauth/setupOauthPage";
+export { default as SetupGoogleOauthPage } from "./oauth/setupGoogleOauthPage";
+export { default as AddUserPage } from "./user/addUserPage";
+export { default as RedeployPage } from "./redeployPage";
