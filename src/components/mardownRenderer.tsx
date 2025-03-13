@@ -43,7 +43,14 @@ export default function MarkdownRenderer({ content }: { content: string }) {
       />
     ),
     code: ({ node, inline, className, children, ...props }: any) => {
-      if (inline) {
+      // Manual detection of inline code if the inline prop isn't reliable
+      const content = String(children).replace(/\n$/, "");
+
+      // If there's no className and the content doesn't contain line breaks,
+      // or if inline is explicitly true, treat it as inline code
+      const isInline = inline || (!className && !content.includes("\n"));
+
+      if (isInline) {
         return (
           <code
             className="bg-zinc-800 text-white px-2 py-1 rounded font-mono text-sm"
@@ -63,9 +70,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
             <span>{language || "plain text"}</span>
             <button
               onClick={() => {
-                navigator.clipboard.writeText(
-                  String(children).replace(/\n$/, "")
-                );
+                navigator.clipboard.writeText(content);
               }}
               className="hover:text-white text-xs"
             >
@@ -76,7 +81,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
             style={oneDark}
             language={language}
             PreTag="div"
-            className="rounded-b-md"
+            className="rounded-b-md w-full overflow-x-auto"
             showLineNumbers
             customStyle={{
               margin: 0,
@@ -85,7 +90,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
             }}
             {...props}
           >
-            {String(children).replace(/\n$/, "")}
+            {content}
           </SyntaxHighlighter>
         </div>
       );
@@ -120,7 +125,11 @@ export default function MarkdownRenderer({ content }: { content: string }) {
   };
 
   return (
-    <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
+    <ReactMarkdown
+      className="w-full"
+      components={markdownComponents}
+      remarkPlugins={[remarkGfm]}
+    >
       {content}
     </ReactMarkdown>
   );
