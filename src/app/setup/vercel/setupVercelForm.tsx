@@ -119,13 +119,12 @@ export default function SetupVercelForm({
         toast.error("Vercel token not setup");
         setLoading(false);
         return;
+        return;
       }
 
-      console.log("Using token:", setupData.host.vercel.token);
 
       await toast.promise(
         vercel.getTeams(
-          platformConfiguration.host?.vercel?.token ??
             setupData.host.vercel.token
         ),
         {
