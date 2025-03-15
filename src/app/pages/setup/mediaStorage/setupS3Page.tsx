@@ -1,5 +1,6 @@
-import { getServerEnvVars } from "@/index";
-import SetupS3Form from "./setupS3Form";
+import SetupS3Form from "@/app/components/setupS3Form";
+import { getServerEnvVars } from "@/core/platform";
+
 export default async function SetupS3Page() {
   const platformConfiguration = getServerEnvVars();
   return (

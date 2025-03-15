@@ -1,7 +1,7 @@
+import SetupMongoForm from "@/app/components/setupMongoDBForm";
 import { Button } from "@/app/components/ui/button";
+import { getServerEnvVars } from "@/core/platform";
 import Link from "next/link";
-import SetupMongoForm from "./setupMongoDBForm";
-import { getServerEnvVars } from "@/index";
 
 export default async function SetupMongo() {
   const platformConfiguration = getServerEnvVars();

@@ -11,16 +11,15 @@ import {
   simplCMSPlatformConfigurationObject,
   SiteConfig,
   siteConfigSchema,
-} from "@/types/types";
-import { vercel } from "./providers/vercel";
+} from "@/types";
 import { GetProjectEnvResponseBody } from "@vercel/sdk/models/getprojectenvop.js";
 import {
   FilterProjectEnvsResponseBody,
   ResponseBodyEnvs,
 } from "@vercel/sdk/models/filterprojectenvsop.js";
-import { user } from "./user";
-import * as pages from "./pages";
-import * as media from "./media";
+import { vercel } from "../providers/vercel";
+import { user } from "../user";
+
 export type SetupValidationComponent = {
   setupComplete: boolean;
   errors: string[];
@@ -67,7 +66,7 @@ export async function validateSetup({
       adminUser: { setupComplete: false, errors: [] },
       redeploy: { setupComplete: false, errors: [] },
     };
-  let validation: Partial<SetupValidation> = {};
+  const validation: Partial<SetupValidation> = {};
 
   const vercelClient = vercel.connect(vercelConfig.token);
   let providerEnvVars: FilterProjectEnvsResponseBody | null = null;

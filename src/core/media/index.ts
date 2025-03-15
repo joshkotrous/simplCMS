@@ -2,7 +2,7 @@ import {
   MediaStorageProvider,
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,
-} from "@/types/types";
+} from "@/types";
 import { cloudinary } from "../providers/cloudinary";
 import { s3 } from "../providers/s3";
 
@@ -17,7 +17,8 @@ export async function getMedia(
           return cloudinaryMedia;
 
         case "AWS S3":
-          const s3Media = await s3.getMedia(config?.s3!);
+          if (!config?.s3) throw new Error("S3 is not configured");
+          const s3Media = await s3.getMedia(config?.s3);
           return s3Media;
       }
     }

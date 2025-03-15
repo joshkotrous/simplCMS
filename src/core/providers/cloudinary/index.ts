@@ -2,7 +2,7 @@ import {
   CloudinaryMedia,
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,
-} from "@/types/types";
+} from "@/types";
 import { v2 as cloudinary } from "cloudinary";
 
 function parseCloudinaryUrl(cloudinaryUrl: string) {

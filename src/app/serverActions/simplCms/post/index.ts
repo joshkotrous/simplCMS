@@ -1,6 +1,6 @@
 "use server";
 import { createPost, deletePost, updatePost } from "@/posts";
-import { CreatePost, Post } from "@/types/types";
+import { CreatePost, Post } from "@/types";
 
 export async function createNewPost(post: CreatePost): Promise<void> {
   try {

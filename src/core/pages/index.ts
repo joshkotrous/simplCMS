@@ -1,5 +1,5 @@
 import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
-import { CreatePage, Page, pageSchema } from "@/types/types";
+import { CreatePage, Page, pageSchema } from "@/types";
 
 export async function getAllPages(): Promise<Page[]> {
   try {

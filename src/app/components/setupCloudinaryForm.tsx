@@ -8,11 +8,11 @@ import { toast } from "sonner";
 import { testCloudinaryConnectionAction } from "@/app/serverActions/providers/cloudinary";
 import { connectMediaStorageToApplication } from "@/app/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
-import { useSetupData } from "../../../../components/setupContextProvider";
 import {
   SimplCMSMediaStorageConfiguration,
   SimplCMSPlatformConfiguration,
-} from "@/types/types";
+} from "@/types";
+import { useSetupData } from "./setupContextProvider";
 
 // Define a type for a Cloudinary provider configuration
 type CloudinaryProviderConfig = {

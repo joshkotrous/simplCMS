@@ -1,4 +1,4 @@
-import SetupGoogleOauthForm from "./setupGoogleForm";
+import SetupGoogleOauthForm from "@/app/components/setupGoogleForm";
 
 export default async function SetupGoogleOauthPage() {
   const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL

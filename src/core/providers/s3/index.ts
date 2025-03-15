@@ -2,7 +2,7 @@ import {
   AWSS3Config,
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,
-} from "@/types/types";
+} from "@/types";
 import {
   S3Client,
   ListObjectsV2Command,

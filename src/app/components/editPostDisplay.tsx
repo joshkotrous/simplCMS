@@ -12,14 +12,14 @@ import {
   AlertDialogTrigger,
 } from "@/app/components/ui/alert-dialog";
 import { Input } from "@/app/components/ui/input";
-import { Post, SimplCMSMedia } from "@/types/types";
+import { Post, SimplCMSMedia } from "@/types";
 import { Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/app/components/ui/button";
-import { MarkdownEditor } from "../../../../../components/textEditor";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
+import { MarkdownEditor } from "./textEditor";
 
 export default function EditPostDisplay({
   post,

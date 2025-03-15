@@ -1,6 +1,5 @@
 import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
-import { User, userSchema } from "@/types/types";
-import mongoose from "mongoose";
+import { User, userSchema } from "@/types";
 export async function createUser(
   userData: Partial<User>,
   dbUri?: string

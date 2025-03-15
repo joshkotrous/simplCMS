@@ -1,9 +1,10 @@
 import { getPost } from "@/posts";
 import { notFound } from "next/navigation";
-import { getServerEnvVars, simplCms } from "@/index";
 import { vercel } from "@/providers/vercel";
-import { SimplCMSMedia } from "@/types/types";
+import { SimplCMSMedia } from "@/types";
 import EditPostDisplay from "@/app/components/editPostDisplay";
+import { getServerEnvVars } from "@/core/platform";
+import { simplCms } from "@/index";
 
 export default async function EditPostPage(props: {
   params: { postId: string };

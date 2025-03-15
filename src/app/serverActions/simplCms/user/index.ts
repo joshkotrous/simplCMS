@@ -1,6 +1,6 @@
 "use server";
 
-import { User } from "@/types/types";
+import { User } from "@/types";
 import { getUser, createUser, getAllUsers, deleteUser } from "@/user";
 
 export async function createUserAction(

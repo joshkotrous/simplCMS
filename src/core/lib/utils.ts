@@ -2,7 +2,7 @@
 import crypto from "crypto";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { Page } from "@/types/types";
+import { Page } from "@/types";
 
 export function getEnvironment(): "dev" | "prod" {
   if (!process.env.NODE_ENV) throw new Error("NODE_ENV not configured");

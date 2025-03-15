@@ -1,12 +1,10 @@
 "use server";
 
+import { getServerEnvVars } from "@/core/platform";
+import { simplCms } from "@/index";
 import { cloudinary } from "@/providers/cloudinary";
 import { s3 } from "@/providers/s3";
-import { getServerEnvVars, simplCms } from "@/index";
-import {
-  SimplCMSMedia,
-  SimplCMSMediaStorageConfiguration,
-} from "@/types/types";
+import { SimplCMSMedia, SimplCMSMediaStorageConfiguration } from "@/types";
 export async function uploadMediaAction(
   files: File[]
 ): Promise<SimplCMSMedia[]> {

@@ -10,8 +10,8 @@ import Navigation from "../components/ navigation";
 import { getServerSession } from "next-auth";
 import { getUserByEmail } from "@/user";
 import { redirect } from "next/navigation";
-import { User } from "@/types/types";
-import { getServerEnvVars } from "@/index";
+import { User } from "@/types";
+import { getServerEnvVars } from "@/core/platform";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

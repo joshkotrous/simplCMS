@@ -45,7 +45,7 @@ import {
   SelectValue,
 } from "@/app/components/ui/select";
 import Link from "next/link";
-import { CreatePost, Post, SimplCMSMedia } from "@/types/types";
+import { CreatePost, Post, SimplCMSMedia } from "@/types";
 import { createNewPost } from "@/app/serverActions/simplCms/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

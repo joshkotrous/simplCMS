@@ -1,4 +1,4 @@
-import DatabaseProviderForm from "./databaseProviderForm";
+import DatabaseProviderForm from "@/app/components/databaseProviderForm";
 
 export default async function SetupPage() {
   return (

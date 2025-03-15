@@ -6,7 +6,6 @@ import {
   CardDescription,
   CardHeader,
 } from "@/app/components/ui/card";
-import { useSetupData } from "../../../components/setupContextProvider";
 import { Button } from "@/app/components/ui/button";
 import { VercelLogo } from "@/app/components/logos";
 import { useEffect, useState } from "react";
@@ -16,6 +15,7 @@ import { CreateDeploymentResponseBody } from "@vercel/sdk/models/createdeploymen
 import { toast } from "sonner";
 import { CheckCircle2, Loader } from "lucide-react";
 import Link from "next/link";
+import { useSetupData } from "./setupContextProvider";
 
 interface CurrentDeployment {
   id: string;

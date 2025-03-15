@@ -8,9 +8,9 @@ import { toast } from "sonner";
 import { testConnection } from "@/app/serverActions/providers/mongo";
 import { connectDbToApplication } from "@/app/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
-import { useSetupData } from "../../../components/setupContextProvider";
-import { SimplCMSPlatformConfiguration } from "@/types/types";
+import { SimplCMSPlatformConfiguration } from "@/types";
 import { Label } from "@/app/components/ui/label";
+import { useSetupData } from "./setupContextProvider";
 
 export default function SetupMongoForm({
   platformConfiguration,

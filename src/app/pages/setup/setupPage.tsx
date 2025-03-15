@@ -1,5 +1,5 @@
-import { getServerEnvVars } from "@/index";
-import SetupForm from "../setupForm";
+import SetupForm from "@/app/components/setupForm";
+import { getServerEnvVars } from "@/core/platform";
 
 export default async function SetupPage() {
   const platformConfiguration = getServerEnvVars();

@@ -1,6 +1,6 @@
 "use server";
 
-import { getServerEnvVars } from "@/index";
+import { getServerEnvVars } from "@/core/platform";
 import {
   addEnvToProject,
   connect,

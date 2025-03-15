@@ -1,4 +1,4 @@
-import { Post, User, SiteConfig, Page } from "@/types/types";
+import { Post, User, SiteConfig, Page } from "@/types";
 import { Schema } from "mongoose";
 
 export const SiteConfigSchema: Schema = new Schema<SiteConfig>({

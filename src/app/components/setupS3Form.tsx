@@ -7,9 +7,9 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { connectMediaStorageToApplication } from "@/app/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
-import { useSetupData } from "../../../../components/setupContextProvider";
-import { SimplCMSPlatformConfiguration } from "@/types/types";
+import { SimplCMSPlatformConfiguration } from "@/types";
 import { testS3ConnectionAction } from "@/app/serverActions/providers/s3";
+import { useSetupData } from "./setupContextProvider";
 
 type S3ProviderConfig = {
   provider: "AWS S3";

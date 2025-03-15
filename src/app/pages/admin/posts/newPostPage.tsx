@@ -1,6 +1,7 @@
-import { getServerEnvVars, simplCms } from "@/index";
+import { getServerEnvVars } from "@/core/platform";
 import { MarkdownEditor } from "../../../components/textEditor";
 import { vercel } from "@/providers/vercel";
+import { simplCms } from "@/index";
 
 export default async function NewPostPage() {
   const platformConfiguration = getServerEnvVars();

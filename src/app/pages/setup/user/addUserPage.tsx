@@ -1,8 +1,8 @@
 import { user } from "@/user";
-import AddFirstUserForm from "./addFirstUserForm";
 import { redirect } from "next/navigation";
-import { getServerEnvVars } from "@/index";
-import { User } from "@/types/types";
+import { User } from "@/types";
+import { getServerEnvVars } from "@/core/platform";
+import AddFirstUserForm from "@/app/components/addFirstUserForm";
 
 export default async function AddFirstUserPage() {
   let users: User[] = [];

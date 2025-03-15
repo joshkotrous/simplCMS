@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Element, Page, elementTypeSchema, elementSchema } from "@/types/types";
+import { Element, Page, elementTypeSchema, elementSchema } from "@/types";
 import { Button } from "@/app/components/ui/button";
 import {
   AlertDialog,

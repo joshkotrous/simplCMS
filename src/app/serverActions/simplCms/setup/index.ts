@@ -2,11 +2,7 @@
 
 import { getVercelEnvVars, vercel } from "@/providers/vercel";
 import { defaultHomePageConfig, generateSecret } from "@/lib/utils";
-import {
-  AWSS3Config,
-  createPageSchema,
-  MediaStorageProvider,
-} from "@/types/types";
+import { AWSS3Config, createPageSchema, MediaStorageProvider } from "@/types";
 import { simplCms } from "@/index";
 
 export async function connectDbToApplication(

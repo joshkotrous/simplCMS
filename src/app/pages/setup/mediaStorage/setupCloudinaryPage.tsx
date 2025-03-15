@@ -1,5 +1,5 @@
-import { getServerEnvVars } from "@/index";
-import SetupCloudinaryForm from "./setupCloudinaryForm";
+import SetupCloudinaryForm from "@/app/components/setupCloudinaryForm";
+import { getServerEnvVars } from "@/core/platform";
 
 export default async function SetupCloudinaryPage() {
   const platformConfiguration = getServerEnvVars();

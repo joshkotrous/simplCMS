@@ -3,7 +3,7 @@
 import { Button } from "@/app/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import PostList from "./blog/postList";
+import PostList from "./postList";
 
 function convertAttributes(
   attributes: Array<{ name: string; value: string }> | null | undefined

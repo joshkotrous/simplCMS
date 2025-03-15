@@ -1,5 +1,5 @@
 "use client";
-import { Page } from "@/types/types";
+import { Page } from "@/types";
 import VerticalTreeMenu from "./pagesList";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";

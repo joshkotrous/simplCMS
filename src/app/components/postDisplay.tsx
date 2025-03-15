@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/app/components/ui/alert-dialog";
 import { Input } from "@/app/components/ui/input";
-import { Post, SimplCMSMedia } from "@/types/types";
+import { Post, SimplCMSMedia } from "@/types";
 import { Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

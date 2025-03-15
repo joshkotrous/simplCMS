@@ -22,7 +22,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/app/components/ui/select";
-import { Post } from "@/types/types";
+import { Post } from "@/types";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";

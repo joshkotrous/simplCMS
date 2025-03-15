@@ -1,7 +1,7 @@
 import { getAllUsers } from "@/user";
-import { getServerEnvVars } from "@/index";
-import { User } from "@/types/types";
+import { User } from "@/types";
 import Users from "@/app/components/users";
+import { getServerEnvVars } from "@/core/platform";
 
 export default async function UserSettingsPage() {
   const platformConfiguration = getServerEnvVars();

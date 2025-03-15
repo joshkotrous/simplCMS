@@ -1,7 +1,7 @@
 "use server";
+import { getServerEnvVars } from "@/core/platform";
 import { posts } from "@/posts";
-import { getServerEnvVars } from "@/index";
-import { Post } from "@/types/types";
+import { Post } from "@/types";
 import Link from "next/link";
 
 export default async function PostList() {

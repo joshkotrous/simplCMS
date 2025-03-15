@@ -1,9 +1,9 @@
 import React from "react";
-import { Element, Page } from "@/types/types";
+import { Element, Page } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
-import PostList from "./blog/postList";
+import PostList from "./postList";
 
 function convertAttributes(
   attributes: Array<{ name: string; value: string }> | null | undefined

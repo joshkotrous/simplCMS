@@ -2,10 +2,11 @@ import MediaPopover from "@/app/components/mediaPopover";
 import { Button } from "@/app/components/ui/button";
 import { Separator } from "@/app/components/ui/separator";
 import { cloudinary } from "@/providers/cloudinary";
-import { getServerEnvVars, simplCms } from "@/index";
 import { ImageIcon } from "lucide-react";
 import { InitSiteConfig } from "../../../components/initSiteConfig";
-import { CloudinaryMedia, SiteConfig } from "@/types/types";
+import { CloudinaryMedia, SiteConfig } from "@/types";
+import { getServerEnvVars } from "@/core/platform";
+import { simplCms } from "@/index";
 
 export default async function SiteSettings() {
   let siteConfig: SiteConfig | null = null;

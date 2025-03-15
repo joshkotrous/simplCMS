@@ -3,11 +3,12 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/app/components/ui/alert-dialog";
-import { getServerEnvVars, simplCms } from "@/index";
 import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
 import { ArrowLeft, Pencil, Trash } from "lucide-react";
 import Image from "next/image";
 import { MediaGrid } from "../../../components/mediaGrid";
+import { getServerEnvVars } from "@/core/platform";
+import { simplCms } from "@/index";
 
 export default async function AdminMediaPage() {
   const platformConfiguration = getServerEnvVars();

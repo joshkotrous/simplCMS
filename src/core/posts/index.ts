@@ -1,5 +1,5 @@
 import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
-import { CreatePost, Post, postSchema } from "@/types/types";
+import { CreatePost, Post, postSchema } from "@/types";
 
 function createSlug(title: string): string {
   return title

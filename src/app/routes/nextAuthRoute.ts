@@ -1,7 +1,7 @@
 import NextAuth, { Account, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { getUserByEmail, updateUser, userHasAccess } from "@/user";
 import { JWT } from "next-auth/jwt";
+import { getUserByEmail, updateUser, userHasAccess } from "@/core/user";
 
 async function validateSession(session: Session, token: JWT): Promise<Session> {
   const email = session.user.email;

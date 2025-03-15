@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./themeToggle";
-import { User } from "@/types/types";
+import { User } from "@/types";
 
 export default function AdminToolbar({ user }: { user: User | null }) {
   const path = usePathname();

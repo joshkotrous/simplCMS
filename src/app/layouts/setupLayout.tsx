@@ -1,5 +1,5 @@
-import ThemeToggle from "../themeToggle";
 import { SetupProvider } from "../components/setupContextProvider";
+import ThemeToggle from "../components/themeToggle";
 
 export default async function SetupLayout({
   children,

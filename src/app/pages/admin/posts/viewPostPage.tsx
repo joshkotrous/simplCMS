@@ -1,8 +1,9 @@
 import { getPost } from "@/posts";
 import { notFound } from "next/navigation";
 import PostDisplay from "../../../components/postDisplay";
-import { getServerEnvVars, simplCms } from "@/index";
-import { SimplCMSMedia } from "@/types/types";
+import { SimplCMSMedia } from "@/types";
+import { getServerEnvVars } from "@/core/platform";
+import { simplCms } from "@/index";
 
 export default async function PostPage(props: { params: { postId: string } }) {
   const params = props.params;

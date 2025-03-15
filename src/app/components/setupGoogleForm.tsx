@@ -8,7 +8,7 @@ import { setupGoogleOauth } from "@/app/serverActions/simplCms/setup";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { useSetupData } from "../../../../components/setupContextProvider";
+import { useSetupData } from "./setupContextProvider";
 
 export default function SetupGoogleOauthForm({ siteUrl }: { siteUrl: string }) {
   const { setupData, setSetupData } = useSetupData();

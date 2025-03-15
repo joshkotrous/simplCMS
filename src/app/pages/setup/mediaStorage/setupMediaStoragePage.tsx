@@ -1,4 +1,5 @@
-import MediaStorageProviderForm from "./mediaStorageProviderForm";
+import MediaStorageProviderForm from "@/app/components/mediaStorageProviderForm";
+
 export default async function SetupPage() {
   return (
     <div className="size-full flex flex-col justify-center items-center  space-y-12 text-foreground">

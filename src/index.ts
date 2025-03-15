@@ -8,7 +8,7 @@ import {
   validateSetup,
 } from "./core/platform";
 import * as media from "./core/media";
-import * as pages from "./core/media";
+import * as pages from "./core/pages";
 import * as providers from "./core/providers";
 import * as posts from "./core/posts";
 import * as db from "./core/db";

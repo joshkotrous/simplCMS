@@ -9,7 +9,7 @@ import {
   CollapsibleTrigger,
 } from "@/app/components/ui/collapsible";
 import { Button } from "@/app/components/ui/button";
-import { Page } from "@/types/types";
+import { Page } from "@/types";
 
 const hiddenRoutes = ["admin", "login", "setup"];
 

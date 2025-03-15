@@ -1,5 +1,5 @@
 import ErrorToast from "@/app/components/errorToast";
-import RedeployForm from "./redeployForm";
+import RedeployForm from "@/app/components/redeployForm";
 
 export default async function RedeployPage() {
   try {

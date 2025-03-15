@@ -6,7 +6,7 @@ import { Input } from "@/app/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useSetupData } from "../../../components/setupContextProvider";
+import { useSetupData } from "./setupContextProvider";
 
 export default function AddFirstUserForm() {
   const { setupData } = useSetupData();

@@ -22,7 +22,7 @@ import {
   CollapsibleTrigger,
 } from "@/app/components/ui/collapsible";
 import Link from "next/link";
-import { User } from "@/types/types";
+import { User } from "@/types";
 import UserMenu from "./userMenu";
 
 export default function AdminSidebar({ user }: { user: User }) {

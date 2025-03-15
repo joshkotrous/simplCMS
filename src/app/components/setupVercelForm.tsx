@@ -15,9 +15,9 @@ import * as vercel from "@/app/serverActions/providers/vercel";
 import { useRouter } from "next/navigation";
 import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
 import Link from "next/link";
-import { useSetupData } from "../../../components/setupContextProvider";
-import { SimplCMSPlatformConfiguration } from "@/types/types";
+import { SimplCMSPlatformConfiguration } from "@/types";
 import { Loader2 } from "lucide-react";
+import { useSetupData } from "./setupContextProvider";
 
 export default function SetupVercelForm({
   initialSiteUrl,
