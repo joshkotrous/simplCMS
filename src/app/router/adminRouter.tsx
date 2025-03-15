@@ -19,7 +19,7 @@ import {
   ViewPostPage,
 } from "../pages";
 
-export default function AdminRouter() {
+export default function SimplCmsRouter() {
   const router = useRouter();
   const { slug } = router.query;
 
