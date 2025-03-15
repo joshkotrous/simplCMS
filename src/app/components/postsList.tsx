@@ -177,9 +177,8 @@ export default function PostsList({ posts }: { posts: Post[] }) {
                 </div>
                 <span>by {post.author}</span>
               </CardHeader>
-              <CardContent className="px-2">
-                <span>{post.subtitle}</span>
-                <span>{post.content}</span>
+              <CardContent className="px-2 h-28 overflow-hidden relative">
+                <span className="line-clamp-4">{post.subtitle}</span>
               </CardContent>
               <div className="w-full flex justify-end p-2">
                 {post.draft && (
