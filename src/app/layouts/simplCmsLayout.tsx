@@ -6,12 +6,12 @@ import AdminToolbar from "../components/adminToolbar";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { CSSProperties } from "react";
-import Navigation from "../components/ navigation";
 import { getServerSession } from "next-auth";
 import { getUserByEmail } from "@/user";
 import { redirect } from "next/navigation";
 import { User } from "@/types";
 import { getServerEnvVars } from "@/core/platform";
+import Navigation from "../components/navigation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
