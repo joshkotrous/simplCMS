@@ -1,6 +1,6 @@
 "use client";
 
-import * as userActions from "@/app/serverActions/simplCms/user";
+import * as userActions from "@/core/serverActions/simplCms/user";
 import {
   AlertDialog,
   AlertDialogAction,

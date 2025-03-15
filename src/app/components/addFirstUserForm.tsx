@@ -1,5 +1,5 @@
 "use client";
-import * as userActions from "@/app/serverActions/simplCms/user";
+import * as userActions from "@/core/serverActions/simplCms/user";
 import { Button } from "@/app/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";

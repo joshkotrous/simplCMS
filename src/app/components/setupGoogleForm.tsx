@@ -4,7 +4,7 @@ import { FaGoogle } from "react-icons/fa";
 import { Copy } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { setupGoogleOauth } from "@/app/serverActions/simplCms/setup";
+import { setupGoogleOauth } from "@/core/serverActions/simplCms/setup";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

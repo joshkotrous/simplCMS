@@ -9,7 +9,7 @@ import {
 import { Button } from "@/app/components/ui/button";
 import { VercelLogo } from "@/app/components/logos";
 import { useEffect, useState } from "react";
-import * as vercelActions from "@/app/serverActions/providers/vercel";
+import * as vercelActions from "@/core/serverActions/providers/vercel";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 import { CreateDeploymentResponseBody } from "@vercel/sdk/models/createdeploymentop.js";
 import { toast } from "sonner";

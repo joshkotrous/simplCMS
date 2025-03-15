@@ -1,8 +1,8 @@
 {
-  "name": "simplcms",
+  "name": "@simplcms/app",
   "version": "0.1.0",
   "private": true,
-  "main": "src/index.ts",
+  "main": "./index.ts",
   "sideEffects": false,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -11,7 +11,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.758.0",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-avatar": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.4",
@@ -26,15 +25,11 @@
     "@radix-ui/react-tabs": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.1.7",
-    "@vercel/sdk": "^1.2.2",
     "class-variance-authority": "^0.7.1",
-    "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.471.2",
-    "mongodb": "^6.12.0",
-    "mongoose": "^8.9.5",
     "next": "^15.1.6",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",

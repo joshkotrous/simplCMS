@@ -20,7 +20,7 @@ import Link from "next/link";
 import { Button } from "@/app/components/ui/button";
 import { SetupValidation, SetupValidationComponent } from "@/core/platform";
 import { useSetupData } from "./setupContextProvider";
-import { validateSetupAction } from "../serverActions/simplCms";
+import { validateSetupAction } from "../../core/serverActions/simplCms";
 
 const SETUP_DATA_KEY = "setupData";
 

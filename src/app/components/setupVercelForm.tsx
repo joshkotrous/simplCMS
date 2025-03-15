@@ -11,7 +11,7 @@ import { Button } from "@/app/components/ui/button";
 import { useEffect, useState } from "react";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { toast } from "sonner";
-import * as vercel from "@/app/serverActions/providers/vercel";
+import * as vercel from "@/core/serverActions/providers/vercel";
 import { useRouter } from "next/navigation";
 import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
 import Link from "next/link";

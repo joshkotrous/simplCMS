@@ -5,10 +5,10 @@ import { AWSS3Logo } from "@/app/components/logos";
 import { Input } from "@/app/components/ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { connectMediaStorageToApplication } from "@/app/serverActions/simplCms/setup";
+import { connectMediaStorageToApplication } from "@/core/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
 import { SimplCMSPlatformConfiguration } from "@/types";
-import { testS3ConnectionAction } from "@/app/serverActions/providers/s3";
+import { testS3ConnectionAction } from "@/core/serverActions/providers/s3";
 import { useSetupData } from "./setupContextProvider";
 
 type S3ProviderConfig = {

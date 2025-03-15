@@ -1,3 +1,4 @@
+"use server";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -6,20 +7,15 @@ import { Button } from "@/app/components/ui/button";
 import { SidebarProvider, SidebarTrigger } from "@/app/components/ui/sidebar";
 import AdminSidebar from "@/app/components/adminSidebar";
 import ThemeToggle from "@/app/components/themeToggle";
+import { User } from "@/types";
 
 export default async function AdminLayout({
   children,
+  user,
 }: {
   children: React.ReactNode;
+  user: User;
 }) {
-  const session = await getServerSession();
-  if (!session?.user?.email) redirect("/login");
-
-  const user = await getUserByEmail(session.user.email);
-  if (!user) throw new Error("Cannot get user");
-
-  const hasAccess = await userHasAccess(user);
-  if (!hasAccess) throw new Error("User does not have access");
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   return (
     <SidebarProvider>
