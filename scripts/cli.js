@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import {init} from "./init"
-import { createApp } from "./createApp";
+const { init } = require("./init");
+const { createApp } = require("./createApp");
 const command = process.argv[2];
 const appName = process.argv[3];
 

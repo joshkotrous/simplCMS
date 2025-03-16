@@ -1,6 +1,6 @@
 "use client";
 
-import * as postActions from "@/core/serverActions/simplCms/post";
+import * as postActions from "@/core/serverActions/simplcms/post";
 import {
   AlertDialog,
   AlertDialogAction,

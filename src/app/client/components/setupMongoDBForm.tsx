@@ -6,11 +6,11 @@ import { Button } from "@/app/client/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { testConnection } from "@/core/serverActions/providers/mongo";
-import { connectDbToApplication } from "@/core/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
 import { SimplCMSPlatformConfiguration } from "@/types";
 import { Label } from "@/app/client/components/ui/label";
 import { useSetupData } from "./setupContextProvider";
+import { connectDbToApplication } from "@/core/serverActions/simplcms/setup";
 
 export default function SetupMongoForm({
   platformConfiguration,
@@ -20,7 +20,7 @@ export default function SetupMongoForm({
   const router = useRouter();
   const { setupData, setSetupData } = useSetupData();
   const [testSuccessful, setTestSuccessful] = useState(false);
-  const [dbName, setDbName] = useState("simplCms");
+  const [dbName, setDbName] = useState("simplcms");
 
   const updateUriWithDbName = (uri: string, dbName: string): string => {
     if (!uri || !dbName) return uri;
@@ -212,7 +212,7 @@ export default function SetupMongoForm({
             placeholder="Database name"
           />
           <p className="text-xs text-muted-foreground">
-            This is the name of your MongoDB database (default: simplCms)
+            This is the name of your MongoDB database (default: simplcms)
           </p>
         </div>
 

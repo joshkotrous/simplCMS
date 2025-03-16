@@ -2,7 +2,7 @@
 
 import { Button } from "@/app/client/components/ui/button";
 import { SiteConfig } from "@/types";
-import * as simplCmsActions from "@/core/serverActions/simplCms";
+import * as simplCmsActions from "@/core/serverActions/simplcms";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 export function InitSiteConfig({

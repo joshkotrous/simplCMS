@@ -1,26 +1,9 @@
 const rootLayout = `import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
-import { SiteProvider } from "simplcms";
-import AdminToolbar from "simplcms";
 import "./globals.css";
 import { cookies } from "next/headers";
-import { CSSProperties } from "react";
-import Navigation from "simplcms";
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { User } from "@/types/types";
-import { simplCms } from "simplCms";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { simplcms, SiteProvider, AdminToolbar, Navigation } from "simplcms";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -32,7 +15,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const platformConfiguration = simplCms.getServerEnvVars();
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   const cookieStore = await cookies();
   const darkModeCookie = cookieStore.get("darkMode");
   const darkMode = darkModeCookie?.value === "true";
@@ -40,7 +23,7 @@ export default async function RootLayout({
   if (platformConfiguration.database && platformConfiguration.oauth) {
     const session = await getServerSession();
     if (session?.user?.email) {
-      user = await getUserByEmail(session.user.email);
+      user = await simplcms.users.getUserByEmail(session.user.email);
     }
   }
 
@@ -70,18 +53,14 @@ export default async function RootLayout({
   );
 }`
 
-const homePage =`import { TooltipProvider } from "@/components/ui/tooltip";
-import { getServerEnvVars, simplCms } from "simplCms";
-import SetupForm from "./setupForm";
-import { Page } from "@/types/types";
-import PageRenderer from "./pageRenderer";
-import { defaultHomePageConfig } from "@/lib/utils";
+const homePage =`import { simplcms, PageRenderer, TooltipProvider } from "simplcms";
+import { Page } from "simplcms/types";
 
 export default async function Home() {
-  const platformConfiguration = getServerEnvVars();
-  let pageConfig: Page = defaultHomePageConfig;
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
+  let pageConfig: Page = simplcms.defaultHomePageConfig;
   if (platformConfiguration.database) {
-    const page = await simplCms.pages.getPageByRoute("/");
+    const page = await simplcms.pages.getPageByRoute("/");
     if (page) {
       pageConfig = page;
     }

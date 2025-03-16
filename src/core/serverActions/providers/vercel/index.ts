@@ -1,6 +1,6 @@
 "use server";
 
-import { getServerEnvVars } from "@/core/platform";
+import { simplcms } from "simplcms";
 import {
   addEnvToProject,
   connect,
@@ -144,7 +144,7 @@ export async function triggerRedeployAction(
   teamId?: string
 ): Promise<CreateDeploymentResponseBody> {
   try {
-    const platformConfiguration = getServerEnvVars();
+    const platformConfiguration = simplcms.platform.getPlatformConfiguration();
     if (!vercelToken) {
       if (!platformConfiguration.host?.vercel?.token)
         throw new Error("Vercel token is not configured");
@@ -180,7 +180,7 @@ export async function getDeploymentAction(
   teamId?: string
 ): Promise<GetDeploymentResponseBody> {
   try {
-    const platformConfiguration = getServerEnvVars();
+    const platformConfiguration = simplcms.platform.getPlatformConfiguration();
     if (!vercelToken) {
       if (!platformConfiguration.host?.vercel?.token)
         throw new Error("Vercel token is not configured");

@@ -1,11 +1,11 @@
 "use server";
-import { getServerEnvVars } from "@/core/platform";
 import { posts } from "@/posts";
 import { Post } from "@/types";
+import { simplcms } from "@/core";
 import Link from "next/link";
 
 export default async function PostList() {
-  const platformConfiguration = getServerEnvVars();
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   let publishedPosts: Post[] = [];
   if (platformConfiguration.database) {
     const allPosts = await posts.getAllPosts();

@@ -1,17 +1,16 @@
 "use server";
-import { getServerEnvVars } from "@/core/platform";
+import { simplcms } from "@/core";
 import { MarkdownEditor } from "../../../../client/components/textEditor";
-import { simplCms } from "@/index";
 
 export default async function NewPostPage() {
-  const platformConfiguration = getServerEnvVars();
-  const media = await simplCms.media.getMedia(
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
+  const media = await simplcms.media.getMedia(
     platformConfiguration.mediaStorage
   );
-  const client = await simplCms.providers.vercel.connect(
+  const client = await simplcms.providers.vercel.connect(
     platformConfiguration.host?.vercel?.token!
   );
-  const latestDeployment = await simplCms.providers.vercel.getLatestDeployment({
+  const latestDeployment = await simplcms.providers.vercel.getLatestDeployment({
     vercel: client,
     projectId: platformConfiguration.host?.vercel?.projectId!,
     teamId: platformConfiguration.host?.vercel?.teamId!,

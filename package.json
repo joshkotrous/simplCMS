@@ -1,6 +1,6 @@
 {
   "name": "simplcms",
-  "version": "0.0.101",
+  "version": "0.0.105",
   "private": false,
   "sideEffects": ["./src/app/globals.css"],
   "main": "./src/index.ts",
@@ -14,7 +14,8 @@
     "tsconfig.json"
   ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./types": "./types/types.ts"
   },
   "bin": {
     "simplcms": "./scripts/cli.js"

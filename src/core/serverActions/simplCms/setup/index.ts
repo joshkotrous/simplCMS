@@ -1,7 +1,7 @@
 "use server";
 import { defaultHomePageConfig, generateSecret } from "@/core/lib/utils";
 import { AWSS3Config, createPageSchema, MediaStorageProvider } from "@/types";
-import { simplCms } from "@/index";
+import { simplcms } from "@/index";
 
 export async function connectDbToApplication(
   vercelToken: string,
@@ -11,9 +11,9 @@ export async function connectDbToApplication(
   uri: string
 ): Promise<void> {
   try {
-    const client = simplCms.providers.vercel.connect(vercelToken);
+    const client = simplcms.providers.vercel.connect(vercelToken);
     try {
-      simplCms.providers.vercel.addEnvToProject({
+      simplcms.providers.vercel.addEnvToProject({
         vercel: client,
         key: "MONGO_URI",
         value: uri,
@@ -22,7 +22,7 @@ export async function connectDbToApplication(
         type: "encrypted",
         target: ["production"],
       });
-      simplCms.providers.vercel.addEnvToProject({
+      simplcms.providers.vercel.addEnvToProject({
         vercel: client,
         key: "SIMPLCMS_DB_PROVIDER",
         value: provider,
@@ -36,7 +36,7 @@ export async function connectDbToApplication(
     }
 
     const pageConfig = createPageSchema.parse(defaultHomePageConfig);
-    await simplCms.pages.createPage(pageConfig, uri);
+    await simplcms.pages.createPage(pageConfig, uri);
   } catch (error) {
     console.error(error);
     throw error;
@@ -52,9 +52,9 @@ export async function setupGoogleOauth(
   siteUrl: string
 ): Promise<void> {
   try {
-    const client = simplCms.providers.vercel.connect(vercelToken);
+    const client = simplcms.providers.vercel.connect(vercelToken);
     const nextAuthSecret = generateSecret();
-    simplCms.providers.vercel.addEnvToProject({
+    simplcms.providers.vercel.addEnvToProject({
       vercel: client,
       key: "GOOGLE_OAUTH_CLIENT_ID",
       value: clientId,
@@ -63,7 +63,7 @@ export async function setupGoogleOauth(
       type: "encrypted",
       target: ["production"],
     });
-    simplCms.providers.vercel.addEnvToProject({
+    simplcms.providers.vercel.addEnvToProject({
       vercel: client,
       key: "GOOGLE_OAUTH_CLIENT_SECRET",
       value: clientSecret,
@@ -72,7 +72,7 @@ export async function setupGoogleOauth(
       type: "encrypted",
       target: ["production"],
     });
-    simplCms.providers.vercel.addEnvToProject({
+    simplcms.providers.vercel.addEnvToProject({
       vercel: client,
       key: "SIMPLCMS_OAUTH_PROVIDERS",
       value: "Google",
@@ -81,7 +81,7 @@ export async function setupGoogleOauth(
       type: "plain",
       target: ["production"],
     });
-    simplCms.providers.vercel.addEnvToProject({
+    simplcms.providers.vercel.addEnvToProject({
       vercel: client,
       key: "NEXTAUTH_URL",
       value: siteUrl,
@@ -90,7 +90,7 @@ export async function setupGoogleOauth(
       type: "plain",
       target: ["production"],
     });
-    simplCms.providers.vercel.addEnvToProject({
+    simplcms.providers.vercel.addEnvToProject({
       vercel: client,
       key: "NEXTAUTH_SECRET",
       value: nextAuthSecret,
@@ -118,8 +118,8 @@ export async function connectMediaStorageToApplication(
   }
 ) {
   try {
-    const client = simplCms.providers.vercel.connect(vercelToken);
-    simplCms.providers.vercel.addEnvToProject({
+    const client = simplcms.providers.vercel.connect(vercelToken);
+    simplcms.providers.vercel.addEnvToProject({
       vercel: client,
       key: "SIMPLCMS_MEDIA_STORAGE_PROVIDERS",
       value: provider,
@@ -133,7 +133,7 @@ export async function connectMediaStorageToApplication(
         if (!config.cloudinary?.url)
           throw new Error("Cloudinary url not provided");
 
-        simplCms.providers.vercel.addEnvToProject({
+        simplcms.providers.vercel.addEnvToProject({
           vercel: client,
           key: "CLOUDINARY_URL",
           value: config.cloudinary?.url,
@@ -155,7 +155,7 @@ export async function connectMediaStorageToApplication(
         if (!config.s3?.bucketName)
           throw new Error("Config is missing bucket name");
 
-        simplCms.providers.vercel.addEnvToProject({
+        simplcms.providers.vercel.addEnvToProject({
           vercel: client,
           key: "AWS_S3_BUCKET_REGION",
           value: config.s3?.region,
@@ -164,7 +164,7 @@ export async function connectMediaStorageToApplication(
           type: "plain",
           target: ["production"],
         });
-        simplCms.providers.vercel.addEnvToProject({
+        simplcms.providers.vercel.addEnvToProject({
           vercel: client,
           key: "AWS_S3_BUCKET_NAME",
           value: config.s3?.bucketName,
@@ -173,7 +173,7 @@ export async function connectMediaStorageToApplication(
           type: "plain",
           target: ["production"],
         });
-        simplCms.providers.vercel.addEnvToProject({
+        simplcms.providers.vercel.addEnvToProject({
           vercel: client,
           key: "AWS_S3_ACCESS_KEY_ID",
           value: config.s3?.accessKeyId,
@@ -182,7 +182,7 @@ export async function connectMediaStorageToApplication(
           type: "plain",
           target: ["production"],
         });
-        simplCms.providers.vercel.addEnvToProject({
+        simplcms.providers.vercel.addEnvToProject({
           vercel: client,
           key: "AWS_S3_ACCESS_KEY_SECRET",
           value: config.s3?.accessSecretKey,

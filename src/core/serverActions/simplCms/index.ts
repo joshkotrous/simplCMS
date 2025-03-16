@@ -1,11 +1,11 @@
 "use server";
 
-import { simplCms } from "@/index";
+import { simplcms } from "@/core";
 import { HostProvider, SimplCMSPlatformConfiguration } from "@/types";
 
 export async function initSiteConfig() {
   try {
-    await simplCms.initSiteConfig();
+    await simplcms.platform.initSiteConfig();
   } catch (error) {
     console.error(error);
     throw error;
@@ -21,7 +21,7 @@ export async function validateSetupAction({
   vercelConfig?: { token: string; projectId: string; teamId: string };
   setupData?: SimplCMSPlatformConfiguration;
 }) {
-  const setupValidation = await simplCms.validateSetup({
+  const setupValidation = await simplcms.platform.validateSetup({
     provider: provider,
     vercelConfig,
     setupData,

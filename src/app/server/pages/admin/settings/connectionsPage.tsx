@@ -10,23 +10,23 @@ import MediaPopover from "@/app/client/components/mediaPopover";
 import { Button } from "@/app/client/components/ui/button";
 import { Card, CardContent } from "@/app/client/components/ui/card";
 import { Separator } from "@/app/client/components/ui/separator";
-import { getServerEnvVars } from "@/core/platform";
-import { simplCms } from "@/index";
+
+import { simplcms } from "@/core";
 import { ImageIcon } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 
 export default async function ConnectionSettings() {
   try {
-    const platformConfiguration = getServerEnvVars();
-    const client = await simplCms.providers.vercel.connect(
+    const platformConfiguration = simplcms.platform.getPlatformConfiguration();
+    const client = await simplcms.providers.vercel.connect(
       platformConfiguration.host?.vercel?.token!
     );
-    const project = await simplCms.providers.vercel.getProjectById({
+    const project = await simplcms.providers.vercel.getProjectById({
       vercel: client,
       projectId: platformConfiguration.host?.vercel?.projectId!,
       teamId: platformConfiguration.host?.vercel?.teamId!,
     });
-    const team = await simplCms.providers.vercel.getTeamById({
+    const team = await simplcms.providers.vercel.getTeamById({
       vercel: client,
       teamId: platformConfiguration.host?.vercel?.teamId!,
     });

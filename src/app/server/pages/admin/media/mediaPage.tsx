@@ -1,11 +1,10 @@
 "use server";
 import { MediaGrid } from "../../../../client/components/mediaGrid";
-import { getServerEnvVars } from "@/core/platform";
-import { simplCms } from "@/index";
+import { simplcms } from "@/core";
 
 export default async function AdminMediaPage() {
-  const platformConfiguration = getServerEnvVars();
-  const media = await simplCms.media.getMedia(
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
+  const media = await simplcms.media.getMedia(
     platformConfiguration.mediaStorage
   );
   return (

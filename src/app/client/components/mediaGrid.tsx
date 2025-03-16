@@ -2,7 +2,7 @@
 import {
   deleteMediaAction,
   updateMediaNameAction,
-} from "@/core/serverActions/simplCms/media";
+} from "@/core/serverActions/simplcms/media";
 import MediaAlertDialog from "@/app/client/components/mediaAlertDialog";
 import {
   AlertDialog,

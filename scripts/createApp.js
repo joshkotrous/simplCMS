@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-import { execSync } from "child_process";
-import path from "path";
-import fs from "fs"
-import readline from "readline"
+const { execSync } = require("child_process");
+const path = require("path");
+const fs = require("fs");
+const readline = require("readline");
+const { rootLayout, homePage } = require("./files.js");
 
 async function createApp() {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
-
   try {
     // Always prompt for project name with a default suggestion
     const defaultName = "simplcms-app";
@@ -35,7 +35,6 @@ async function createApp() {
     console.log("This might take a few minutes...\n");
     
     // Build the create-next-app command with options
-    // Use the --yes flag to skip all prompts and --no-* format for boolean flags
     let command = `npx create-next-app@latest ${appName} --yes`;
     
     // Add appropriate flags based on user choices
@@ -62,6 +61,35 @@ async function createApp() {
     const appDir = path.join(process.cwd(), appName);
     process.chdir(appDir);
     
+    // Replace default layout and home page files with our custom ones
+    console.log("Replacing default layout and home page with SimplCMS versions...");
+    
+    const fileExtension = useTypeScript ? "tsx" : "jsx";
+    
+    // Path to the layout file
+    const layoutPath = path.join(
+      process.cwd(),
+      "src",
+      "app",
+      `layout.${fileExtension}`
+    );
+    
+    // Path to the home page file
+    const homePath = path.join(
+      process.cwd(),
+      "src",
+      "app",
+      `page.${fileExtension}`
+    );
+    
+    // Write the custom layout file
+    fs.writeFileSync(layoutPath, rootLayout);
+    console.log(`✓ Root layout file updated at ${layoutPath}`);
+    
+    // Write the custom home page file
+    fs.writeFileSync(homePath, homePage);
+    console.log(`✓ Home page file updated at ${homePath}`);
+    
     // Run the SimplCMS init command
     try {
       execSync("npx simplcms init", { stdio: "inherit" });
@@ -69,8 +97,12 @@ async function createApp() {
     } catch (error) {
       // Try direct import if the npx command fails
       console.log("Using local init function...");
-      const { init } = await import("./init")
-      await init();
+      const { init } = require("./init");
+      if (typeof init === 'function') {
+        await init();
+      } else {
+        throw new Error("Init function not found");
+      }
     }
     
     console.log("\n✨ All done! Your Next.js app with SimplCMS is ready.");
@@ -83,6 +115,11 @@ async function createApp() {
     console.error("Error creating app:", error);
     process.exit(1);
   }
+}
+
+// Execute the function if this script is run directly
+if (require.main === module) {
+  createApp();
 }
 
 // Export the function

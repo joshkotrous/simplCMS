@@ -5,18 +5,18 @@ import { Separator } from "@/app/client/components/ui/separator";
 import { ImageIcon } from "lucide-react";
 import { InitSiteConfig } from "../../../../client/components/initSiteConfig";
 import { CloudinaryMedia, SiteConfig } from "@/types";
-import { getServerEnvVars } from "@/core/platform";
-import { simplCms } from "@/index";
+
+import { simplcms } from "@/core";
 
 export default async function SiteSettings() {
   let siteConfig: SiteConfig | null = null;
-  const platformConfiguration = getServerEnvVars();
-  const media = await simplCms.media.getMedia(
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
+  const media = await simplcms.media.getMedia(
     platformConfiguration.mediaStorage
   );
 
   if (platformConfiguration.database) {
-    siteConfig = await simplCms.getSiteConfig();
+    siteConfig = await simplcms.platform.getSiteConfig();
   }
   return (
     <div className="container mx-auto p-6 space-y-8">

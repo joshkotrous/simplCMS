@@ -1,15 +1,14 @@
 "use server";
 
-import { getServerEnvVars } from "@/core/platform";
-import { simplCms } from "@/index";
+import { simplcms } from "@/core";
 import { s3 } from "@/providers/s3";
 import { SimplCMSMedia, SimplCMSMediaStorageConfiguration } from "@/types";
 export async function uploadMediaAction(
   files: File[]
 ): Promise<SimplCMSMedia[]> {
-  const platformConfiguration = getServerEnvVars();
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   try {
-    const uploadedMedia = await simplCms.media.uploadMedia(
+    const uploadedMedia = await simplcms.media.uploadMedia(
       files,
       platformConfiguration.mediaStorage
     );
@@ -21,8 +20,8 @@ export async function uploadMediaAction(
 }
 
 export async function deleteMediaAction(media: SimplCMSMedia) {
-  const platformConfiguration = getServerEnvVars();
-  await simplCms.media.deleteMedia(media, platformConfiguration.mediaStorage);
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
+  await simplcms.media.deleteMedia(media, platformConfiguration.mediaStorage);
 }
 
 export async function updateMediaNameAction(
@@ -30,7 +29,7 @@ export async function updateMediaNameAction(
   newName: string
 ): Promise<SimplCMSMedia> {
   try {
-    const platformConfiguration = getServerEnvVars();
+    const platformConfiguration = simplcms.platform.getPlatformConfiguration();
     const mediaStorage = platformConfiguration.mediaStorage;
 
     if (!mediaStorage) {
@@ -44,7 +43,7 @@ export async function updateMediaNameAction(
       updatedMedia = await s3.updateMediaName(media, newName, mediaStorage);
     } else if (media.source === "Cloudinary") {
       updatedMedia =
-        await simplCms.providers.cloudinary.updateCloudinaryMediaName(
+        await simplcms.providers.cloudinary.updateCloudinaryMediaName(
           media,
           newName,
           mediaStorage

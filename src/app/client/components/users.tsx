@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/app/client/components/ui/alert-dialog";
 import { toast } from "sonner";
-import * as userActions from "@/core/serverActions/simplCms/user";
+import * as userActions from "@/core/serverActions/simplcms/user";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/app/client/components/ui/avatar";
 import Image from "next/image";

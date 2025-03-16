@@ -1,9 +1,8 @@
 "use server";
 import SetupCloudinaryForm from "@/app/client/components/setupCloudinaryForm";
-import { getServerEnvVars } from "@/core/platform";
-
+import { simplcms } from "@/core";
 export default async function SetupCloudinaryPage() {
-  const platformConfiguration = getServerEnvVars();
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   return (
     <div className="size-full flex justify-center items-center text-foreground">
       <SetupCloudinaryForm platformConfiguration={platformConfiguration} />

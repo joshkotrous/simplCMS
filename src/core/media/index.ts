@@ -4,7 +4,7 @@ import {
   SimplCMSMediaStorageConfiguration,
 } from "@/types";
 import { s3 } from "../providers/s3";
-import { simplCms } from "@/index";
+import { simplcms } from "@/core";
 
 export async function getMedia(
   mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
@@ -14,12 +14,12 @@ export async function getMedia(
       switch (config.provider) {
         case "Cloudinary":
           const cloudinaryMedia =
-            await simplCms.providers.cloudinary.getMedia();
+            await simplcms.providers.cloudinary.getMedia();
           return cloudinaryMedia;
 
         case "AWS S3":
           if (!config?.s3) throw new Error("S3 is not configured");
-          const s3Media = await simplCms.providers.s3.getMedia(config?.s3);
+          const s3Media = await simplcms.providers.s3.getMedia(config?.s3);
           return s3Media;
       }
     }
@@ -76,7 +76,7 @@ export async function uploadMedia(
           // Upload to Cloudinary
           // Note: Assuming cloudinary.uploadFiles returns SimplCMSMedia objects
           const cloudinaryResult =
-            await simplCms.providers.cloudinary.uploadFiles(files);
+            await simplcms.providers.cloudinary.uploadFiles(files);
 
           // If uploadFiles returns SimplCMSMedia array directly
           if (Array.isArray(cloudinaryResult)) {
@@ -88,7 +88,7 @@ export async function uploadMedia(
       } else if (provider === "AWS S3" && config.s3) {
         try {
           // Upload to S3
-          const s3Result = await simplCms.providers.s3.uploadFiles(
+          const s3Result = await simplcms.providers.s3.uploadFiles(
             config.s3,
             files as unknown as Blob[]
           );
@@ -147,7 +147,7 @@ export async function deleteMedia(
     if (media.source === "AWS S3") {
       await s3.deleteMedia(media, mediaStorageConfiguration);
     } else if (media.source === "Cloudinary") {
-      await simplCms.providers.cloudinary.deleteCloudinaryMedia(
+      await simplcms.providers.cloudinary.deleteCloudinaryMedia(
         media,
         mediaStorageConfiguration
       );

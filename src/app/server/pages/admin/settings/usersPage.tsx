@@ -2,10 +2,10 @@
 import { getAllUsers } from "@/user";
 import { User } from "@/types";
 import Users from "@/app/client/components/users";
-import { getServerEnvVars } from "@/core/platform";
+import { simplcms } from "@/core";
 
 export default async function UserSettingsPage() {
-  const platformConfiguration = getServerEnvVars();
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   let users: User[] = [];
 
   if (platformConfiguration.database) {

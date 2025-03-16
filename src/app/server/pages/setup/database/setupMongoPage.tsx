@@ -1,11 +1,9 @@
 "use server";
 import SetupMongoForm from "@/app/client/components/setupMongoDBForm";
-import { Button } from "@/app/client/components/ui/button";
-import { getServerEnvVars } from "@/core/platform";
-import Link from "next/link";
+import { simplcms } from "@/core";
 
 export default async function SetupMongo() {
-  const platformConfiguration = getServerEnvVars();
+  const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   return (
     <div className="size-full flex justify-center items-center text-foreground">
       <SetupMongoForm platformConfiguration={platformConfiguration} />

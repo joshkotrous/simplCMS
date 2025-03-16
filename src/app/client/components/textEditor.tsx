@@ -46,7 +46,7 @@ import {
 } from "@/app/client/components/ui/select";
 import Link from "next/link";
 import { CreatePost, Post, SimplCMSMedia } from "@/types";
-import { createNewPost } from "@/core/serverActions/simplCms/post";
+import { createNewPost } from "@/core/serverActions/simplcms/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import MediaPopover from "@/app/client/components/mediaPopover";
@@ -60,7 +60,7 @@ import {
 } from "@/app/client/components/ui/collapsible";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 import * as vercelActions from "@/core/serverActions/providers/vercel";
-import * as postActions from "@/core/serverActions/simplCms/post";
+import * as postActions from "@/core/serverActions/simplcms/post";
 import useRedeployToast from "@/app/client/components/redeploymentToast";
 
 // Language options for code blocks

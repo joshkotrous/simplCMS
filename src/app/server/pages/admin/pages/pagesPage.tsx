@@ -1,10 +1,10 @@
 "use server";
 import { Plus } from "lucide-react";
-import { simplCms } from "@/index";
+import { simplcms } from "@/index";
 import PagePreview from "@/app/client/components/pagePreview";
 
 export default async function PagesPage() {
-  const allPages = await simplCms.pages.getAllPages();
+  const allPages = await simplcms.pages.getAllPages();
   return (
     <div className="relative h-full overflow-hidden">
       <h2 className="text-3xl font-bold px-4">Pages</h2>

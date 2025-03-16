@@ -4,7 +4,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { useState } from "react";
-import * as mediaActions from "@/core/serverActions/simplCms/media";
+import * as mediaActions from "@/core/serverActions/simplcms/media";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowRight } from "lucide-react";
