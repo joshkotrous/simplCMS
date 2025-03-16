@@ -1,6 +1,11 @@
 "use server";
 import { notFound, redirect } from "next/navigation";
-import { AdminLayout, LoginLayout, SimplCMSLayout } from "../layouts";
+import {
+  AdminLayout,
+  LoginLayout,
+  SetupLayout,
+  SimplCMSLayout,
+} from "../layouts";
 import { getServerSession } from "next-auth";
 import { getUserByEmail, userHasAccess } from "@/core/user";
 import React from "react";
@@ -27,11 +32,7 @@ export default async function AdminRouter({ params }: AdminRouterProps) {
 
   // Special case for login page to prevent redirect loop
   if (params.slug?.[0] === "login") {
-    return (
-      <LoginLayout>
-        <LoginForm />
-      </LoginLayout>
-    );
+    return <LoginLayout children={<LoginForm />} />;
   }
 
   // Redirect to login if no session
@@ -47,9 +48,10 @@ export default async function AdminRouter({ params }: AdminRouterProps) {
   // Skip access check for setup page
   if (params.slug?.[0] === "setup") {
     return (
-      <AdminLayout user={user}>
-        <SetupPage />
-      </AdminLayout>
+      <SimplCMSLayout
+        user={user}
+        children={<SetupLayout children={<SetupPage />} />}
+      />
     );
   }
 
@@ -103,8 +105,9 @@ export default async function AdminRouter({ params }: AdminRouterProps) {
   }
 
   return (
-    <SimplCMSLayout user={user}>
-      <AdminLayout user={user}>{PageComponent}</AdminLayout>
-    </SimplCMSLayout>
+    <SimplCMSLayout
+      user={user}
+      children={<AdminLayout user={user} children={PageComponent} />}
+    ></SimplCMSLayout>
   );
 }
