@@ -1,6 +1,6 @@
-import * as cloudinary from "./cloudinary";
-import * as s3 from "./s3";
-import * as vercel from "./vercel";
+import { cloudinary } from "./cloudinary";
+import { s3 } from "./s3";
+import { vercel } from "./vercel";
 
 export const providers = {
   cloudinary,

@@ -3,7 +3,7 @@ import {
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,
 } from "@/types";
-import { v2 as cloudinary } from "cloudinary";
+import { v2 as cloudinarySDK } from "cloudinary";
 
 function parseCloudinaryUrl(cloudinaryUrl: string) {
   try {
@@ -32,16 +32,16 @@ export async function testConnection(url?: string) {
   try {
     if (url) {
       const { apiKey, apiSecret, cloudName } = parseCloudinaryUrl(url);
-      cloudinary.config({
+      cloudinarySDK.config({
         api_key: apiKey,
         api_secret: apiSecret,
         cloud_name: cloudName,
       });
     } else {
       console.warn("URL not provided. Connecting with CLOUDINARY_URL.");
-      cloudinary.config();
+      cloudinarySDK.config();
     }
-    await cloudinary.api.ping();
+    await cloudinarySDK.api.ping();
   } catch (error) {
     console.error(`Could not connect to Cloudinary: ${error}`);
     throw error;
@@ -53,10 +53,10 @@ export async function getMedia(
 ): Promise<SimplCMSMedia[]> {
   try {
     // Configure cloudinary
-    cloudinary.config();
+    cloudinarySDK.config();
 
     // Fetch resources from Cloudinary
-    const result = await cloudinary.api.resources({
+    const result = await cloudinarySDK.api.resources({
       resource_type: resourceType,
     });
 
@@ -83,13 +83,13 @@ export async function getMedia(
 }
 export async function uploadFiles(files: Blob[]): Promise<void> {
   try {
-    cloudinary.config();
+    cloudinarySDK.config();
 
     const uploadPromises = files.map(async (blob) => {
       const arrayBuffer = await blob.arrayBuffer();
       const base64 = Buffer.from(arrayBuffer).toString("base64");
 
-      await cloudinary.uploader.upload(`data:image/jpeg;base64,${base64}`, {
+      await cloudinarySDK.uploader.upload(`data:image/jpeg;base64,${base64}`, {
         resource_type: "auto",
       });
     });
@@ -129,7 +129,7 @@ export async function deleteCloudinaryMedia(
   const { apiKey, apiSecret, cloudName } = parseCloudinaryUrl(
     cloudinaryConfig.uri
   );
-  cloudinary.config({
+  cloudinarySDK.config({
     api_key: apiKey,
     api_secret: apiSecret,
     cloud_name: cloudName,
@@ -168,7 +168,7 @@ export async function deleteCloudinaryMedia(
     const resourceType = media.type === "video" ? "video" : "image";
 
     // Delete the resource
-    await cloudinary.uploader.destroy(publicId, {
+    await cloudinarySDK.uploader.destroy(publicId, {
       resource_type: resourceType,
     });
   } catch (error) {
@@ -207,7 +207,7 @@ export async function updateCloudinaryMediaName(
     cloudinaryConfig.uri
   );
 
-  cloudinary.config({
+  cloudinarySDK.config({
     api_key: apiKey,
     api_secret: apiSecret,
     cloud_name: cloudName,
@@ -254,7 +254,7 @@ export async function updateCloudinaryMediaName(
 
     // Update the media metadata/context to include the new display name
     // Using add_context method to update the display name
-    await cloudinary.uploader.add_context(
+    await cloudinarySDK.uploader.add_context(
       `display_name=${finalNewName}`,
       [publicId],
       {
@@ -276,4 +276,10 @@ export async function updateCloudinaryMediaName(
   }
 }
 
-export * as cloudinary from ".";
+export const cloudinary = {
+  testConnection,
+  getMedia,
+  uploadFiles,
+  deleteCloudinaryMedia,
+  updateCloudinaryMediaName,
+};

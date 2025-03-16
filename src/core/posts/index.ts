@@ -149,4 +149,11 @@ export async function updatePost(
   }
 }
 
-export * as posts from ".";
+export const posts = {
+  updatePost,
+  deletePost,
+  getPost,
+  getAllPosts,
+  createPost,
+  getPostBySlug,
+};

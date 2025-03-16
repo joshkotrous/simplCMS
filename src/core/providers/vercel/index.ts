@@ -331,4 +331,20 @@ export async function getTeamById({
   }
 }
 
-export * as vercel from ".";
+export const vercel = {
+  getTeamById,
+  getProjectById,
+  getProjectEnvVarValue,
+  getProjectEnvVars,
+  getDeploymentById,
+  getRunningDeployments,
+  getLatestDeployment,
+  triggerDeployment,
+  triggerRedeploy,
+  getVercelEnvVars,
+  getVercelToken,
+  getUserTeams,
+  addEnvToProject,
+  getProjects,
+  connect,
+};

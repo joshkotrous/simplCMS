@@ -2,7 +2,6 @@
 
 import { getServerEnvVars } from "@/core/platform";
 import { simplCms } from "@/index";
-import { cloudinary } from "@/providers/cloudinary";
 import { s3 } from "@/providers/s3";
 import { SimplCMSMedia, SimplCMSMediaStorageConfiguration } from "@/types";
 export async function uploadMediaAction(
@@ -42,13 +41,14 @@ export async function updateMediaNameAction(
 
     // Update the media name based on the source
     if (media.source === "AWS S3") {
-      updatedMedia = await s3.updateS3MediaName(media, newName, mediaStorage);
+      updatedMedia = await s3.updateMediaName(media, newName, mediaStorage);
     } else if (media.source === "Cloudinary") {
-      updatedMedia = await cloudinary.updateCloudinaryMediaName(
-        media,
-        newName,
-        mediaStorage
-      );
+      updatedMedia =
+        await simplCms.providers.cloudinary.updateCloudinaryMediaName(
+          media,
+          newName,
+          mediaStorage
+        );
     } else {
       throw new Error(`Unsupported media source: ${media.source}`);
     }

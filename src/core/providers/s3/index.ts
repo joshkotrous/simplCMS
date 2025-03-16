@@ -14,7 +14,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from "uuid";
 
-export async function testS3Connection(
+export async function testConnection(
   config: AWSS3Config
 ): Promise<ListObjectsV2CommandOutput> {
   try {
@@ -231,7 +231,7 @@ export async function uploadFiles(
   }
 }
 
-export async function deleteS3Media(
+export async function deleteMedia(
   media: SimplCMSMedia,
   mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
 ): Promise<void> {
@@ -281,7 +281,7 @@ export async function deleteS3Media(
   await s3Client.send(deleteCommand);
 }
 
-export async function updateS3MediaName(
+export async function updateMediaName(
   media: SimplCMSMedia,
   newName: string,
   mediaStorageConfiguration: SimplCMSMediaStorageConfiguration
@@ -381,4 +381,10 @@ export async function updateS3MediaName(
   }
 }
 
-export * as s3 from ".";
+export const s3 = {
+  testConnection,
+  getMedia,
+  uploadFiles,
+  deleteMedia,
+  updateMediaName,
+};

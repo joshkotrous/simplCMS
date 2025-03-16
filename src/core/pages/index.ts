@@ -53,3 +53,9 @@ export async function getPageByRoute(route: string): Promise<Page | null> {
     throw error;
   }
 }
+
+export const pages = {
+  getAllPages,
+  createPage,
+  getPageByRoute,
+};

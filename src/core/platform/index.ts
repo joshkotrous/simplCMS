@@ -17,8 +17,8 @@ import {
   FilterProjectEnvsResponseBody,
   ResponseBodyEnvs,
 } from "@vercel/sdk/models/filterprojectenvsop.js";
-import { vercel } from "../providers/vercel";
 import { user } from "../user";
+import { simplCms } from "@/index";
 
 export type SetupValidationComponent = {
   setupComplete: boolean;
@@ -68,10 +68,10 @@ export async function validateSetup({
     };
   const validation: Partial<SetupValidation> = {};
 
-  const vercelClient = vercel.connect(vercelConfig.token);
+  const vercelClient = simplCms.providers.vercel.connect(vercelConfig.token);
   let providerEnvVars: FilterProjectEnvsResponseBody | null = null;
   try {
-    providerEnvVars = await vercel.getProjectEnvVars({
+    providerEnvVars = await simplCms.providers.vercel.getProjectEnvVars({
       vercel: vercelClient,
       projectId: vercelConfig?.projectId,
       teamId: vercelConfig?.teamId,
@@ -701,10 +701,12 @@ export async function getProviderSiteConfig({
     switch (provider) {
       case "Vercel": {
         if (!vercelConfig) throw new Error("Vercel client is not provided");
-        const vercelClient = vercel.connect(vercelConfig.token);
+        const vercelClient = simplCms.providers.vercel.connect(
+          vercelConfig.token
+        );
 
         // Get all environment variables for the project
-        const allEnvVars = await vercel.getProjectEnvVars({
+        const allEnvVars = await simplCms.providers.vercel.getProjectEnvVars({
           vercel: vercelClient,
           projectId: vercelConfig.projectId,
           teamId: vercelConfig.teamId,
@@ -716,7 +718,7 @@ export async function getProviderSiteConfig({
           const varId = findEnvVarId(allEnvVars, key);
           if (!varId) return null;
 
-          const envVar = await vercel.getProjectEnvVarValue({
+          const envVar = await simplCms.providers.vercel.getProjectEnvVarValue({
             vercel: vercelClient,
             varId,
             projectId: vercelConfig.projectId,

@@ -7,12 +7,12 @@ import {
   initSiteConfig,
   validateSetup,
 } from "./core/platform";
-import * as media from "./core/media";
-import * as pages from "./core/pages";
-import * as providers from "./core/providers";
-import * as posts from "./core/posts";
-import * as db from "./core/db";
-import * as dev from "./core/dev";
+import { media } from "./core/media";
+import { pages } from "./core/pages";
+import { providers } from "./core/providers";
+import { posts } from "./core/posts";
+import { db } from "./core/db";
+
 import {
   cn,
   defaultHomePageConfig,
@@ -22,6 +22,10 @@ import {
 
 export const simplCms = {
   pages,
+  media,
+  providers,
+  posts,
+  db,
   validateSetup,
   checkSetupCompleted,
   getSetupStep,
@@ -29,13 +33,10 @@ export const simplCms = {
   getSiteConfig,
   initSiteConfig,
   getProviderSiteConfig,
-  media,
-  providers,
   getEnvironment,
   cn,
   getSiteUrl,
   defaultHomePageConfig,
-  posts,
-  db,
-  dev,
 };
+
+export type SimplCms = typeof simplCms;
