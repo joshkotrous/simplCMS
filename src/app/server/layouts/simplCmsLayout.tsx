@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import { SiteProvider } from "../../client/components/siteContextProvider";
 import AdminToolbar from "../../client/components/adminToolbar";
-import "../globals.css";
+import "../../globals.css";
 import { cookies } from "next/headers";
 import { User } from "@/types";
 import Navigation from "../../client/components/navigation";

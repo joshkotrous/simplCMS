@@ -1,132 +1,64 @@
 import { defineConfig } from "tsup";
-import { copyFileSync, existsSync, mkdirSync } from "fs";
-import { dirname, join } from "path";
-import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
 
-export default defineConfig((options) => {
-  return [
-    {
-      name: "server-utils",
-      entry: ["src/index.ts"],
-      format: ["cjs", "esm"],
-      outDir: "./dist",
-      dts: { resolve: true },
-      sourcemap: true,
-      splitting: false,
-      clean: true,
-      shims: false,
-      bundle: false,
-      treeshake: true,
-      platform: "node",
-      external: ["react", "react-dom", "next"],
-      esbuildOptions(options) {
-        options.banner = { js: 'import "./globals.css";' };
-      },
+// Function to collect all client components
+function getClientComponents() {
+  const clientDir = path.resolve(__dirname, "src/app/client/components");
+  if (!fs.existsSync(clientDir)) return [];
+
+  return fs
+    .readdirSync(clientDir)
+    .filter((file) => file.endsWith(".tsx"))
+    .map((file) => `simplcms/client/${file.replace(".tsx", "")}`);
+}
+
+export default defineConfig([
+  // 🟢 Client Bundle
+  {
+    entry: {
+      index: "src/app/client/index.ts",
     },
-    {
-      name: "client-components",
-      entry: ["src/app/client/index.ts"],
-      format: ["cjs", "esm"],
-      outDir: "./dist/client",
-      dts: { resolve: true },
-      sourcemap: true,
-      splitting: false,
-      clean: false,
-      shims: false,
-      bundle: false, // Change to true
-      treeshake: true,
-      platform: "browser",
-      external: [
-        "react",
-        "react-dom",
-        "next",
-        "fs",
-        "path",
-        "crypto",
-        "fs/promises",
-        "os",
-        "child_process",
-        "util",
-      ],
-      esbuildOptions(options) {
-        // This ensures the directive is at the very top
-        options.banner = { js: '"use client";' };
-        // Add CSS import separately to ensure directive is first
-        options.footer = { js: 'import "../globals.css";' };
-      },
-      async onSuccess() {
-        // Same as before
-        const distDir = "dist/client";
-        const filesToCopy = ["./tailwind.config.ts", "./postcss.config.js"];
-        filesToCopy.forEach((file) => {
-          const srcPath = join(__dirname, file);
-          const destPath = join(__dirname, distDir, file);
-          if (existsSync(srcPath)) {
-            if (!existsSync(dirname(destPath))) {
-              mkdirSync(dirname(destPath), { recursive: true });
-            }
-            copyFileSync(srcPath, destPath);
-            console.log(`Copied ${file} to ${distDir}`);
-          }
-        });
-        try {
-          console.log("Building Tailwind CSS...");
-          execSync(
-            "npx tailwindcss -i ./src/app/globals.css -o ./dist/client/globals.css",
-            { stdio: "inherit" }
-          );
-          console.log("✅ Tailwind CSS built successfully.");
-        } catch (error) {
-          console.error("❌ Tailwind CSS build failed:", error);
-        }
-      },
+    outDir: "dist/client",
+    format: ["esm", "cjs"],
+    dts: true,
+    splitting: true,
+    clean: true,
+    esbuildOptions(options) {
+      options.banner = {
+        js: '"use client";',
+      };
     },
-    {
-      name: "server-components",
-      entry: ["src/app/server/index.ts"],
-      format: ["cjs", "esm"],
-      outDir: "./dist/server",
-      dts: { resolve: true },
-      sourcemap: true,
-      splitting: false,
-      clean: false,
-      shims: false,
-      bundle: false, // Change to true
-      treeshake: true,
-      platform: "node",
-      external: ["react", "react-dom", "next"],
-      esbuildOptions(options) {
-        // This ensures the directive is at the very top
-        options.banner = { js: '"use server";' };
-        // Add CSS import separately to ensure directive is first
-        options.footer = { js: 'import "../globals.css";' };
-      },
-      async onSuccess() {
-        // Same as before
-        const distDir = "dist/server";
-        const filesToCopy = ["./tailwind.config.ts", "./postcss.config.js"];
-        filesToCopy.forEach((file) => {
-          const srcPath = join(__dirname, file);
-          const destPath = join(__dirname, distDir, file);
-          if (existsSync(srcPath)) {
-            if (!existsSync(dirname(destPath))) {
-              mkdirSync(dirname(destPath), { recursive: true });
-            }
-            copyFileSync(srcPath, destPath);
-            console.log(`Copied ${file} to ${distDir}`);
-          }
-        });
-        try {
-          console.log("Building Tailwind CSS...");
-          execSync(
-            "npx tailwindcss -i ./src/app/globals.css -o ./dist/server/globals.css",
-            { stdio: "inherit" }
-          );
-          console.log("✅ Tailwind CSS built successfully.");
-        } catch (error) {
-          console.error("❌ Tailwind CSS build failed:", error);
-        }
-      },
+  },
+  // 🔴 Server Bundle (EXCLUDE client components)
+  {
+    entry: {
+      index: "src/app/server/index.ts",
     },
-  ];
-});
+    outDir: "dist/server",
+    format: ["esm", "cjs"],
+    dts: true,
+    splitting: true,
+    clean: true,
+    external: [
+      "simplcms/client", // ✅ Prevents TSUP from bundling Client Components
+      ...getClientComponents(), // ✅ Ensures no Client Components are bundled inside Server
+    ],
+    esbuildOptions(options) {
+      options.banner = {
+        js: '"use server";',
+      };
+    },
+  },
+  // 🔵 Shared Utilities Bundle
+  {
+    entry: {
+      index: "src/core/lib/utils.ts",
+    },
+    outDir: "dist/shared",
+    format: ["esm", "cjs"],
+    dts: true,
+    splitting: false,
+    clean: false,
+  },
+]);

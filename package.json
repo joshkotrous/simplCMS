@@ -2,26 +2,40 @@
   "name": "simplcms",
   "version": "0.0.0",
   "private": false,
-  "sideEffects": false,
-"main": "./dist/index.js",
-"module": "./dist/index.mjs",
-"types": "./dist/index.d.ts",
-"exports": {
-  ".": {
-    "import": "./dist/index.mjs",
-    "types": "./dist/index.d.ts"
+  "sideEffects": ["./dist/client/globals.css"],
+  "main": "./dist/server/index.js",
+  "module": "./dist/server/index.mjs",
+  "types": "./dist/server/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client/index.mjs",
+      "require": "./dist/client/index.js",
+      "types": "./dist/client/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "types": "./dist/server/index.d.ts"
+    },
+    "./styles": {
+      "import": "./dist/client/globals.css",
+      "default": "./dist/client/globals.css"
+    }
   },
-  "./styles": "./dist/globals.css"
-},
-"files": [
-  "dist/",
-  "README.md"
-],
+  "files": [
+    "dist/",
+    "README.md"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build:css": "npx tailwindcss -i ./src/app/globals.css -o ./dist/globals.css",
     "build:ts": "tsup src/index.ts --format esm,cjs --dts",
-    "build": "npm run build:css && npm run build:ts",
+    "build": "tsup && npm run build:css",
     "start": "next start",
     "lint": "next lint"
   },

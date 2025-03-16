@@ -1,5 +1,3 @@
-// import { vercel } from "@/packages/core/src/vercel";
-import crypto from "crypto";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Page } from "@/types";
@@ -10,14 +8,6 @@ export function getEnvironment(): "dev" | "prod" {
   if (process.env.NODE_ENV === "production") return "prod";
   throw new Error("Unsupported NODE_ENV");
 }
-
-export function generateSecret(length: number = 32): string {
-  return crypto.randomBytes(length).toString("hex");
-}
-
-// export function getEnvVars() {
-//   const { projectId, teamId, token } = vercel.getVercelEnvVars();
-// }
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

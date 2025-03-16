@@ -1,6 +1,6 @@
 "use server";
 import React from "react";
-import "../globals.css";
+import "../../globals.css";
 
 export default function AdminLoginLayout({
   children,
