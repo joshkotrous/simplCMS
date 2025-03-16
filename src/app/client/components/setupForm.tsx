@@ -85,12 +85,6 @@ export default function SetupForm({
           vercelConfig,
           setupData: config,
         });
-
-        console.log(
-          "SETUP VALIDATION RESULT:",
-          JSON.stringify(validation, null, 2)
-        );
-
         if (validation) {
           const currentStep = getSetupStep(validation);
           const nextStep = getNextStep(currentStep.step);
@@ -113,7 +107,6 @@ export default function SetupForm({
     const initData = async () => {
       console.log("Initializing data...");
       try {
-        // First try to get data from localStorage
         if (typeof window !== "undefined") {
           const rawData = localStorage.getItem(SETUP_DATA_KEY);
           if (rawData) {
@@ -121,15 +114,12 @@ export default function SetupForm({
               const localData = JSON.parse(rawData);
               console.log("Found data in localStorage:", localData);
 
-              // Use localStorage data
               setConfigData(localData);
 
-              // Also update context for consistency
               if (setupContext && setupContext.setSetupData) {
                 setupContext.setSetupData(localData);
               }
 
-              // Run validation with localStorage data
               await runValidation(localData);
               return;
             } catch (e) {
@@ -138,7 +128,6 @@ export default function SetupForm({
           }
         }
 
-        // If no localStorage data, use server config
         console.log("Using server configuration");
         setConfigData(serverConfiguration);
         await runValidation(serverConfiguration);
@@ -152,11 +141,9 @@ export default function SetupForm({
     initData();
   }, [serverConfiguration, runValidation]);
 
-  // Add a function to manually refresh validation
   const refreshValidation = async () => {
     setIsRefreshing(true);
 
-    // Get the latest data from localStorage if available
     let dataToValidate = configData;
     if (typeof window !== "undefined") {
       const rawData = localStorage.getItem(SETUP_DATA_KEY);
@@ -179,7 +166,6 @@ export default function SetupForm({
     await runValidation(dataToValidate);
   };
 
-  // Helper functions for setup steps
   function getStepValidation(
     step: SetupStep,
     setupValidation: Partial<SetupValidation>
@@ -261,17 +247,20 @@ export default function SetupForm({
   function getNextStep(step: SetupStep): { url: string; text: string } {
     switch (step) {
       case "host":
-        return { url: "/setup/host", text: "Setup Host" };
+        return { url: "/admin/setup/host", text: "Setup Host" };
       case "database":
-        return { url: "/setup/database", text: "Setup Database" };
+        return { url: "/admin/setup/database", text: "Setup Database" };
       case "mediaStorage":
-        return { url: "/setup/media-storage", text: "Setup Media Storage" };
+        return {
+          url: "/admin/setup/media-storage",
+          text: "Setup Media Storage",
+        };
       case "oauth":
-        return { url: "/setup/oauth", text: "Setup Oauth" };
+        return { url: "/admin/setup/oauth", text: "Setup Oauth" };
       case "adminUser":
-        return { url: "/setup/add-user", text: "Setup Admin User" };
+        return { url: "/admin/setup/add-user", text: "Setup Admin User" };
       case "redeploy":
-        return { url: "/setup/redeploy", text: "Redeploy" };
+        return { url: "/admin/setup/redeploy", text: "Redeploy" };
       default:
         throw new Error("Unsupported step");
     }

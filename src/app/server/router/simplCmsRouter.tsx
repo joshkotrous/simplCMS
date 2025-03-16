@@ -21,18 +21,32 @@ import SiteSettings from "../pages/admin/settings/sitePage";
 import UserSettingsPage from "../pages/admin/settings/usersPage";
 import SetupPage from "../pages/setup/setupPage";
 import PostPage from "../pages/admin/posts/viewPostPage";
-interface AdminRouterProps {
+import SetupDatabasePage from "../pages/setup/database/setupDatabasePage";
+import SetupOauth from "../pages/setup/oauth/setupOauthPage";
+import HostSetupPage from "../pages/setup/host/setupHostPage";
+import SetupMongoPage from "../pages/setup/database/setupMongoPage";
+import SetupGoogleOauthPage from "../pages/setup/oauth/setupGoogleOauthPage";
+import SetupVercelPage from "../pages/setup/host/setupVercelPage";
+import SetupMediaStoragePage from "../pages/setup/mediaStorage/setupMediaStoragePage";
+import SetupCloudinaryPage from "../pages/setup/mediaStorage/setupCloudinaryPage";
+import SetupS3Page from "../pages/setup/mediaStorage/setupS3Page";
+import SetupRouter from "./setupRouter";
+export interface SimplCMSRouterProps {
   params: {
     slug?: string[];
   };
 }
-export default async function AdminRouter({ params }: AdminRouterProps) {
+export default async function SimplCMSRouter({ params }: SimplCMSRouterProps) {
   // Auth checks
   const session = await getServerSession();
 
   // Special case for login page to prevent redirect loop
   if (params.slug?.[0] === "login") {
-    return <LoginLayout children={<LoginForm />} />;
+    return (
+      <LoginLayout>
+        <LoginForm />
+      </LoginLayout>
+    );
   }
 
   // Redirect to login if no session
@@ -47,12 +61,7 @@ export default async function AdminRouter({ params }: AdminRouterProps) {
 
   // Skip access check for setup page
   if (params.slug?.[0] === "setup") {
-    return (
-      <SimplCMSLayout
-        user={user}
-        children={<SetupLayout children={<SetupPage />} />}
-      />
-    );
+    return SetupRouter(params.slug, user);
   }
 
   // Check user access
@@ -97,17 +106,13 @@ export default async function AdminRouter({ params }: AdminRouterProps) {
     else if (slug.length > 1 && slug[1] === "connections")
       PageComponent = <ConnectionSettings />;
     else PageComponent = <SiteSettings />;
-  }
-  // Setup - already handled above
-  // 404 fallback
-  else {
+  } else {
     return notFound();
   }
 
   return (
-    <SimplCMSLayout
-      user={user}
-      children={<AdminLayout user={user} children={PageComponent} />}
-    ></SimplCMSLayout>
+    <SimplCMSLayout user={user}>
+      <AdminLayout user={user}>{PageComponent}</AdminLayout>
+    </SimplCMSLayout>
   );
 }

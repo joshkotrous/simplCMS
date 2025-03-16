@@ -124,7 +124,7 @@ export default function SetupGoogleOauthForm({ siteUrl }: { siteUrl: string }) {
       {
         loading: "Connecting Google OAuth...",
         success: () => {
-          router.push("/setup");
+          router.push("/admin/setup");
           setLoading(false);
           return "Successfully connected Google OAuth.";
         },

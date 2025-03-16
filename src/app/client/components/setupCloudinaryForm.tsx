@@ -176,7 +176,7 @@ export default function SetupCloudinaryForm({
       {
         loading: "Connecting Cloudinary to SimplCMS...",
         success: () => {
-          router.push("/setup");
+          router.push("/admin/setup");
           return "Successfully connected Cloudinary";
         },
         error: () => {

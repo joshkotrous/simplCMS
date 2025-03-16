@@ -22,7 +22,7 @@ export default function DatabaseProviderForm() {
               database: { provider: "MongoDB" },
             }))
           }
-          href="/setup/mongo"
+          href="/admin/setup/mongo"
         >
           <Card className="size-full p-12 flex items-center justify-center cursor-pointer hover:scale-[99%]">
             <CardContent className="p-0 ">

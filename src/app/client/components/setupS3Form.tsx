@@ -207,7 +207,7 @@ export default function SetupS3Form({
       {
         loading: "Connecting AWS S3 to SimplCMS...",
         success: () => {
-          router.push("/setup");
+          router.push("/admin/setup");
           return "Successfully connected AWS S3";
         },
         error: () => {

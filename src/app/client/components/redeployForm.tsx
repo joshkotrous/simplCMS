@@ -145,7 +145,7 @@ export default function RedeployForm() {
               )}
             </div>
             {currentDeployment.status === "READY" && (
-              <Link href="/login">
+              <Link href="/admin/login">
                 <Button className=" w-full hover:underline">Login</Button>
               </Link>
             )}

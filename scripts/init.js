@@ -139,6 +139,7 @@ const nextConfig = {
       bodySizeLimit: "100mb",
     },
   },
+  transpilePackages: ["simplcms"],
 };
 
 ${exportStatement}`;

@@ -216,7 +216,7 @@ export default function SetupVercelForm({
         {
           loading: "Setting site url...",
           success: () => {
-            router.push("/setup");
+            router.push("/admin/setup");
             return "Successfully configured site url.";
           },
           error: (error) => {

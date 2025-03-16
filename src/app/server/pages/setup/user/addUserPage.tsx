@@ -10,7 +10,7 @@ export default async function AddFirstUserPage() {
   if (platformConfiguration.database) {
     users = await simplcms.users.getAllUsers();
   }
-  if (users.length > 0) redirect("/login");
+  if (users.length > 0) redirect("/admin/login");
   return (
     <div className="size-full flex justify-center items-center text-foreground">
       <AddFirstUserForm />

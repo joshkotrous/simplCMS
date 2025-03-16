@@ -35,7 +35,6 @@ async function updateUserInformation({
       : (() => {
           throw new Error("No email found in session or token");
         })();
-
     const name = session
       ? session.user.name
       : token
@@ -48,7 +47,6 @@ async function updateUserInformation({
       : token
       ? token.picture
       : undefined;
-
     if (!email) {
       throw new Error("Email was not provided via OAuth.");
     }
@@ -97,7 +95,8 @@ export const SimplCMSAuth = NextAuth({
     }),
   ],
   pages: {
-    error: "/login",
+    error: "/admin/login",
+    signIn: "/admin/login",
   },
   callbacks: {
     async jwt({ token, account }) {
@@ -112,8 +111,17 @@ export const SimplCMSAuth = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url === baseUrl || url === baseUrl + "/login") {
-        return baseUrl + "/admin";
+      console.log("Redirect callback triggered with:", { url, baseUrl });
+
+      if (
+        url.includes("/api/auth/signin") ||
+        url.includes("/api/auth/callback") ||
+        url === baseUrl ||
+        url === `${baseUrl}/` ||
+        url === `${baseUrl}/login`
+      ) {
+        console.log("Redirecting to admin page");
+        return `${baseUrl}/admin`;
       }
 
       if (url.startsWith("/")) {
@@ -124,9 +132,10 @@ export const SimplCMSAuth = NextAuth({
         return url;
       }
 
-      return baseUrl + "/admin";
+      return `${baseUrl}/admin`;
     },
   },
+  debug: process.env.NODE_ENV === "development",
 });
 
 export { SimplCMSAuth as GET, SimplCMSAuth as POST };

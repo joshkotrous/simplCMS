@@ -43,7 +43,7 @@ export default function MediaStorageProviderForm() {
               };
             })
           }
-          href="/setup/media-storage/cloudinary"
+          href="/admin/setup/media-storage/cloudinary"
         >
           <Card className="size-full p-12 flex items-center justify-center cursor-pointer hover:scale-[99%]">
             <CardContent className="p-0 ">
@@ -79,7 +79,7 @@ export default function MediaStorageProviderForm() {
               };
             })
           }
-          href="/setup/media-storage/s3"
+          href="/admin/setup/media-storage/s3"
         >
           <Card className="size-full p-12 flex items-center justify-center hover:scale-[99%] cursor-pointer text-center bg-zinc-200 text-foreground">
             <CardContent className="p-0 gap-4 flex flex-col">

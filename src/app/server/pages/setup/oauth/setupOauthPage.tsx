@@ -17,20 +17,20 @@ export default async function SetupOauth() {
         </CardHeader>
         <CardContent className="flex gap-4">
           <Link
-            href="/setup/oauth/google"
+            href="/admin/setup/oauth/google"
             className="border-zinc-200 rounded-lg shadow-xl border flex size-fit p-2 hover:scale-95 transition-all"
           >
             <FaGoogle className="size-16" />
           </Link>
           <Link
-            href="/setup/oauth/github"
+            href="/admin/setup/oauth/github"
             className="border-zinc-200 rounded-lg shadow-xl border flex size-fit p-2 hover:scale-95 transition-all"
           >
             <IoLogoGithub className="size-16" />
           </Link>
 
           <Link
-            href="/setup/oauth/microsoft"
+            href="/admin/setup/oauth/microsoft"
             className="border-zinc-200 rounded-lg shadow-xl border flex size-fit p-2 hover:scale-95 transition-all"
           >
             <FaMicrosoft className="size-16" />

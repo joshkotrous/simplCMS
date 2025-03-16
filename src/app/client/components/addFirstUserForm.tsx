@@ -25,7 +25,7 @@ export default function AddFirstUserForm() {
       {
         loading: "Creating user...",
         success: () => {
-          router.push("/setup");
+          router.push("/admin/setup");
           setLoading(false);
           return "Successfully created user.";
         },
