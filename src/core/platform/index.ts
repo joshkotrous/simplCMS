@@ -17,7 +17,6 @@ import {
   FilterProjectEnvsResponseBody,
   ResponseBodyEnvs,
 } from "@vercel/sdk/models/filterprojectenvsop.js";
-import { user } from "../user";
 import { simplCms } from "@/index";
 
 export type SetupValidationComponent = {
@@ -433,8 +432,7 @@ export async function validateSetup({
   } else {
     try {
       const mongoUri = setupData?.database?.mongo?.uri || process.env.MONGO_URI;
-      const users = await user.getAllUsers(mongoUri);
-      console.log("USERS", JSON.stringify(users, null, 2));
+      const users = await simplCms.users.getAllUsers(mongoUri);
       const adminUser = users.some((user) => user.role === "admin");
       validation.adminUser = {
         setupComplete: adminUser,

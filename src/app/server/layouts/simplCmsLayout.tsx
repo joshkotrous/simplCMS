@@ -9,11 +9,6 @@ import { cookies } from "next/headers";
 import { User } from "@/types";
 import Navigation from "../../client/components/navigation";
 
-export const metadata: Metadata = {
-  title: "SimplCMS",
-  description: "Content management simplified",
-};
-
 export default async function RootLayout({
   children,
   user,

@@ -12,13 +12,15 @@ import { pages } from "./core/pages";
 import { providers } from "./core/providers";
 import { posts } from "./core/posts";
 import { db } from "./core/db";
-
+import { users } from "./core/user";
 import {
   cn,
   defaultHomePageConfig,
   getEnvironment,
   getSiteUrl,
 } from "./core/lib/utils";
+export { SimplCMSAuth } from "./app/server/routes/nextAuthRoute";
+export { default as SimplCMSRouter } from "./app/server/router/adminRouter";
 
 export const simplCms = {
   pages,
@@ -37,6 +39,7 @@ export const simplCms = {
   cn,
   getSiteUrl,
   defaultHomePageConfig,
+  users,
 };
 
 export type SimplCms = typeof simplCms;

@@ -2,38 +2,17 @@
   "name": "simplcms",
   "version": "0.0.0",
   "private": false,
-  "sideEffects": ["./dist/client/globals.css"],
-  "main": "./dist/server/index.js",
-  "module": "./dist/server/index.mjs",
-  "types": "./dist/server/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/server/index.mjs",
-      "require": "./dist/server/index.js",
-      "types": "./dist/server/index.d.ts"
-    },
-    "./client": {
-      "import": "./dist/client/index.mjs",
-      "require": "./dist/client/index.js",
-      "types": "./dist/client/index.d.ts"
-    },
-    "./server": {
-      "import": "./dist/server/index.mjs",
-      "require": "./dist/server/index.js",
-      "types": "./dist/server/index.d.ts"
-    },
-    "./styles": {
-      "import": "./dist/client/globals.css",
-      "default": "./dist/client/globals.css"
-    }
-  },
+  "sideEffects": ["./src/app/globals.css"],
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./src/types.ts",
   "files": [
     "dist/",
     "README.md"
   ],
   "scripts": {
     "dev": "next dev --turbopack",
-    "build:css": "npx tailwindcss -i ./src/app/globals.css -o ./dist/globals.css",
+    "build:css": "npx tailwindcss -i ./src/app/index.css -o ./src/app/globals.css",
     "build:ts": "tsup src/index.ts --format esm,cjs --dts",
     "build": "tsup && npm run build:css",
     "start": "next start",
@@ -63,8 +42,6 @@
     "dotenv": "^16.4.7",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.471.2",
-    "mongodb": "^6.12.0",
-    "mongoose": "^8.9.5",
     "next-auth": "^4.24.11",
     "react-icons": "^5.4.0",
     "react-markdown": "^9.0.3",
@@ -78,7 +55,9 @@
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "^15.1.6"
+    "next": "^15.1.6",
+    "mongodb": "^6.12.0",
+    "mongoose": "^8.9.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

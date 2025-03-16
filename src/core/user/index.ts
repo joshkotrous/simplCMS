@@ -69,11 +69,9 @@ export async function getAllUsers(dbUri?: string): Promise<User[]> {
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
     const uri = getDatabaseUriEnvVariable();
-
     const db = await connectToDatabase(uri);
     const { UserModel } = getModels(db);
     const user = await UserModel.findOne({ email }).select("-__v");
-
     if (!user) return null;
     return userSchema.parse(user);
   } catch (error) {
@@ -150,4 +148,13 @@ export async function updateUser(user: Partial<User>): Promise<void> {
     throw error;
   }
 }
-export * as user from ".";
+
+export const users = {
+  updateUser,
+  deleteUser,
+  userHasAccess,
+  getUserByEmail,
+  getAllUsers,
+  getUser,
+  createUser,
+};

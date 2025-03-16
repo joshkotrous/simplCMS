@@ -2,7 +2,7 @@
 import React from "react";
 import "../../globals.css";
 
-export default function AdminLoginLayout({
+export default async function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode;

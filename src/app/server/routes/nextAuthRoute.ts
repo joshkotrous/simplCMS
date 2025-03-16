@@ -1,4 +1,3 @@
-"use server";
 import NextAuth, { Account, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
@@ -90,7 +89,7 @@ async function validateToken(
   return token;
 }
 
-const handler = NextAuth({
+export const SimplCMSAuth = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_OAUTH_CLIENT_ID ?? "",
@@ -130,4 +129,4 @@ const handler = NextAuth({
   },
 });
 
-export { handler as GET, handler as POST };
+export { SimplCMSAuth as GET, SimplCMSAuth as POST };

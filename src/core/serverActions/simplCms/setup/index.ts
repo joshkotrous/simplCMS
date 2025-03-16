@@ -1,12 +1,7 @@
 "use server";
-import crypto from "crypto";
-import { defaultHomePageConfig } from "@/core/lib/utils";
+import { defaultHomePageConfig, generateSecret } from "@/core/lib/utils";
 import { AWSS3Config, createPageSchema, MediaStorageProvider } from "@/types";
 import { simplCms } from "@/index";
-
-export function generateSecret(length: number = 32): string {
-  return crypto.randomBytes(length).toString("hex");
-}
 
 export async function connectDbToApplication(
   vercelToken: string,
