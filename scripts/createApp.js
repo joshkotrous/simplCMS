@@ -86,7 +86,5 @@ async function createApp() {
   }
 }
 
-// Execute the createApp function
-createApp();
 
 module.exports = { createApp };

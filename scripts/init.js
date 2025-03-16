@@ -156,7 +156,5 @@ ${exportStatement}`;
   console.log("You can now run your Next.js application with: npm run dev");
 }
 
-// Execute the init function
-init();
 
 module.exports = { init };

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { init } = require("./init");
-const { createApp } = require("./create-app");
+const { createApp } = require("./createApp");
 
 const command = process.argv[2];
 
@@ -12,6 +12,7 @@ async function main() {
     case "create-app":
       await createApp();
       break;
+    case undefined:
     default:
       console.log("SimplCMS CLI");
       console.log("\nUsage:");
