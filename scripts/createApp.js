@@ -92,7 +92,7 @@ async function createApp() {
     
     // Run the SimplCMS init command
     try {
-      execSync("npx simplcms init", { stdio: "inherit" });
+      execSync("npx simplcms init --yes", { stdio: "inherit" });
       console.log("\nSimplCMS initialized successfully!");
     } catch (error) {
       // Try direct import if the npx command fails
