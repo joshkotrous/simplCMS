@@ -1,36 +1,64 @@
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjoshkotrous%2FsimplCMS%2Ftree%2Fmain&project-name=simplcms&repository-name=simplcms)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjoshkotrous%2FsimplCMS%2Ftree%2Fmain&project-name=simplcms&repository-name=simplcms-starter)
+
+# SimplCMS
+
+SimplCMS is the _simplest_ CMS ecosystem that easily integrates to an existing NextJS application or use our `simplcms-starter` project for a brand new project.
+
+## Providers
+
+SimplCMS allows you to easily integrate with these providers within the content management platform:
+
+### Media
+
+1. AWS S3
+2. Cloudinary
+
+### Oauth
+
+\*Oauth integrations are made possible by Next Auth
+
+1. Google oauth
+2. Microsoft oauth (tba)
+3. Github oauth (tba)
+
+### Data store
+
+1. MongoDB
+2. AWS Dynamo DB (tba)
+3. AWS MongoDB (tba)
+4. MySQL (tba)
+5. Supabase (tba)
+
+### Host
+
+1. Vercel
+2. Cloudflare (tba)
 
 ## Getting Started
 
-First, run the development server:
+### Starting a new project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+To create a brand new Next JS project using the SimplCMS backend, run `npx simplcms@latest create-app`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Adding to existing project
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To integrate SimplCMS with your existing project, run `npx simplcms@latest init` within your NextJS project. This script will:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Install SimplCMS and necessary depedencies
+2. Create the necessary pages route for the SimplCMS router
+3. Create the necessary api route for Next Auth
+4. Add necessary configurations to your next config
 
-## Learn More
+## Whats next
 
-To learn more about Next.js, take a look at the following resources:
+### Get Support
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If you need help, you can find us at https://simplcms.com
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Read our documentation
 
-## Deploy on Vercel
+You can find more info about SimplCMS via our documentation at https://docs.simplcms.com
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Contribute
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+SimplCMS is 100% open source and we welcome contributions. If you find a bug to report, open an issue or see `CONTRIBUTING.md` for more contribution information.
