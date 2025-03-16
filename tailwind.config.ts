@@ -2,15 +2,7 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./dist/**/*.{js,ts,jsx,tsx,mdx}", // ✅ Include built output
-    "./app/**/*.{js,ts,jsx,tsx,mdx}", // ✅ Matches your project structure
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./layouts/**/*.{js,ts,jsx,tsx,mdx}",
-    "./router/**/*.{js,ts,jsx,tsx,mdx}",
-    "./routes/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       colors: {

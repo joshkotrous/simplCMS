@@ -10,6 +10,9 @@
     "dist/",
     "README.md"
   ],
+  "bin": {
+    "simplcms": "./scripts/init.ts"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build:css": "npx tailwindcss -i ./src/app/index.css -o ./src/app/globals.css",
