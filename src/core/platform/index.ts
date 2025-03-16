@@ -17,7 +17,7 @@ import {
   FilterProjectEnvsResponseBody,
   ResponseBodyEnvs,
 } from "@vercel/sdk/models/filterprojectenvsop.js";
-import { simplCms } from "@/index";
+import { simplcms } from "@/index";
 
 export type SetupValidationComponent = {
   setupComplete: boolean;
@@ -51,7 +51,7 @@ export async function validateSetup({
   };
   setupData?: SimplCMSPlatformConfiguration;
 }): Promise<Partial<SetupValidation>> {
-  const envVars = getServerEnvVars();
+  const envVars = simplcms.platform.getPlatformConfiguration();
 
   if (!vercelConfig)
     return {
@@ -67,10 +67,10 @@ export async function validateSetup({
     };
   const validation: Partial<SetupValidation> = {};
 
-  const vercelClient = simplCms.providers.vercel.connect(vercelConfig.token);
+  const vercelClient = simplcms.providers.vercel.connect(vercelConfig.token);
   let providerEnvVars: FilterProjectEnvsResponseBody | null = null;
   try {
-    providerEnvVars = await simplCms.providers.vercel.getProjectEnvVars({
+    providerEnvVars = await simplcms.providers.vercel.getProjectEnvVars({
       vercel: vercelClient,
       projectId: vercelConfig?.projectId,
       teamId: vercelConfig?.teamId,
@@ -432,7 +432,7 @@ export async function validateSetup({
   } else {
     try {
       const mongoUri = setupData?.database?.mongo?.uri || process.env.MONGO_URI;
-      const users = await simplCms.users.getAllUsers(mongoUri);
+      const users = await simplcms.users.getAllUsers(mongoUri);
       const adminUser = users.some((user) => user.role === "admin");
       validation.adminUser = {
         setupComplete: adminUser,
@@ -503,7 +503,7 @@ export function getSetupStep(setupValidation: Partial<SetupValidation>): {
   };
 }
 
-export function getServerEnvVars(): SimplCMSPlatformConfiguration {
+export function getPlatformConfiguration(): SimplCMSPlatformConfiguration {
   const host = simplCMSHostObject.nullable().parse(
     process.env.SIMPLCMS_HOST_PROVIDER
       ? {
@@ -619,7 +619,8 @@ export async function getSiteConfig(): Promise<SiteConfig | null> {
 
 export async function initSiteConfig(): Promise<void> {
   try {
-    const { host, database, oauth, mediaStorage } = getServerEnvVars();
+    const { host, database, oauth, mediaStorage } =
+      simplcms.platform.getPlatformConfiguration();
     const uri = getDatabaseUriEnvVariable();
     if (!host || !database || !mediaStorage || !oauth)
       throw new Error("Setup is not completed");
@@ -699,12 +700,12 @@ export async function getProviderSiteConfig({
     switch (provider) {
       case "Vercel": {
         if (!vercelConfig) throw new Error("Vercel client is not provided");
-        const vercelClient = simplCms.providers.vercel.connect(
+        const vercelClient = simplcms.providers.vercel.connect(
           vercelConfig.token
         );
 
         // Get all environment variables for the project
-        const allEnvVars = await simplCms.providers.vercel.getProjectEnvVars({
+        const allEnvVars = await simplcms.providers.vercel.getProjectEnvVars({
           vercel: vercelClient,
           projectId: vercelConfig.projectId,
           teamId: vercelConfig.teamId,
@@ -716,7 +717,7 @@ export async function getProviderSiteConfig({
           const varId = findEnvVarId(allEnvVars, key);
           if (!varId) return null;
 
-          const envVar = await simplCms.providers.vercel.getProjectEnvVarValue({
+          const envVar = await simplcms.providers.vercel.getProjectEnvVarValue({
             vercel: vercelClient,
             varId,
             projectId: vercelConfig.projectId,
@@ -860,3 +861,15 @@ export async function getProviderSiteConfig({
     throw error;
   }
 }
+
+export const platform = {
+  validateSetup,
+  checkSetupCompleted,
+  getSetupStep,
+  getPlatformConfiguration,
+  getSiteConfig,
+  initSiteConfig,
+  findEnvVarId,
+  getEnvValue,
+  getProviderSiteConfig,
+};

@@ -1,32 +1,24 @@
 #!/usr/bin/env node
-const { execSync } = require("child_process");
-const path = require("path");
-const fs = require("fs");
-const readline = require("readline");
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+import { execSync } from "child_process";
+import path from "path";
+import fs from "fs"
+import readline from "readline"
 
 async function createApp() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
   try {
-    // Get app name from arguments or prompt user
-    const args = process.argv.slice(2);
-    let appName = args[0];
-    
-    if (!appName) {
-      appName = await new Promise((resolve) => {
-        rl.question("What would you like to name your app? ", (answer) => {
-          resolve(answer.trim());
-        });
+    // Always prompt for project name with a default suggestion
+    const defaultName = "simplcms-app";
+    const appName = await new Promise((resolve) => {
+      rl.question(`Project name: (${defaultName}) `, (answer) => {
+        // Use the default name if user just presses Enter
+        resolve(answer.trim() || defaultName);
       });
-      
-      if (!appName) {
-        console.error("App name is required.");
-        process.exit(1);
-      }
-    }
+    });
     
     // Get TypeScript preference from user
     const useTypeScript = await new Promise((resolve) => {
@@ -36,9 +28,6 @@ async function createApp() {
       });
     });
     
-    // Always use App Router (set as default)
-    const useAppDir = true;
-    
     // Close readline interface after getting inputs
     rl.close();
     
@@ -46,14 +35,24 @@ async function createApp() {
     console.log("This might take a few minutes...\n");
     
     // Build the create-next-app command with options
-    let command = `npx create-next-app@latest ${appName}`;
-    command += ` --ts=${useTypeScript}`;
-    command += ` --app=true`; // Always use App Router
-    command += ` --eslint=true`;
-    command += ` --src-dir=true`;
-    command += ` --import-alias="@/*"`;
+    // Use the --yes flag to skip all prompts and --no-* format for boolean flags
+    let command = `npx create-next-app@latest ${appName} --yes`;
     
-    // Execute create-next-app
+    // Add appropriate flags based on user choices
+    if (useTypeScript) {
+      command += ` --typescript`;
+    } else {
+      command += ` --no-typescript`;
+    }
+    
+    // Add the rest of our default choices
+    command += ` --app`;         // Always use App Router
+    command += ` --eslint`;      // Always use ESLint
+    command += ` --src-dir`;     // Always use src directory
+    command += ` --import-alias="@/*"`;  // Set import alias
+    command += ` --tailwind`;    // Include Tailwind CSS
+    
+    // Execute create-next-app with the correct flags
     execSync(command, { stdio: "inherit" });
     
     console.log("\nNext.js app created successfully!");
@@ -70,7 +69,7 @@ async function createApp() {
     } catch (error) {
       // Try direct import if the npx command fails
       console.log("Using local init function...");
-      const { init } = require("./init");
+      const { init } = await import("./init")
       await init();
     }
     
@@ -86,5 +85,5 @@ async function createApp() {
   }
 }
 
-
+// Export the function
 module.exports = { createApp };

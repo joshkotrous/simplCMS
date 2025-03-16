@@ -1,12 +1,4 @@
-import {
-  checkSetupCompleted,
-  getProviderSiteConfig,
-  getServerEnvVars,
-  getSetupStep,
-  getSiteConfig,
-  initSiteConfig,
-  validateSetup,
-} from "./core/platform";
+import { platform } from "./core/platform";
 import { media } from "./core/media";
 import { pages } from "./core/pages";
 import { providers } from "./core/providers";
@@ -22,19 +14,13 @@ import {
 export { SimplCMSAuth } from "./app/server/routes/nextAuthRoute";
 export { default as SimplCMSRouter } from "./app/server/router/adminRouter";
 
-export const simplCms = {
+export const simplcms = {
   pages,
   media,
   providers,
   posts,
   db,
-  validateSetup,
-  checkSetupCompleted,
-  getSetupStep,
-  getServerEnvVars,
-  getSiteConfig,
-  initSiteConfig,
-  getProviderSiteConfig,
+  platform,
   getEnvironment,
   cn,
   getSiteUrl,
@@ -42,4 +28,4 @@ export const simplCms = {
   users,
 };
 
-export type SimplCms = typeof simplCms;
+export type SimplCms = typeof simplcms;
