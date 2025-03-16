@@ -21,8 +21,8 @@ export default async function RootLayout({
   const darkMode = darkModeCookie?.value === "true";
 
   return (
-    <html lang="en" className={darkMode ? "dark" : ""}>
-      <body className="h-screen w-screen overflow-hidden bg-background">
+    <div lang="en" className={darkMode ? "dark" : ""}>
+      <div className="h-screen w-screen overflow-hidden bg-background">
         <SiteProvider initialSettings={{ darkMode }}>
           <div className="z-50 fixed w-screen top-0">
             <AdminToolbar user={user ?? null} />
@@ -41,7 +41,7 @@ export default async function RootLayout({
             }}
           />
         </SiteProvider>
-      </body>
-    </html>
+      </div>
+    </div>
   );
 }

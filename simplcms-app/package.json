@@ -12,7 +12,7 @@
     "next": "15.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "simplcms": "^0.0.114"
+    "simplcms": "^0.0.115"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
