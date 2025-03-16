@@ -15,6 +15,7 @@ import ConnectionSettings from "../pages/admin/settings/connectionsPage";
 import SiteSettings from "../pages/admin/settings/sitePage";
 import UserSettingsPage from "../pages/admin/settings/usersPage";
 import SetupPage from "../pages/setup/setupPage";
+import PostPage from "../pages/admin/posts/viewPostPage";
 interface AdminRouterProps {
   params: {
     slug?: string[];
@@ -74,9 +75,10 @@ export default async function AdminRouter({ params }: AdminRouterProps) {
     if (slug.length === 1) PageComponent = <PostsPage />;
     else if (slug[1] === "new") PageComponent = <NewPostPage />;
     else if (slug[1] === "drafts") PageComponent = <DraftsPage />;
-    else if (slug[1] === "view")
-      PageComponent = <PostsPage params={{ postId: slug[2] }} />;
-    else PageComponent = <EditPostPage params={{ postId: slug[1] }} />;
+    // Handle edit post route: /admin/posts/[postId]/edit
+    else if (slug.length === 3 && slug[2] === "edit") {
+      PageComponent = <EditPostPage params={{ postId: slug[1] }} />;
+    } else PageComponent = <PostPage params={{ postId: slug[1] }} />;
   }
   // Pages
   else if (slug[0] === "pages") {
