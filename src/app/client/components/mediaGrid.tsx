@@ -19,7 +19,7 @@ import { Button } from "./ui/button";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { SimplCMSMedia } from "../../../../types/types";
+import { SimplCMSMedia } from "../../../types/types";
 import { ArrowLeft, Pencil, Trash, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

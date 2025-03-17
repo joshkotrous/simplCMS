@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useState, useRef, useCallback } from "react";
 
-import {
-  SetupStep,
-  SimplCMSPlatformConfiguration,
-} from "../../../../types/types";
+import { SetupStep, SimplCMSPlatformConfiguration } from "../../../types/types";
 import {
   ArrowUp,
   Check,

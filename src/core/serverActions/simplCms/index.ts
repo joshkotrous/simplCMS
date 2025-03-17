@@ -4,7 +4,7 @@ import { simplcms } from "../../../core";
 import {
   HostProvider,
   SimplCMSPlatformConfiguration,
-} from "../../../../types/types";
+} from "../../../types/types";
 
 export async function initSiteConfig() {
   try {

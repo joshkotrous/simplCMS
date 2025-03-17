@@ -10,7 +10,7 @@ import {
   simplCMSPlatformConfigurationObject,
   SiteConfig,
   siteConfigSchema,
-} from "../../../types/types";
+} from "../../types/types";
 import { GetProjectEnvResponseBody } from "@vercel/sdk/models/getprojectenvop.js";
 import {
   FilterProjectEnvsResponseBody,

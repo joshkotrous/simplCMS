@@ -7,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { connectMediaStorageToApplication } from "../../../core/serverActions/simplcms/setup";
 import { useRouter } from "next/navigation";
-import { SimplCMSPlatformConfiguration } from "../../../../types/types";
+import { SimplCMSPlatformConfiguration } from "../../../types/types";
 import { testS3ConnectionAction } from "../../../core/serverActions/providers/s3";
 import { useSetupData } from "./setupContextProvider";
 

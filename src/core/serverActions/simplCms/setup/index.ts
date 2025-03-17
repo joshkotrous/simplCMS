@@ -4,7 +4,7 @@ import {
   AWSS3Config,
   createPageSchema,
   MediaStorageProvider,
-} from "../../../../../types/types";
+} from "../../../../types/types";
 import { simplcms } from "../../../../core";
 
 export async function connectDbToApplication(

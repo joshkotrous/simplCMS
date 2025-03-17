@@ -1,5 +1,5 @@
 import { simplcms } from "../../core";
-import { User, userSchema } from "../../../types/types";
+import { User, userSchema } from "../../types/types";
 export async function createUser(
   userData: Partial<User>,
   dbUri?: string

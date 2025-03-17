@@ -23,7 +23,7 @@ import {
 } from "./ui/collapsible";
 import Link from "next/link";
 import UserMenu from "./userMenu";
-import { User } from "../../../../types/types";
+import { User } from "../../../types/types";
 
 export default function AdminSidebar({ user }: { user: User }) {
   const { open } = useSidebar();

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "./ui/button";
-import { SiteConfig } from "../../../../types/types";
+import { SiteConfig } from "../../../types/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { initSiteConfig } from "../../../core/serverActions/simplcms";

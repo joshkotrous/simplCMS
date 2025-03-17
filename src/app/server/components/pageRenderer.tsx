@@ -1,6 +1,6 @@
 "use server";
 import React from "react";
-import { Page } from "../../../../types/types";
+import { Page } from "../../../types/types";
 import ElementRenderer from "./elementRenderer";
 function convertAttributes(
   attributes: Array<{ name: string; value: string }> | null | undefined

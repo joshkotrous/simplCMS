@@ -7,7 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { testConnection } from "../../../core/serverActions/providers/mongo";
 import { useRouter } from "next/navigation";
-import { SimplCMSPlatformConfiguration } from "../../../../types/types";
+import { SimplCMSPlatformConfiguration } from "../../../types/types";
 import { Label } from "./ui/label";
 import { useSetupData } from "./setupContextProvider";
 import { connectDbToApplication } from "../../../core/serverActions/simplcms/setup";

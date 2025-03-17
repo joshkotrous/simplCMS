@@ -1,5 +1,5 @@
 "use client";
-import { SimplCMSMedia } from "../../../../types/types";
+import { SimplCMSMedia } from "../../../types/types";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import Image from "next/image";
 import { Input } from "./ui/input";

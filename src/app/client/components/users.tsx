@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "../../../../types/types";
+import { User } from "../../../types/types";
 import { Trash } from "lucide-react";
 import AddUserButton from "./addUserButton";
 import {

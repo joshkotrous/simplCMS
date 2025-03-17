@@ -1,4 +1,4 @@
-import { CreatePage, Page, pageSchema } from "../../../types/types";
+import { CreatePage, Page, pageSchema } from "../../types/types";
 import { simplcms } from "../../core";
 export async function getAllPages(): Promise<Page[]> {
   try {
