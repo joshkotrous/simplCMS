@@ -1,5 +1,9 @@
 "use server";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+} from "../../../../client/components/ui/card";
 import { IoLogoGithub } from "react-icons/io";
 import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 import Link from "next/link";

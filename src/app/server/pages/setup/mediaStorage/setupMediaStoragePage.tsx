@@ -1,5 +1,5 @@
 "use server";
-import MediaStorageProviderForm from "@/app/client/components/mediaStorageProviderForm";
+import MediaStorageProviderForm from "../../../../client/components/mediaStorageProviderForm";
 
 export default async function SetupMediaStoragePage() {
   return (

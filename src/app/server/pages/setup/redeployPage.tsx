@@ -1,6 +1,6 @@
 "use server";
-import ErrorToast from "@/app/client/components/errorToast";
-import RedeployForm from "@/app/client/components/redeployForm";
+import ErrorToast from "../../../client/components/errorToast";
+import RedeployForm from "../../../client/components/redeployForm";
 
 export default async function RedeployPage() {
   try {

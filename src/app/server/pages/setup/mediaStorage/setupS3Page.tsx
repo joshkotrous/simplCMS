@@ -1,6 +1,6 @@
 "use server";
-import SetupS3Form from "@/app/client/components/setupS3Form";
-import { simplcms } from "@/core";
+import SetupS3Form from "../../../../client/components/setupS3Form";
+import { simplcms } from "../../../../../core";
 export default async function SetupS3Page() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   return (

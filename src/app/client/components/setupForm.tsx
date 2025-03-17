@@ -1,7 +1,10 @@
 "use client";
 import { useEffect, useState, useRef, useCallback } from "react";
 
-import { SetupStep, SimplCMSPlatformConfiguration } from "@/types";
+import {
+  SetupStep,
+  SimplCMSPlatformConfiguration,
+} from "../../../../types/types";
 import {
   ArrowUp,
   Check,
@@ -15,10 +18,13 @@ import {
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
-} from "@/app/client/components/ui/tooltip";
+} from "./ui/tooltip";
 import Link from "next/link";
-import { Button } from "@/app/client/components/ui/button";
-import { SetupValidation, SetupValidationComponent } from "@/core/platform";
+import { Button } from "./ui/button";
+import {
+  SetupValidation,
+  SetupValidationComponent,
+} from "../../../core/platform";
 import { useSetupData } from "./setupContextProvider";
 import { validateSetupAction } from "../../../core/serverActions/simplcms";
 

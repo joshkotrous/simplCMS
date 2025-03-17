@@ -1,6 +1,6 @@
 "use client";
 
-import * as userActions from "@/core/serverActions/simplcms/user";
+import * as userActions from "../../../core/serverActions/simplcms/user";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,9 +8,9 @@ import {
   AlertDialogContent,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/client/components/ui/alert-dialog";
-import { Button } from "@/app/client/components/ui/button";
-import { Input } from "@/app/client/components/ui/input";
+} from "./ui/alert-dialog";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

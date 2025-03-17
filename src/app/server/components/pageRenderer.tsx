@@ -1,10 +1,6 @@
 "use server";
 import React from "react";
-import { Element, Page } from "@/types";
-import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/app/client/components/ui/button";
-import PostList from "./postList";
+import { Page } from "../../../../types/types";
 import ElementRenderer from "./elementRenderer";
 function convertAttributes(
   attributes: Array<{ name: string; value: string }> | null | undefined

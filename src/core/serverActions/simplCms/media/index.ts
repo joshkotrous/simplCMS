@@ -1,8 +1,10 @@
 "use server";
 
-import { simplcms } from "@/core";
-import { s3 } from "@/providers/s3";
-import { SimplCMSMedia, SimplCMSMediaStorageConfiguration } from "@/types";
+import { simplcms } from "../../../../core";
+import {
+  SimplCMSMedia,
+  SimplCMSMediaStorageConfiguration,
+} from "../../../../../types/types";
 export async function uploadMediaAction(
   files: File[]
 ): Promise<SimplCMSMedia[]> {
@@ -40,7 +42,11 @@ export async function updateMediaNameAction(
 
     // Update the media name based on the source
     if (media.source === "AWS S3") {
-      updatedMedia = await s3.updateMediaName(media, newName, mediaStorage);
+      updatedMedia = await simplcms.providers.s3.updateMediaName(
+        media,
+        newName,
+        mediaStorage
+      );
     } else if (media.source === "Cloudinary") {
       updatedMedia =
         await simplcms.providers.cloudinary.updateCloudinaryMediaName(

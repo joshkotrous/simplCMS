@@ -1,6 +1,6 @@
 "use client";
 
-import * as postActions from "@/core/serverActions/simplcms/post";
+import * as postActions from "../../../core/serverActions/simplcms/post";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,16 +10,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/client/components/ui/alert-dialog";
-import { Input } from "@/app/client/components/ui/input";
-import { Post, SimplCMSMedia } from "@/types";
+} from "./ui/alert-dialog";
+import { Post, SimplCMSMedia } from "../../../../types/types";
 import { Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/app/client/components/ui/button";
 import Link from "next/link";
-import MarkdownRenderer from "@/app/client/components/mardownRenderer";
+import MarkdownRenderer from "./mardownRenderer";
 
 export default function PostDisplay({
   post,

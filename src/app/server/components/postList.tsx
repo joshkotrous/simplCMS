@@ -1,14 +1,13 @@
 "use server";
-import { posts } from "@/posts";
-import { Post } from "@/types";
-import { simplcms } from "@/core";
+import { Post } from "../../../../types/types";
+import { simplcms } from "../../../core";
 import Link from "next/link";
 
 export default async function PostList() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   let publishedPosts: Post[] = [];
   if (platformConfiguration.database) {
-    const allPosts = await posts.getAllPosts();
+    const allPosts = await simplcms.posts.getAllPosts();
     publishedPosts = allPosts.filter((post) => !post.draft);
   }
   return (

@@ -5,12 +5,7 @@ import { providers } from "./providers";
 import { posts } from "./posts";
 import { db } from "./db";
 import { users } from "./user";
-import {
-  cn,
-  defaultHomePageConfig,
-  getEnvironment,
-  getSiteUrl,
-} from "./lib/utils";
+import { defaultHomePageConfig, getEnvironment, getSiteUrl } from "./lib/utils";
 
 export const simplcms = {
   pages,
@@ -20,7 +15,6 @@ export const simplcms = {
   db,
   platform,
   getEnvironment,
-  cn,
   getSiteUrl,
   defaultHomePageConfig,
   users,

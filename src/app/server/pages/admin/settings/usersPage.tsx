@@ -1,15 +1,14 @@
 "use server";
-import { getAllUsers } from "@/user";
-import { User } from "@/types";
-import Users from "@/app/client/components/users";
-import { simplcms } from "@/core";
+import { User } from "../../../../../../types/types";
+import Users from "../../../../client/components/users";
+import { simplcms } from "../../../../../core";
 
 export default async function UserSettingsPage() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   let users: User[] = [];
 
   if (platformConfiguration.database) {
-    users = await getAllUsers();
+    users = await simplcms.users.getAllUsers();
   }
 
   return (

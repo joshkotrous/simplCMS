@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import * as vercelActions from "@/core/serverActions/providers/vercel";
+import * as vercelActions from "../../../core/serverActions/providers/vercel";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 interface CurrentDeployment {
   id: string;

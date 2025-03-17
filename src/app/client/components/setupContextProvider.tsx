@@ -1,6 +1,6 @@
 "use client";
 
-import { SimplCMSPlatformConfiguration } from "@/types";
+import { SimplCMSPlatformConfiguration } from "../../../../types/types";
 import React, {
   createContext,
   useContext,

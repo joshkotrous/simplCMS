@@ -21,11 +21,15 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*", "./src/core/*", "./types/*"]
+      "@/*": ["./src/*"],
+      "@/types/*": ["./types/*"],
+      "@/core/*": [ "./src/core/*"],
+      "@/app/*": [ "./src/app/*"]
+
     },
     "typeRoots": ["./types", "./node_modules/@types"]
 
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "scripts/init.js"],
-  "exclude": ["node_modules", ".next"]
+  "exclude": ["node_modules", ".next", "simplcms-app"]
 }

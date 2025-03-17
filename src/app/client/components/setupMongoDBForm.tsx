@@ -1,16 +1,16 @@
 "use client";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
-import { MongoDBLogo } from "@/app/client/components/logos";
-import { Input } from "@/app/client/components/ui/input";
-import { Button } from "@/app/client/components/ui/button";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { MongoDBLogo } from "./logos";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testConnection } from "@/core/serverActions/providers/mongo";
+import { testConnection } from "../../../core/serverActions/providers/mongo";
 import { useRouter } from "next/navigation";
-import { SimplCMSPlatformConfiguration } from "@/types";
-import { Label } from "@/app/client/components/ui/label";
+import { SimplCMSPlatformConfiguration } from "../../../../types/types";
+import { Label } from "./ui/label";
 import { useSetupData } from "./setupContextProvider";
-import { connectDbToApplication } from "@/core/serverActions/simplcms/setup";
+import { connectDbToApplication } from "../../../core/serverActions/simplcms/setup";
 
 export default function SetupMongoForm({
   platformConfiguration,

@@ -1,17 +1,13 @@
 "use client";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/app/client/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/app/client/components/ui/dropdown-menu";
+} from "./ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { User } from "@/types";
+import { User } from "../../../../types/types";
 export default function UserMenu({ user }: { user: User }) {
   return (
     <DropdownMenu>

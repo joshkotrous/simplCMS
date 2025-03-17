@@ -1,11 +1,10 @@
-import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
-import { CreatePage, Page, pageSchema } from "@/types";
-
+import { CreatePage, Page, pageSchema } from "../../../types/types";
+import { simplcms } from "../../core";
 export async function getAllPages(): Promise<Page[]> {
   try {
-    const uri = getDatabaseUriEnvVariable();
-    const db = await connectToDatabase(uri);
-    const { PageModel } = getModels(db);
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PageModel } = simplcms.db.getModels(db);
 
     const pages = await PageModel.find({}).select("-__v");
 
@@ -22,10 +21,10 @@ export async function createPage(
 ): Promise<Page> {
   try {
     if (!uri) {
-      uri = getDatabaseUriEnvVariable();
+      uri = simplcms.db.getDatabaseUriEnvVariable();
     }
-    const db = await connectToDatabase(uri);
-    const { PageModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PageModel } = simplcms.db.getModels(db);
     const newPage = await PageModel.create(page);
 
     return pageSchema.parse(newPage);
@@ -37,9 +36,9 @@ export async function createPage(
 
 export async function getPageByRoute(route: string): Promise<Page | null> {
   try {
-    const uri = getDatabaseUriEnvVariable();
-    const db = await connectToDatabase(uri);
-    const { PageModel } = getModels(db);
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PageModel } = simplcms.db.getModels(db);
 
     const page = await PageModel.findOne({ route });
 

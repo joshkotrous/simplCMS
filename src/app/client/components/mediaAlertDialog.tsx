@@ -14,7 +14,7 @@ import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import * as mediaActions from "@/core/serverActions/simplcms/media";
+import * as mediaActions from "../../../core/serverActions/simplcms/media";
 import Image from "next/image";
 export default function MediaAlertDialog({
   children,

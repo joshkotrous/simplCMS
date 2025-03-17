@@ -1,10 +1,10 @@
 "use server";
 
-import { connectToDatabase } from "@/db";
+import { simplcms } from "../../../../core";
 
 export async function testConnection(uri: string): Promise<void> {
   try {
-    await connectToDatabase(uri);
+    await simplcms.db.connectToDatabase(uri);
   } catch (error) {
     console.error(error);
     throw error;

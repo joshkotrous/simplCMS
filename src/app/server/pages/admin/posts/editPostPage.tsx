@@ -1,15 +1,14 @@
 "use server";
-import { getPost } from "@/posts";
 import { notFound } from "next/navigation";
-import { SimplCMSMedia } from "@/types";
-import EditPostDisplay from "@/app/client/components/editPostDisplay";
-import { simplcms } from "@/core";
+import { SimplCMSMedia } from "../../../../../../types/types";
+import EditPostDisplay from "../../../../client/components/editPostDisplay";
+import { simplcms } from "../../../../../core";
 
 export default async function EditPostPage(props: {
   params: { postId: string };
 }) {
   const params = props.params;
-  const post = await getPost({ _id: params.postId });
+  const post = await simplcms.posts.getPost({ _id: params.postId });
   if (!post) return notFound();
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   let media: SimplCMSMedia[] = [];

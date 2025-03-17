@@ -1,17 +1,17 @@
 "use client";
-import { Page } from "@/types";
+import { Page } from "../../../../types/types";
 import VerticalTreeMenu from "./pagesList";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import PageEditor from "@/app/client/components/editPageRenderer";
 
 export default function PagePreview({ routes }: { routes: Page[] }) {
   const homeRoute = routes.find((route) => route.route === "/");
-  if (!homeRoute) return;
-
-  const [selectedRoute, setSelectedRoute] = useState<string>(homeRoute.route);
+  const [selectedRoute, setSelectedRoute] = useState<string>(
+    homeRoute?.route ?? ""
+  );
   const [isLoading, setIsLoading] = useState(true);
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!homeRoute) return;
 
   const previewUrl = selectedRoute ? `${baseUrl}/${selectedRoute}` : baseUrl;
 

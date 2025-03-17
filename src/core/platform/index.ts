@@ -1,4 +1,3 @@
-import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
 import {
   CreateSiteConfig,
   HostProvider,
@@ -11,13 +10,13 @@ import {
   simplCMSPlatformConfigurationObject,
   SiteConfig,
   siteConfigSchema,
-} from "@/types";
+} from "../../../types/types";
 import { GetProjectEnvResponseBody } from "@vercel/sdk/models/getprojectenvop.js";
 import {
   FilterProjectEnvsResponseBody,
   ResponseBodyEnvs,
 } from "@vercel/sdk/models/filterprojectenvsop.js";
-import { simplcms } from "@/index";
+import { simplcms } from "../../core";
 
 export type SetupValidationComponent = {
   setupComplete: boolean;
@@ -227,7 +226,7 @@ export async function validateSetup({
         } else {
           try {
             console.log("Testing MongoDB connection with URI");
-            const db = await connectToDatabase(mongoUri);
+            const db = await simplcms.db.connectToDatabase(mongoUri);
 
             console.log("MongoDB connection successful");
             dbConnectionSuccessful = true;
@@ -604,10 +603,10 @@ export function getPlatformConfiguration(): SimplCMSPlatformConfiguration {
 
 export async function getSiteConfig(): Promise<SiteConfig | null> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { SiteConfigModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { SiteConfigModel } = simplcms.db.getModels(db);
     const config = await SiteConfigModel.findOne().select("-__v");
 
     return siteConfigSchema.nullable().parse(config);
@@ -621,12 +620,12 @@ export async function initSiteConfig(): Promise<void> {
   try {
     const { host, database, oauth, mediaStorage } =
       simplcms.platform.getPlatformConfiguration();
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
     if (!host || !database || !mediaStorage || !oauth)
       throw new Error("Setup is not completed");
 
-    const db = await connectToDatabase(uri);
-    const { SiteConfigModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { SiteConfigModel } = simplcms.db.getModels(db);
 
     // Handle the union type for mediaStorage
     let mediaStorageProviders: ("Cloudinary" | "AWS S3" | null)[] = [];

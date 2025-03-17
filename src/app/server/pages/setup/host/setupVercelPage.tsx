@@ -1,6 +1,6 @@
 "use server";
-import SetupVercelForm from "@/app/client/components/setupVercelForm";
-import { simplcms } from "@/core";
+import SetupVercelForm from "../../../../client/components/setupVercelForm";
+import { simplcms } from "../../../../../core";
 export default async function SetupVercelPage() {
   const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`

@@ -1,8 +1,8 @@
 "use client";
-import * as userActions from "@/core/serverActions/simplcms/user";
-import { Button } from "@/app/client/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/app/client/components/ui/card";
-import { Input } from "@/app/client/components/ui/input";
+import * as userActions from "../../../core/serverActions/simplcms/user";
+import { Button } from "./ui/button";
+import { Card, CardHeader, CardContent } from "./ui/card";
+import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";

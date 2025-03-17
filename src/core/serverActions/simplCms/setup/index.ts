@@ -1,7 +1,11 @@
 "use server";
-import { defaultHomePageConfig, generateSecret } from "@/core/lib/utils";
-import { AWSS3Config, createPageSchema, MediaStorageProvider } from "@/types";
-import { simplcms } from "@/index";
+import { defaultHomePageConfig, generateSecret } from "../../../lib/utils";
+import {
+  AWSS3Config,
+  createPageSchema,
+  MediaStorageProvider,
+} from "../../../../../types/types";
+import { simplcms } from "../../../../core";
 
 export async function connectDbToApplication(
   vercelToken: string,

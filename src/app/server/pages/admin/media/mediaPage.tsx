@@ -1,6 +1,6 @@
 "use server";
 import { MediaGrid } from "../../../../client/components/mediaGrid";
-import { simplcms } from "@/core";
+import { simplcms } from "../../../../../core";
 
 export default async function AdminMediaPage() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();

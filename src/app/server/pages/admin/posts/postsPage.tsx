@@ -1,11 +1,10 @@
 "use server";
-import { Button } from "@/app/client/components/ui/button";
+import { Button } from "../../../../client/components/ui/button";
 import PostsList from "../../../../client/components/postsList";
 import Link from "next/link";
-import { getAllPosts } from "@/posts";
-
+import { simplcms } from "../../../../../core";
 export default async function PostsPage() {
-  const posts = await getAllPosts();
+  const posts = await simplcms.posts.getAllPosts();
   const publishedPosts = posts.filter((post) => !post.draft);
 
   return (

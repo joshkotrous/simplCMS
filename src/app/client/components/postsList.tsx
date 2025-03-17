@@ -7,26 +7,21 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/client/components/ui/alert-dialog";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
+} from "./ui/alert-dialog";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/app/client/components/ui/dropdown-menu";
-import { Input } from "@/app/client/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/app/client/components/ui/select";
-import { Post } from "@/types";
+} from "./ui/dropdown-menu";
+import { Input } from "./ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
+import { Post } from "../../../../types/types";
 import { Ellipsis } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import * as postActions from "@/core/serverActions/simplcms/post";
+import * as postActions from "../../../core/serverActions/simplcms/post";
 import { toast } from "sonner";
 import { useState } from "react";
 

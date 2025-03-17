@@ -1,8 +1,8 @@
 "use server";
 
-import { testConnection } from "@/providers/s3";
-import { AWSS3Config } from "@/types";
+import { simplcms } from "../../../../core";
+import { AWSS3Config } from "../../../../../types/types";
 
 export async function testS3ConnectionAction(config: AWSS3Config) {
-  await testConnection(config);
+  await simplcms.providers.s3.testConnection(config);
 }

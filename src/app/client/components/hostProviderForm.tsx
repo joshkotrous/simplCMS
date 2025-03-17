@@ -1,7 +1,7 @@
 "use client";
 
-import { VercelLogo } from "@/app/client/components/logos";
-import { Card, CardContent } from "@/app/client/components/ui/card";
+import { VercelLogo } from "./logos";
+import { Card, CardContent } from "./ui/card";
 import Link from "next/link";
 import { useSetupData } from "./setupContextProvider";
 

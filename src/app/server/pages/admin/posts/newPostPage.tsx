@@ -1,5 +1,5 @@
 "use server";
-import { simplcms } from "@/core";
+import { simplcms } from "../../../../../core";
 import { MarkdownEditor } from "../../../../client/components/textEditor";
 
 export default async function NewPostPage() {

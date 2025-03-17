@@ -1,6 +1,6 @@
 "use server";
-import SetupCloudinaryForm from "@/app/client/components/setupCloudinaryForm";
-import { simplcms } from "@/core";
+import SetupCloudinaryForm from "../../../../client/components/setupCloudinaryForm";
+import { simplcms } from "../../../../../core";
 export default async function SetupCloudinaryPage() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   return (

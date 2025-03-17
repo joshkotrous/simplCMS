@@ -1,17 +1,16 @@
 "use server";
-import ErrorToast from "@/app/client/components/errorToast";
+import ErrorToast from "../../../../client/components/errorToast";
 import {
   AWSS3Logo,
   CloudinaryLogo,
   VercelLogo,
-} from "@/app/client/components/logos";
-import { MongoDBLogo } from "@/app/client/components/logos";
-import MediaPopover from "@/app/client/components/mediaPopover";
-import { Button } from "@/app/client/components/ui/button";
-import { Card, CardContent } from "@/app/client/components/ui/card";
-import { Separator } from "@/app/client/components/ui/separator";
+} from "../../../../client/components/logos";
+import { MongoDBLogo } from "../../../../client/components/logos";
+import { Button } from "../../../../client/components/ui/button";
+import { Card, CardContent } from "../../../../client/components/ui/card";
+import { Separator } from "../../../../client/components/ui/separator";
 
-import { simplcms } from "@/core";
+import { simplcms } from "../../../../../core";
 import { ImageIcon } from "lucide-react";
 import { FaGoogle } from "react-icons/fa";
 

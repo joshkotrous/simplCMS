@@ -1,7 +1,7 @@
 "use server";
 import { Plus } from "lucide-react";
-import { simplcms } from "@/index";
-import PagePreview from "@/app/client/components/pagePreview";
+import { simplcms } from "../../../../../core";
+import PagePreview from "../../../../client/components/pagePreview";
 
 export default async function PagesPage() {
   const allPages = await simplcms.pages.getAllPages();

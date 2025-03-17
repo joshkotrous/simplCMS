@@ -2,8 +2,8 @@
 import {
   deleteMediaAction,
   updateMediaNameAction,
-} from "@/core/serverActions/simplcms/media";
-import MediaAlertDialog from "@/app/client/components/mediaAlertDialog";
+} from "../../../core/serverActions/simplcms/media";
+import MediaAlertDialog from "./mediaAlertDialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,12 +14,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/client/components/ui/alert-dialog";
-import { Button } from "@/app/client/components/ui/button";
-import { Checkbox } from "@/app/client/components/ui/checkbox";
-import { Input } from "@/app/client/components/ui/input";
-import { Label } from "@/app/client/components/ui/label";
-import { SimplCMSMedia } from "@/types";
+} from "./ui/alert-dialog";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { SimplCMSMedia } from "../../../../types/types";
 import { ArrowLeft, Pencil, Trash, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

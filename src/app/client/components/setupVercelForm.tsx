@@ -1,21 +1,16 @@
 "use client";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/app/client/components/ui/card";
-import { Input } from "@/app/client/components/ui/input";
-import { VercelLogo } from "@/app/client/components/logos";
-import { Button } from "@/app/client/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader } from "./ui/card";
+import { Input } from "./ui/input";
+import { VercelLogo } from "./logos";
+import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { toast } from "sonner";
-import * as vercel from "@/core/serverActions/providers/vercel";
+import * as vercel from "../../../core/serverActions/providers/vercel";
 import { useRouter } from "next/navigation";
 import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
 import Link from "next/link";
-import { SimplCMSPlatformConfiguration } from "@/types";
+import { SimplCMSPlatformConfiguration } from "../../../../types/types";
 import { Loader2 } from "lucide-react";
 import { useSetupData } from "./setupContextProvider";
 

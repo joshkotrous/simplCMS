@@ -1,14 +1,14 @@
 "use client";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import { FaGoogle } from "react-icons/fa";
 import { Copy } from "lucide-react";
-import { Button } from "@/app/client/components/ui/button";
-import { Input } from "@/app/client/components/ui/input";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useSetupData } from "./setupContextProvider";
-import { setupGoogleOauth } from "@/core/serverActions/simplcms/setup";
+import { setupGoogleOauth } from "../../../core/serverActions/simplcms/setup";
 
 export default function SetupGoogleOauthForm({ siteUrl }: { siteUrl: string }) {
   const { setupData, setSetupData } = useSetupData();

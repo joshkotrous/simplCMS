@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/app/client/components/ui/card";
-import { Button } from "@/app/client/components/ui/button";
-import { VercelLogo } from "@/app/client/components/logos";
+import { Card, CardContent, CardDescription, CardHeader } from "./ui/card";
+import { Button } from "./ui/button";
+import { VercelLogo } from "./logos";
 import { useEffect, useState } from "react";
-import * as vercelActions from "@/core/serverActions/providers/vercel";
+import * as vercelActions from "../../../core/serverActions/providers/vercel";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
-import { CreateDeploymentResponseBody } from "@vercel/sdk/models/createdeploymentop.js";
 import { toast } from "sonner";
 import { CheckCircle2, Loader } from "lucide-react";
 import Link from "next/link";

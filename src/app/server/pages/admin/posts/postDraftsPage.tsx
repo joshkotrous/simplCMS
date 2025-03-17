@@ -1,11 +1,10 @@
 "use server";
-import { Button } from "@/app/client/components/ui/button";
-import { getAllPosts } from "@/posts";
+import { Button } from "../../../../client/components/ui/button";
 import Link from "next/link";
 import PostsList from "../../../../client/components/postsList";
-
+import { simplcms } from "../../../../../core";
 export default async function DraftsPage() {
-  const posts = await getAllPosts();
+  const posts = await simplcms.posts.getAllPosts();
   const draftPosts = posts.filter((post) => post.draft);
   return (
     <div className="flex flex-col h-full">

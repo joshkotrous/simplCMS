@@ -1,30 +1,30 @@
 "use client";
 import React, { useState, useCallback } from "react";
-import { Element, Page, elementTypeSchema, elementSchema } from "@/types";
-import { Button } from "@/app/client/components/ui/button";
+import {
+  Element,
+  Page,
+  elementTypeSchema,
+  elementSchema,
+} from "../../../../types/types";
+import { Button } from "./ui/button";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogFooter,
-} from "@/app/client/components/ui/alert-dialog";
+} from "./ui/alert-dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/app/client/components/ui/select";
-import { Input } from "@/app/client/components/ui/input";
-import { Textarea } from "@/app/client/components/ui/textarea";
-import { Label } from "@/app/client/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/app/client/components/ui/tabs";
+} from "./ui/select";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import {
   PlusCircle,
   Trash2,
@@ -796,7 +796,6 @@ const PageEditor: React.FC<{
   );
 };
 
-// Import the ElementRenderer directly for use in the editable elements
-import { ElementRenderer } from "../../server/components/pageRenderer";
+import ElementRenderer from "../../server/components/elementRenderer";
 
 export default PageEditor;

@@ -1,6 +1,6 @@
 import mongoose, { Connection, Mongoose } from "mongoose";
 import { UserSchema, PostSchema, SiteConfigSchema, PageSchema } from "./schema";
-import { User, Post, SiteConfig, Page } from "@/types";
+import { User, Post, SiteConfig, Page } from "../../../types/types";
 
 let cachedMongoose: Mongoose | null = null;
 
@@ -73,4 +73,5 @@ export const db = {
   connectToDatabase,
   disconnectFromDatabase,
   getDatabaseUriEnvVariable,
+  getModels,
 };

@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@/app/client/components/ui/button";
-import { SiteConfig } from "@/types";
-import * as simplCmsActions from "@/core/serverActions/simplcms";
+import { Button } from "./ui/button";
+import { SiteConfig } from "../../../../types/types";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { initSiteConfig } from "../../../core/serverActions/simplcms";
 export function InitSiteConfig({
   siteConfig,
 }: {
@@ -12,7 +12,7 @@ export function InitSiteConfig({
 }) {
   const router = useRouter();
   async function initConfig() {
-    toast.promise(simplCmsActions.initSiteConfig(), {
+    toast.promise(initSiteConfig(), {
       loading: "Initialize site configuration...",
       success: () => {
         router.refresh();

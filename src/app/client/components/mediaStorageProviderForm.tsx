@@ -1,10 +1,6 @@
 "use client";
-import {
-  AWSS3Logo,
-  CloudinaryLogo,
-  SupabaseLogo,
-} from "@/app/client/components/logos";
-import { Card, CardContent } from "@/app/client/components/ui/card";
+import { AWSS3Logo, CloudinaryLogo, SupabaseLogo } from "./logos";
+import { Card, CardContent } from "./ui/card";
 import Link from "next/link";
 import { useSetupData } from "./setupContextProvider";
 

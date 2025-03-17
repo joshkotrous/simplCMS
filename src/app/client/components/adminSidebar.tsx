@@ -15,15 +15,15 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@/app/client/components/ui/sidebar";
+} from "./ui/sidebar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/app/client/components/ui/collapsible";
+} from "./ui/collapsible";
 import Link from "next/link";
-import { User } from "@/types";
 import UserMenu from "./userMenu";
+import { User } from "../../../../types/types";
 
 export default function AdminSidebar({ user }: { user: User }) {
   const { open } = useSidebar();

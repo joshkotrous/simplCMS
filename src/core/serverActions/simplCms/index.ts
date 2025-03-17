@@ -1,7 +1,10 @@
 "use server";
 
-import { simplcms } from "@/core";
-import { HostProvider, SimplCMSPlatformConfiguration } from "@/types";
+import { simplcms } from "../../../core";
+import {
+  HostProvider,
+  SimplCMSPlatformConfiguration,
+} from "../../../../types/types";
 
 export async function initSiteConfig() {
   try {

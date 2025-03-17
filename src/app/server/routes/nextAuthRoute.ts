@@ -1,18 +1,18 @@
 import NextAuth, { Account, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { JWT } from "next-auth/jwt";
-import { getUserByEmail, updateUser, userHasAccess } from "@/core/user";
+import { simplcms } from "../../../core";
 
 async function validateSession(session: Session, token: JWT): Promise<Session> {
   const email = session.user.email;
   if (!email) {
     throw new Error("Email was not provided via OAuth.");
   }
-  const user = await getUserByEmail(email);
+  const user = await simplcms.users.getUserByEmail(email);
   if (!user) {
     throw new Error("User could not be found.");
   }
-  const hasAccess = await userHasAccess(user);
+  const hasAccess = await simplcms.users.userHasAccess(user);
   if (!hasAccess) {
     throw new Error("User does not have access");
   }
@@ -50,11 +50,11 @@ async function updateUserInformation({
     if (!email) {
       throw new Error("Email was not provided via OAuth.");
     }
-    const user = await getUserByEmail(email);
+    const user = await simplcms.users.getUserByEmail(email);
     if (!user) {
       throw new Error("User could not be found.");
     }
-    await updateUser({
+    await simplcms.users.updateUser({
       _id: user._id,
       name: name ?? undefined,
       imageUrl: image ?? undefined,
@@ -72,11 +72,11 @@ async function validateToken(
   if (!email) {
     throw new Error("Email was not provided via OAuth.");
   }
-  const user = await getUserByEmail(email);
+  const user = await simplcms.users.getUserByEmail(email);
   if (!user) {
     throw new Error("User could not be found.");
   }
-  const hasAccess = await userHasAccess(user);
+  const hasAccess = await simplcms.users.userHasAccess(user);
   if (!hasAccess) {
     throw new Error("User does not have access");
   }

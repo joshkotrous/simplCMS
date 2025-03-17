@@ -1,16 +1,13 @@
 "use server";
-import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { getUserByEmail, userHasAccess } from "@/user";
-import { Button } from "@/app/client/components/ui/button";
+import { Button } from "../../../app/client/components/ui/button";
 import {
   SidebarProvider,
   SidebarTrigger,
-} from "@/app/client/components/ui/sidebar";
-import AdminSidebar from "@/app/client/components/adminSidebar";
-import ThemeToggle from "@/app/client/components/themeToggle";
-import { User } from "@/types";
+} from "../../../app/client/components/ui/sidebar";
+import AdminSidebar from "../../../app/client/components/adminSidebar";
+import ThemeToggle from "../../../app/client/components/themeToggle";
+import { User } from "../../../../types/types";
 
 export default async function AdminLayout({
   children,

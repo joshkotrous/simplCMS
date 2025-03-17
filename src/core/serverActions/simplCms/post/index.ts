@@ -1,10 +1,9 @@
 "use server";
-import { createPost, deletePost, updatePost } from "@/posts";
-import { CreatePost, Post } from "@/types";
-
+import { CreatePost, Post } from "../../../../../types/types";
+import { simplcms } from "../../../../core";
 export async function createNewPost(post: CreatePost): Promise<void> {
   try {
-    await createPost(post);
+    await simplcms.posts.createPost(post);
   } catch (error) {
     console.error(error);
     throw error;
@@ -13,7 +12,7 @@ export async function createNewPost(post: CreatePost): Promise<void> {
 
 export async function deletePostAction(post: Post): Promise<void> {
   try {
-    await deletePost(post);
+    await simplcms.posts.deletePost(post);
   } catch (error) {
     console.error(error);
     throw error;
@@ -25,7 +24,7 @@ export async function updatePostAction(
   post: Partial<Post>
 ): Promise<void> {
   try {
-    await updatePost(postId, post);
+    await simplcms.posts.updatePost(postId, post);
   } catch (error) {
     console.error(error);
     throw error;

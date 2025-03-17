@@ -7,9 +7,9 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/app/client/components/ui/collapsible";
-import { Button } from "@/app/client/components/ui/button";
-import { Page } from "@/types";
+} from "./ui/collapsible";
+import { Button } from "./ui/button";
+import { Page } from "../../../../types/types";
 
 const hiddenRoutes = ["admin", "login", "setup"];
 

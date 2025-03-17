@@ -1,6 +1,6 @@
 "use server";
-import SetupMongoForm from "@/app/client/components/setupMongoDBForm";
-import { simplcms } from "@/core";
+import SetupMongoForm from "../../../../client/components/setupMongoDBForm";
+import { simplcms } from "../../../../../core";
 
 export default async function SetupMongoPage() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();

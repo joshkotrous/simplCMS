@@ -1,16 +1,16 @@
-import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
-import { User, userSchema } from "@/types";
+import { simplcms } from "../../core";
+import { User, userSchema } from "../../../types/types";
 export async function createUser(
   userData: Partial<User>,
   dbUri?: string
 ): Promise<void> {
   try {
     if (!dbUri) {
-      dbUri = getDatabaseUriEnvVariable();
+      dbUri = simplcms.db.getDatabaseUriEnvVariable();
     }
-    const db = await connectToDatabase(dbUri);
+    const db = await simplcms.db.connectToDatabase(dbUri);
 
-    const { UserModel } = getModels(db);
+    const { UserModel } = simplcms.db.getModels(db);
 
     const newUser = new UserModel(userData);
     await newUser.save();
@@ -22,11 +22,11 @@ export async function createUser(
 
 export async function getUser(user: Partial<User>): Promise<User> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
+    const db = await simplcms.db.connectToDatabase(uri);
 
-    const { UserModel } = getModels(db);
+    const { UserModel } = simplcms.db.getModels(db);
     let query = {};
     if (user.email) {
       query = { email: user.email };
@@ -51,10 +51,10 @@ export async function getUser(user: Partial<User>): Promise<User> {
 export async function getAllUsers(dbUri?: string): Promise<User[]> {
   try {
     if (!dbUri) {
-      dbUri = getDatabaseUriEnvVariable();
+      dbUri = simplcms.db.getDatabaseUriEnvVariable();
     }
-    const db = await connectToDatabase(dbUri);
-    const { UserModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(dbUri);
+    const { UserModel } = simplcms.db.getModels(db);
     const users = await UserModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
@@ -68,9 +68,9 @@ export async function getAllUsers(dbUri?: string): Promise<User[]> {
 
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
-    const uri = getDatabaseUriEnvVariable();
-    const db = await connectToDatabase(uri);
-    const { UserModel } = getModels(db);
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { UserModel } = simplcms.db.getModels(db);
     const user = await UserModel.findOne({ email }).select("-__v");
     if (!user) return null;
     return userSchema.parse(user);
@@ -93,10 +93,10 @@ export async function userHasAccess(user: User): Promise<boolean> {
 
 export async function deleteUser(user: User): Promise<void> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { UserModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { UserModel } = simplcms.db.getModels(db);
     let query = {};
     if (user.email) {
       query = { email: user.email };
@@ -117,10 +117,10 @@ export async function deleteUser(user: User): Promise<void> {
 
 export async function updateUser(user: Partial<User>): Promise<void> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { UserModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { UserModel } = simplcms.db.getModels(db);
     let query = {};
     if (user.email) {
       query = { email: user.email };

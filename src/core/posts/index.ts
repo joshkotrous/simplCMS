@@ -1,5 +1,5 @@
-import { connectToDatabase, getDatabaseUriEnvVariable, getModels } from "@/db";
-import { CreatePost, Post, postSchema } from "@/types";
+import { CreatePost, Post, postSchema } from "../../../types/types";
+import { simplcms } from "../../core";
 
 function createSlug(title: string): string {
   return title
@@ -12,10 +12,10 @@ function createSlug(title: string): string {
 
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { PostModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
 
     const post = await PostModel.findOne({ slug }).select("-__v");
 
@@ -32,9 +32,9 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 
 export async function createPost(post: CreatePost): Promise<void> {
   try {
-    const uri = getDatabaseUriEnvVariable();
-    const db = await connectToDatabase(uri);
-    const { PostModel } = getModels(db);
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
     const slug = createSlug(post.title);
     const postWithSlug = {
       ...post,
@@ -50,10 +50,10 @@ export async function createPost(post: CreatePost): Promise<void> {
 
 export async function getAllPosts(): Promise<Post[]> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { PostModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
     const posts = await PostModel.find({})
       .sort({ createdAt: -1 })
       .select("-__v");
@@ -67,10 +67,10 @@ export async function getAllPosts(): Promise<Post[]> {
 
 export async function getPost(post: Partial<Post>): Promise<Post> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { PostModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
     let query = {};
 
     if (post._id) {
@@ -104,10 +104,10 @@ export async function getPost(post: Partial<Post>): Promise<Post> {
 
 export async function deletePost(post: Post): Promise<void> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { PostModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
     const result = await PostModel.deleteOne({ _id: post._id });
 
     if (result.deletedCount === 0) {
@@ -124,10 +124,10 @@ export async function updatePost(
   updates: Partial<Post>
 ): Promise<Post> {
   try {
-    const uri = getDatabaseUriEnvVariable();
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
 
-    const db = await connectToDatabase(uri);
-    const { PostModel } = getModels(db);
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
     const updatedPost = await PostModel.findByIdAndUpdate(
       postId,
       { $set: updates },

@@ -1,5 +1,5 @@
 "use server";
-import DatabaseProviderForm from "@/app/client/components/databaseProviderForm";
+import DatabaseProviderForm from "../../../../client/components/databaseProviderForm";
 
 export default async function SetupDatabasePage() {
   return (

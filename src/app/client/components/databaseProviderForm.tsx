@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  DynamoDBLogo,
-  MongoDBLogo,
-  SupabaseLogo,
-} from "@/app/client/components/logos";
-import { Card, CardContent } from "@/app/client/components/ui/card";
+import { DynamoDBLogo, MongoDBLogo, SupabaseLogo } from "./logos";
+import { Card, CardContent } from "./ui/card";
 import Link from "next/link";
 import { useSetupData } from "./setupContextProvider";
 

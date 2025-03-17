@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@/types";
+import { User } from "../../../../types/types";
 import { Trash } from "lucide-react";
 import AddUserButton from "./addUserButton";
 import {
@@ -11,11 +11,11 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/client/components/ui/alert-dialog";
+} from "./ui/alert-dialog";
 import { toast } from "sonner";
-import * as userActions from "@/core/serverActions/simplcms/user";
+import * as userActions from "../../../core/serverActions/simplcms/user";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback } from "@/app/client/components/ui/avatar";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 import Image from "next/image";
 
 export default function Users({ users }: { users: User[] }) {

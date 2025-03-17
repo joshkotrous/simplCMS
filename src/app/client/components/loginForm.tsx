@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
+import { Card, CardContent, CardHeader } from "./ui/card";
 import Link from "next/link";
 import { IoLogoGithub } from "react-icons/io";
 import { FaGoogle, FaMicrosoft } from "react-icons/fa";
 import { signIn } from "next-auth/react";
-import ErrorToast from "@/app/client/components/errorToast";
+import ErrorToast from "./errorToast";
 
 export default function LoginForm() {
   try {

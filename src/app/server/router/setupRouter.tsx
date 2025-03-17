@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User } from "../../../../types/types";
 import { SetupLayout, SimplCMSLayout } from "../layouts";
 import SetupDatabasePage from "../pages/setup/database/setupDatabasePage";
 import SetupMongoPage from "../pages/setup/database/setupMongoPage";

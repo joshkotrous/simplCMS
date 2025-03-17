@@ -1,12 +1,12 @@
 "use server";
-import MediaPopover from "@/app/client/components/mediaPopover";
-import { Button } from "@/app/client/components/ui/button";
-import { Separator } from "@/app/client/components/ui/separator";
+import MediaPopover from "../../../../client/components/mediaPopover";
+import { Button } from "../../../../client/components/ui/button";
+import { Separator } from "../../../../client/components/ui/separator";
 import { ImageIcon } from "lucide-react";
 import { InitSiteConfig } from "../../../../client/components/initSiteConfig";
-import { CloudinaryMedia, SiteConfig } from "@/types";
+import { CloudinaryMedia, SiteConfig } from "../../../../../../types/types";
 
-import { simplcms } from "@/core";
+import { simplcms } from "../../../../../core";
 
 export default async function SiteSettings() {
   let siteConfig: SiteConfig | null = null;

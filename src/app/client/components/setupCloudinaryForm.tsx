@@ -1,17 +1,14 @@
 "use client";
-import { Button } from "@/app/client/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
-import { CloudinaryLogo } from "@/app/client/components/logos";
-import { Input } from "@/app/client/components/ui/input";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { CloudinaryLogo } from "./logos";
+import { Input } from "./ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { testCloudinaryConnectionAction } from "@/core/serverActions/providers/cloudinary";
-import { connectMediaStorageToApplication } from "@/core/serverActions/simplcms/setup";
+import { testCloudinaryConnectionAction } from "../../../core/serverActions/providers/cloudinary";
+import { connectMediaStorageToApplication } from "../../../core/serverActions/simplcms/setup";
 import { useRouter } from "next/navigation";
-import {
-  SimplCMSMediaStorageConfiguration,
-  SimplCMSPlatformConfiguration,
-} from "@/types";
+import { SimplCMSPlatformConfiguration } from "../../../../types/types";
 import { useSetupData } from "./setupContextProvider";
 
 // Define a type for a Cloudinary provider configuration

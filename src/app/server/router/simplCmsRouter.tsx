@@ -7,9 +7,8 @@ import {
   SimplCMSLayout,
 } from "../layouts";
 import { getServerSession } from "next-auth";
-import { getUserByEmail, userHasAccess } from "@/core/user";
 import React from "react";
-import LoginForm from "@/app/client/components/loginForm";
+import LoginForm from "../../client/components/loginForm";
 import PostsPage from "../pages/admin/posts/postsPage";
 import NewPostPage from "../pages/admin/posts/newPostPage";
 import DraftsPage from "../pages/admin/posts/postDraftsPage";
@@ -19,18 +18,9 @@ import AdminMediaPage from "../pages/admin/media/mediaPage";
 import ConnectionSettings from "../pages/admin/settings/connectionsPage";
 import SiteSettings from "../pages/admin/settings/sitePage";
 import UserSettingsPage from "../pages/admin/settings/usersPage";
-import SetupPage from "../pages/setup/setupPage";
 import PostPage from "../pages/admin/posts/viewPostPage";
-import SetupDatabasePage from "../pages/setup/database/setupDatabasePage";
-import SetupOauth from "../pages/setup/oauth/setupOauthPage";
-import HostSetupPage from "../pages/setup/host/setupHostPage";
-import SetupMongoPage from "../pages/setup/database/setupMongoPage";
-import SetupGoogleOauthPage from "../pages/setup/oauth/setupGoogleOauthPage";
-import SetupVercelPage from "../pages/setup/host/setupVercelPage";
-import SetupMediaStoragePage from "../pages/setup/mediaStorage/setupMediaStoragePage";
-import SetupCloudinaryPage from "../pages/setup/mediaStorage/setupCloudinaryPage";
-import SetupS3Page from "../pages/setup/mediaStorage/setupS3Page";
 import SetupRouter from "./setupRouter";
+import { simplcms } from "../../../core";
 export interface SimplCMSRouterProps {
   params: {
     slug?: string[];
@@ -54,7 +44,7 @@ export default async function SimplCMSRouter({ params }: SimplCMSRouterProps) {
     redirect("/admin/login");
   }
 
-  const user = await getUserByEmail(session.user.email);
+  const user = await simplcms.users.getUserByEmail(session.user.email);
   if (!user) {
     redirect("/admin/login");
   }
@@ -65,7 +55,7 @@ export default async function SimplCMSRouter({ params }: SimplCMSRouterProps) {
   }
 
   // Check user access
-  const hasAccess = await userHasAccess(user);
+  const hasAccess = await simplcms.users.userHasAccess(user);
   if (!hasAccess) {
     // Option 1: Redirect to a specific "no access" page
     redirect("/admin/login?error=access");

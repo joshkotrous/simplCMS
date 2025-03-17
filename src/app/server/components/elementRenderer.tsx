@@ -1,6 +1,6 @@
 "use server";
 
-import { Button } from "@/app/client/components/ui/button";
+import { Button } from "../../../app/client/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import PostList from "./postList";

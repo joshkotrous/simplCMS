@@ -1,5 +1,5 @@
 "use server";
-import HostProviderForm from "@/app/client/components/hostProviderForm";
+import HostProviderForm from "../../../../client/components/hostProviderForm";
 
 export default async function HostSetupPage() {
   return (

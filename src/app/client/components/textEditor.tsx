@@ -13,15 +13,10 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { Button } from "@/app/client/components/ui/button";
-import { Textarea } from "@/app/client/components/ui/textarea";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/app/client/components/ui/tabs";
-import { Input } from "@/app/client/components/ui/input";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Input } from "./ui/input";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,38 +25,30 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/app/client/components/ui/alert-dialog";
+} from "./ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/app/client/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/app/client/components/ui/select";
+} from "./ui/dropdown-menu";
 import Link from "next/link";
-import { CreatePost, Post, SimplCMSMedia } from "@/types";
-import { createNewPost } from "@/core/serverActions/simplcms/post";
+import { CreatePost, Post, SimplCMSMedia } from "../../../../types/types";
+import { createNewPost } from "../../../core/serverActions/simplcms/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import MediaPopover from "@/app/client/components/mediaPopover";
-import MarkdownRenderer from "@/app/client/components/mardownRenderer";
-import { Label } from "@/app/client/components/ui/label";
-import { Separator } from "@/app/client/components/ui/separator";
+import MediaPopover from "./mediaPopover";
+import MarkdownRenderer from "./mardownRenderer";
+import { Label } from "./ui/label";
+import { Separator } from "./ui/separator";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/app/client/components/ui/collapsible";
+} from "./ui/collapsible";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
-import * as vercelActions from "@/core/serverActions/providers/vercel";
-import * as postActions from "@/core/serverActions/simplcms/post";
-import useRedeployToast from "@/app/client/components/redeploymentToast";
+import * as postActions from "../../../core/serverActions/simplcms/post";
+import useRedeployToast from "./redeploymentToast";
 
 // Language options for code blocks
 const LANGUAGE_OPTIONS = [

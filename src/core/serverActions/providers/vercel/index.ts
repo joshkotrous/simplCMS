@@ -1,15 +1,7 @@
 "use server";
 
-import { simplcms } from "simplcms";
-import {
-  addEnvToProject,
-  connect,
-  getDeploymentById,
-  getLatestDeployment,
-  getProjects,
-  getUserTeams,
-  triggerRedeploy,
-} from "@/providers/vercel";
+import { simplcms } from "../../../../core";
+
 import { CreateDeploymentResponseBody } from "@vercel/sdk/models/createdeploymentop.js";
 import { GetDeploymentResponseBody } from "@vercel/sdk/models/getdeploymentop.js";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
@@ -24,8 +16,11 @@ export async function getProjectsAction(
   teamId: string
 ): Promise<GetProjectsResponseBody> {
   try {
-    const vercel = connect(apiKey);
-    const projects = await getProjects(vercel, teamId);
+    const vercel = simplcms.providers.vercel.connect(apiKey);
+    const projects = await simplcms.providers.vercel.getProjects(
+      vercel,
+      teamId
+    );
     return projects;
   } catch (error) {
     console.error(error);
@@ -45,8 +40,8 @@ export async function addEnvVar(
   }
 ) {
   try {
-    const vercel = connect(apiKey);
-    await addEnvToProject({
+    const vercel = simplcms.providers.vercel.connect(apiKey);
+    await simplcms.providers.vercel.addEnvToProject({
       vercel,
       projectId: projectId,
       key: params.key,
@@ -67,8 +62,8 @@ export async function connectProject(
   apiKey: string
 ): Promise<void> {
   try {
-    const vercel = connect(apiKey);
-    await addEnvToProject({
+    const vercel = simplcms.providers.vercel.connect(apiKey);
+    await simplcms.providers.vercel.addEnvToProject({
       vercel,
       projectId: projectId,
       key: "VERCEL_TOKEN",
@@ -77,7 +72,7 @@ export async function connectProject(
       type: "encrypted",
       target: ["production"],
     });
-    await addEnvToProject({
+    await simplcms.providers.vercel.addEnvToProject({
       vercel,
       projectId: projectId,
       key: "VERCEL_TEAM_ID",
@@ -87,7 +82,7 @@ export async function connectProject(
       target: ["production"],
     });
 
-    await addEnvToProject({
+    await simplcms.providers.vercel.addEnvToProject({
       vercel,
       projectId: projectId,
       key: "VERCEL_PROJECT_ID",
@@ -96,7 +91,7 @@ export async function connectProject(
       type: "plain",
       target: ["production"],
     });
-    await addEnvToProject({
+    await simplcms.providers.vercel.addEnvToProject({
       vercel,
       projectId: projectId,
       key: "SIMPLCMS_HOST_PROVIDER",
@@ -113,8 +108,8 @@ export async function connectProject(
 
 export async function getTeams(apiKey: string): Promise<GetTeamsResponseBody> {
   try {
-    const vercel = connect(apiKey);
-    const teams = getUserTeams(vercel);
+    const vercel = simplcms.providers.vercel.connect(apiKey);
+    const teams = simplcms.providers.vercel.getUserTeams(vercel);
     return teams;
   } catch (error) {
     console.error(error);
@@ -128,8 +123,12 @@ export async function getLatestDeploymentAction(
   teamId: string
 ): Promise<Deployments | null> {
   try {
-    const vercel = connect(vercelToken);
-    const deployment = await getLatestDeployment({ vercel, projectId, teamId });
+    const vercel = simplcms.providers.vercel.connect(vercelToken);
+    const deployment = await simplcms.providers.vercel.getLatestDeployment({
+      vercel,
+      projectId,
+      teamId,
+    });
     return deployment;
   } catch (error) {
     console.error(error);
@@ -160,8 +159,8 @@ export async function triggerRedeployAction(
         throw new Error("Team id is not configured");
       teamId = platformConfiguration.host?.vercel?.teamId;
     }
-    const vercel = connect(vercelToken);
-    const deployment = await triggerRedeploy({
+    const vercel = simplcms.providers.vercel.connect(vercelToken);
+    const deployment = await simplcms.providers.vercel.triggerRedeploy({
       vercel,
       projectId,
       teamId,
@@ -191,8 +190,8 @@ export async function getDeploymentAction(
         throw new Error("Team id is not configured");
       teamId = platformConfiguration.host?.vercel?.teamId;
     }
-    const vercel = connect(vercelToken);
-    const deployment = await getDeploymentById({
+    const vercel = simplcms.providers.vercel.connect(vercelToken);
+    const deployment = await simplcms.providers.vercel.getDeploymentById({
       vercel,
       deploymentId,
       teamId,

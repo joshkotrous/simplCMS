@@ -1,14 +1,14 @@
 "use client";
-import { Button } from "@/app/client/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/app/client/components/ui/card";
-import { AWSS3Logo } from "@/app/client/components/logos";
-import { Input } from "@/app/client/components/ui/input";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { AWSS3Logo } from "./logos";
+import { Input } from "./ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { connectMediaStorageToApplication } from "@/core/serverActions/simplcms/setup";
+import { connectMediaStorageToApplication } from "../../../core/serverActions/simplcms/setup";
 import { useRouter } from "next/navigation";
-import { SimplCMSPlatformConfiguration } from "@/types";
-import { testS3ConnectionAction } from "@/core/serverActions/providers/s3";
+import { SimplCMSPlatformConfiguration } from "../../../../types/types";
+import { testS3ConnectionAction } from "../../../core/serverActions/providers/s3";
 import { useSetupData } from "./setupContextProvider";
 
 type S3ProviderConfig = {
