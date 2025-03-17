@@ -1,5 +1,5 @@
 "use server";
-import { User } from "../../../../../../types/types";
+import { User } from "../../../../../types/types";
 import Users from "../../../../client/components/users";
 import { simplcms } from "../../../../../core";
 

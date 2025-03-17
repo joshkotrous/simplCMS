@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { signOut } from "next-auth/react";
-import { User } from "../../../../types/types";
+import { User } from "../../../types/types";
 export default function UserMenu({ user }: { user: User }) {
   return (
     <DropdownMenu>

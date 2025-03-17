@@ -17,7 +17,7 @@
   ],
   "exports": {
     ".": "./src/index.ts",
-    "./types": "./types/types.ts"
+    "./types": "./src/types/types.ts"
   },
   "bin": {
     "simplcms": "./scripts/cli.js"
@@ -28,7 +28,8 @@
     "build:ts": "tsup src/index.ts --format esm,cjs --dts",
     "build": "tsup && npm run build:css",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "document": "npx typedoc --plugin typedoc-plugin-markdown --out gen-docs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",
@@ -46,6 +47,7 @@
     "@radix-ui/react-tabs": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.1.7",
+    "@vercel/sdk": "^1.2.2",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.5.1",
@@ -61,8 +63,7 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.24.1",
-    "@vercel/sdk": "^1.2.2"
+    "zod": "^3.24.1"
   },
   "peerDependencies": {
     "mongodb": "^6.12.0",
@@ -84,6 +85,8 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "tsup": "^8.4.0",
+    "typedoc": "^0.28.0",
+    "typedoc-plugin-markdown": "^4.5.0",
     "typescript": "^5"
   }
 }

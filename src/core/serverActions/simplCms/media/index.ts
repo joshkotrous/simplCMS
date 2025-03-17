@@ -4,7 +4,7 @@ import { simplcms } from "../../../../core";
 import {
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,
-} from "../../../../../types/types";
+} from "../../../../types/types";
 export async function uploadMediaAction(
   files: File[]
 ): Promise<SimplCMSMedia[]> {

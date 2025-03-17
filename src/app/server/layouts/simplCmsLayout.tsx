@@ -5,7 +5,7 @@ import { SiteProvider } from "../../client/components/siteContextProvider";
 import AdminToolbar from "../../client/components/adminToolbar";
 import "../../globals.css";
 import { cookies } from "next/headers";
-import { User } from "../../../../types/types";
+import { User } from "../../../types/types";
 import Navigation from "../../client/components/navigation";
 
 export default async function RootLayout({

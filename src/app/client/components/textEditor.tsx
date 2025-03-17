@@ -33,7 +33,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import Link from "next/link";
-import { CreatePost, Post, SimplCMSMedia } from "../../../../types/types";
+import { CreatePost, Post, SimplCMSMedia } from "../../../types/types";
 import { createNewPost } from "../../../core/serverActions/simplcms/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

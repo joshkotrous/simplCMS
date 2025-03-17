@@ -1,7 +1,7 @@
 "use server";
 import { notFound } from "next/navigation";
 import PostDisplay from "../../../../client/components/postDisplay";
-import { SimplCMSMedia } from "../../../../../../types/types";
+import { SimplCMSMedia } from "../../../../../types/types";
 
 import { simplcms } from "../../../../../core";
 

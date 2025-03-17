@@ -1,5 +1,5 @@
 "use server";
-import { Post } from "../../../../types/types";
+import { Post } from "../../../types/types";
 import { simplcms } from "../../../core";
 import Link from "next/link";
 

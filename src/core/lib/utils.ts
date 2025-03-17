@@ -1,4 +1,4 @@
-import { Page } from "../../../types/types";
+import { Page } from "../../types/types";
 import crypto from "crypto";
 export function getEnvironment(): "dev" | "prod" {
   if (!process.env.NODE_ENV) throw new Error("NODE_ENV not configured");

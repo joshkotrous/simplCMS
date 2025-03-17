@@ -7,7 +7,7 @@ import {
 } from "../../../app/client/components/ui/sidebar";
 import AdminSidebar from "../../../app/client/components/adminSidebar";
 import ThemeToggle from "../../../app/client/components/themeToggle";
-import { User } from "../../../../types/types";
+import { User } from "../../../types/types";
 
 export default async function AdminLayout({
   children,

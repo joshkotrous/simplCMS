@@ -2,7 +2,7 @@ import {
   MediaStorageProvider,
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,
-} from "../../../types/types";
+} from "../../types/types";
 import { s3 } from "../providers/s3";
 import { simplcms } from "../../core";
 

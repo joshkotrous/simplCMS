@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
-import { Post, SimplCMSMedia } from "../../../../types/types";
+import { Post, SimplCMSMedia } from "../../../types/types";
 import { Pencil, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

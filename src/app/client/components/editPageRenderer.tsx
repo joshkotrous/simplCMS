@@ -5,7 +5,7 @@ import {
   Page,
   elementTypeSchema,
   elementSchema,
-} from "../../../../types/types";
+} from "../../../types/types";
 import { Button } from "./ui/button";
 import {
   AlertDialog,

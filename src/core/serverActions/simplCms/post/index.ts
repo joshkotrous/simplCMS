@@ -1,5 +1,5 @@
 "use server";
-import { CreatePost, Post } from "../../../../../types/types";
+import { CreatePost, Post } from "../../../../types/types";
 import { simplcms } from "../../../../core";
 export async function createNewPost(post: CreatePost): Promise<void> {
   try {

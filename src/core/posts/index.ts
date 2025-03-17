@@ -1,4 +1,4 @@
-import { CreatePost, Post, postSchema } from "../../../types/types";
+import { CreatePost, Post, postSchema } from "../../types/types";
 import { simplcms } from "../../core";
 
 function createSlug(title: string): string {
