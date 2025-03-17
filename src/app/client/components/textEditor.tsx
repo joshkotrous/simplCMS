@@ -49,6 +49,7 @@ import {
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 import * as postActions from "../../../core/serverActions/simplcms/post";
 import useRedeployToast from "./redeploymentToast";
+import { Checkbox } from "./ui/checkbox";
 
 // Language options for code blocks
 const LANGUAGE_OPTIONS = [
@@ -100,7 +101,7 @@ export function MarkdownEditor({
   );
   const [hasOgImage, setHasOgImage] = useState(false);
   const { triggerRedeploy } = useRedeployToast();
-
+  const [optimizeSEO, setOptimizeSEO] = useState(false);
   function insertMarkdown(start: string, end: string = "") {
     const textarea = document.querySelector("textarea");
     if (textarea) {
@@ -207,14 +208,14 @@ export function MarkdownEditor({
           {
             loading: "Updating post...",
             success: () => {
-              if (latestDeployment && !draft) {
+              if (latestDeployment && !draft && optimizeSEO) {
                 triggerRedeploy(latestDeployment);
               }
               router.refresh();
               router.push("/admin/posts");
               return draft
-                ? "Successfully saved post as draft."
-                : "Successfully published post.";
+                ? "Successfully saved post as draft"
+                : "Successfully updated post";
             },
             error: () => {
               return "Error updating post.";
@@ -235,7 +236,7 @@ export function MarkdownEditor({
         await toast.promise(createNewPost(data), {
           loading: "Creating post...",
           success: () => {
-            if (latestDeployment && !draft) {
+            if (latestDeployment && !draft && optimizeSEO) {
               triggerRedeploy(latestDeployment);
             }
             router.refresh();
@@ -397,6 +398,13 @@ export function MarkdownEditor({
             <p className="text-xs text-muted-foreground mt-1">
               This image will be used when sharing the post on social media.
             </p>
+            <div className="flex gap-2 items-center text-xs">
+              <Checkbox
+                checked={optimizeSEO}
+                onCheckedChange={() => setOptimizeSEO(!optimizeSEO)}
+              />
+              Optimize SEO via static page generation
+            </div>
           </div>
         </CollapsibleContent>
       </Collapsible>

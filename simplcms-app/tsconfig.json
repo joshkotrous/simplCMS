@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "simplcms": ["./node_modules/simplcms/src/index.ts"],
     },
 
   },

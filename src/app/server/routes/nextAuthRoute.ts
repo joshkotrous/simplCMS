@@ -4,7 +4,8 @@ import { JWT } from "next-auth/jwt";
 import { simplcms } from "../../../core";
 
 async function validateSession(session: Session, token: JWT): Promise<Session> {
-  const email = session.user.email;
+  if (!session?.user) throw new Error("Session is missing user object");
+  const email = session.user?.email;
   if (!email) {
     throw new Error("Email was not provided via OAuth.");
   }
@@ -16,10 +17,15 @@ async function validateSession(session: Session, token: JWT): Promise<Session> {
   if (!hasAccess) {
     throw new Error("User does not have access");
   }
-  session.accessToken = token.accessToken;
+
+  if (!(session as any).accessToken)
+    throw new Error("Session is missing access token");
+
+  (session as Session & { accessToken?: string }).accessToken =
+    token.accessToken as string;
+
   return session;
 }
-
 async function updateUserInformation({
   session,
   token,
@@ -28,39 +34,38 @@ async function updateUserInformation({
   token?: JWT;
 }): Promise<void> {
   try {
-    const email = session
-      ? session.user.email
-      : token
-      ? token.email
-      : (() => {
-          throw new Error("No email found in session or token");
-        })();
-    const name = session
-      ? session.user.name
-      : token
-      ? token.name
-      : (() => {
-          throw new Error("No name found in session or token");
-        })();
-    const image = session
-      ? session.user.image
-      : token
-      ? token.picture
-      : undefined;
-    if (!email) {
-      throw new Error("Email was not provided via OAuth.");
+    let email: string;
+    if (session?.user?.email) {
+      email = session.user.email;
+    } else if (token?.email) {
+      email = token.email;
+    } else {
+      throw new Error("No email found in session or token");
     }
+
+    let name: string;
+    if (session?.user?.name) {
+      name = session.user.name;
+    } else if (token?.name) {
+      name = token.name;
+    } else {
+      throw new Error("No name found in session or token");
+    }
+
+    const image = session?.user?.image ?? token?.picture;
+
     const user = await simplcms.users.getUserByEmail(email);
     if (!user) {
       throw new Error("User could not be found.");
     }
+
     await simplcms.users.updateUser({
       _id: user._id,
-      name: name ?? undefined,
+      name: name,
       imageUrl: image ?? undefined,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Failed to update user information:", error);
   }
 }
 

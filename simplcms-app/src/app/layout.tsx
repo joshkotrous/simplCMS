@@ -36,17 +36,6 @@ export default async function RootLayout({
             <Navigation />
           </div>
           {children}
-          <Toaster
-            toastOptions={{
-              unstyled: true,
-              classNames: {
-                toast:
-                  "bg-background border p-4 dark:border-dark text-foreground rounded-md flex gap-2 items-center text-sm w-[23rem]",
-                title: "text-foreground font-normal",
-                description: "text-foreground font-normal",
-              },
-            }}
-          />
         </SiteProvider>
       </body>
     </html>

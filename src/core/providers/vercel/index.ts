@@ -3,13 +3,11 @@ import { Vercel } from "@vercel/sdk";
 import { GetProjectsResponseBody } from "@vercel/sdk/models/getprojectsop.js";
 import { dev } from "../../dev";
 import { GetTeamsResponseBody } from "@vercel/sdk/models/getteamsop.js";
-import {
-  CreateDeploymentResponseBody,
-  Target,
-} from "@vercel/sdk/models/createdeploymentop.js";
+
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
 import { GetProjectEnvResponseBody } from "@vercel/sdk/models/getprojectenvop.js";
 import { FilterProjectEnvsResponseBody } from "@vercel/sdk/models/filterprojectenvsop.js";
+import { CreateDeploymentResponseBody } from "@vercel/sdk/models/createdeploymentop.js";
 
 export function connect(apiKey: string): Vercel {
   try {
@@ -113,7 +111,7 @@ export async function triggerDeployment({
   projectId: string;
   teamId: string;
   name?: string;
-  target?: "production" | "preview" | "staging";
+  target?: "production" | "staging";
 }): Promise<CreateDeploymentResponseBody> {
   try {
     const deployment = await vercel.deployments.createDeployment({
@@ -121,7 +119,7 @@ export async function triggerDeployment({
       requestBody: {
         name,
         project: projectId,
-        target: target as Target,
+        target: target as "production" | "staging",
         withLatestCommit: true,
       },
     });
@@ -153,7 +151,7 @@ export async function triggerRedeploy({
       requestBody: {
         name,
         project: projectId,
-        target: target as Target,
+        target: target as "production" | "staging",
         deploymentId,
         withLatestCommit: !deploymentId,
       },
