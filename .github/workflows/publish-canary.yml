@@ -34,6 +34,6 @@ jobs:
         run: |
           npm version prerelease --preid=canary -m "chore: release %s [skip ci]"
           npm publish --tag canary
-          git push origin HEAD --follow-tags
+          git push https://${{ secrets.GH_TOKEN }}@github.com/joshkotrous/simplCMS.git HEAD --follow-tags
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
