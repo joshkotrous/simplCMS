@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+---
+
+# Add to an Existing Project
+
+SimplCMS can easily be integrated into your existing Next.js application.
+
+## Integration Steps
+
+Run the following command in your existing project's directory:
+
+```bash
+npx simplcms@latest init
+```
+
+This command performs the following:
+
+- Installs SimplCMS and its required dependencies.
+- Sets up the necessary admin routes and includes the `SimplCMSRouter` component and route.
+- Configures NextAuth.js integration by including the `SimplCMSAuth` component and route.
+
+## Configure Environment Variables
+
+After initialization, configure your environment variables using one of the following options:
+
+### 1. Manual Setup
+
+Manually create a `.env` file at your project's root and populate it based on the [prerequisites guide](./prerequisites).
+
+### 2. Configuration Wizard
+
+Use the built-in SimplCMS setup wizard by visiting:
+
+```
+http://localhost:3000/admin/setup
+```
+
+The wizard will assist you interactively in configuring the necessary environment variables.
+
+## Running Your Project
+
+Once setup is complete, launch your development server with:
+
+```bash
+npm run dev
+```
+
+Your integrated SimplCMS admin panel will be available at:
+
+```
+http://localhost:3000/admin
+```
+

@@ -1,0 +1,104 @@
+---
+sidebar_position: 1
+---
+
+# Prerequisites
+
+Before using SimplCMS, ensure that your environment meets the following requirements and dependencies.
+
+## Compatibility
+
+| Package   | Supported Versions                 |
+|-----------|------------------------------------|
+| React     | `>=17.0.0 <19.0.0`                 |
+| React DOM | `>=17.0.0 <19.0.0`                 |
+| Next.js   | `^13.0.0`, `^14.0.0`, or `^15.0.0` |
+| Mongoose  | `^8.9.5`                           |
+
+## Environment Variables
+
+SimplCMS requires or optionally accepts the following environment variables:
+
+| Variable                           | Description                            | Required | Example Value                                                  |
+|------------------------------------|----------------------------------------|----------|----------------------------------------------------------------|
+| `VERCEL_TOKEN`                     | Vercel deployment token                | Yes      | `...`                                                          |
+| `VERCEL_TEAM_ID`                   | Your Vercel team ID                    | Yes      | `team_...`                                                     |
+| `VERCEL_PROJECT_ID`                | Your Vercel project ID                 | Yes      | `prj_...`                                                      |
+| `SIMPLCMS_HOST_PROVIDER`           | Hosting provider                       | Yes      | `Vercel`                                                       |
+| `NEXT_PUBLIC_SITE_URL`             | Public URL of your site                | Yes      | `https://your-domain.com (http://localhost:3000 for dev)`      |
+| `SIMPLCMS_DB_PROVIDER`             | Database provider                      | Yes      | `MongoDB`                                                      |
+| `SIMPLCMS_MEDIA_STORAGE_PROVIDERS` | Media storage service                  | Yes      | `Cloudinary`                                                   |
+| `SIMPLCMS_OAUTH_PROVIDERS`         | OAuth providers                        | Yes      | `Google`                                                       |
+| `NEXTAUTH_SECRET`                  | NextAuth.js secret                     | Yes      | `d62fd6e645dc22...`                                            |
+| `NEXTAUTH_URL`                     | URL for NextAuth.js                    | Yes      | `https://your-domain.com (http://localhost:3000 for dev)`      |
+| `MONGO_URI`                        | MongoDB connection string              | No       | `mongodb+srv://...`                                            |
+| `CLOUDINARY_URL`                   | Cloudinary connection URL              | No       | `cloudinary://...`                                             |
+| `GOOGLE_OAUTH_CLIENT_SECRET`       | Google OAuth Client Secret             | No       | `...`                                                          |
+| `GOOGLE_OAUTH_CLIENT_ID`           | Google OAuth Client ID                 | No       | `...`                                                          |
+
+## Database Setup (MongoDB)
+
+SimplCMS requires MongoDB.
+
+1. Create a free MongoDB Atlas account at [mongodb.com/cloud/atlas](https://mongodb.com/cloud/atlas).
+2. Create a new cluster and database user.
+3. Obtain your MongoDB connection string (`MONGO_URI`).
+
+The CMS will automatically create a collection named `simplCms`.
+
+## Media Storage (Optional)
+
+SimplCMS supports media storage via Cloudinary or AWS S3.
+
+### Cloudinary Setup
+- Sign up at [Cloudinary](https://cloudinary.com/users/register_free).
+- Obtain your `CLOUDINARY_URL` from the Cloudinary dashboard.
+
+### AWS S3 Setup
+
+Create an AWS S3 bucket with public access for media storage:
+
+- Create a new bucket in AWS S3.
+- Configure public access settings:
+
+Bucket Policy:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowPublicRead",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": ["s3:GetObject"],
+      "Resource": ["arn:aws:s3:::your-bucket-name/*"]
+    }
+  ]
+}
+```
+Replace `your-bucket-name` with your actual bucket name.
+
+- Create an IAM user with S3 permissions.
+- Generate access keys for use in your environment.
+
+## OAuth Provider Setup
+
+SimplCMS supports OAuth authentication. Initially, you need to set up Google OAuth.
+
+### Google OAuth
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2. Create a new project.
+3. Navigate to **APIs & Services** → **Credentials**.
+4. Create new credentials → **OAuth Client ID**.
+5. Configure your authorized redirect URI (`NEXTAUTH_URL/api/auth/callback/google`).
+6. Save the generated Client ID and Client Secret into your environment variables.
+
+### Microsoft and GitHub OAuth
+
+Support for Microsoft and GitHub OAuth will be added soon.
+
+---
+
+After completing these prerequisites, you can proceed to [Installation and Setup](./installation).
+

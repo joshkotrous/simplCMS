@@ -1,0 +1,46 @@
+---
+sidebar_position: 6
+---
+
+# Markdown Features
+
+SimplCMS offers robust Markdown support, enabling you to effortlessly format your content directly within the text editor.
+
+## Formatting and Media Upload
+
+Within SimplCMS, you can easily:
+
+- Format text using standard Markdown syntax:
+  - Bold, italics, strikethrough
+  - Headings
+  - Lists (ordered and unordered)
+  - Links and images
+- Upload media directly within the editor for seamless embedding.
+
+## Code Blocks with Syntax Highlighting
+
+Enhance your technical content using fenced code blocks that support syntax highlighting. Simply wrap your code snippet as shown below:
+````markdown
+```jsx
+function HelloWorld() {
+  return <div>Hello, SimplCMS!</div>;
+}
+```
+````
+
+Syntax highlighting works automatically for popular programming languages.
+
+## Markdown Renderer
+
+SimplCMS provides a customizable `MarkdownRenderer` component that you can easily use within your application:
+
+```jsx
+import { MarkdownRenderer } from 'simplcms';
+
+export default function BlogContent({ markdown }) {
+  return <MarkdownRenderer content={markdown} />;
+}
+```
+
+If preferred, you can use your own Markdown renderer for further customization and flexibility.
+
