@@ -1,6 +1,6 @@
 {
   "name": "simplcms",
-  "version": "0.1.21",
+  "version": "0.1.23",
   "private": false,
   "sideEffects": [
     "./src/app/globals.css"
