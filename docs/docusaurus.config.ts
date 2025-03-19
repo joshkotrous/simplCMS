@@ -98,6 +98,10 @@ const config: Config = {
               label: "Deployment",
               to: "/docs/category/deploy-your-site",
             },
+            {
+              label: "API",
+              to: "/docs/category/api",
+            },
           ],
         },
         {

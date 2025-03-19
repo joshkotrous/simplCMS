@@ -43,6 +43,12 @@ const DocsList: DocCardItem[] = [
     to: "/docs/category/deploy-your-site",
     icon: "🚀",
   },
+  {
+    title: "API",
+    description: "Explore the SimplCMS API and provided components",
+    to: "/docs/category/api",
+    icon: "🌐",
+  },
 ];
 
 function DocCard({ title, description, to, icon }: DocCardItem) {
