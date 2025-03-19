@@ -1,4 +1,6 @@
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjoshkotrous%2FsimplCMS%2Ftree%2Fmain&project-name=simplcms&repository-name=simplcms-starter)
+![npm (latest)](https://img.shields.io/npm/v/simplcms/latest?label=latest&color=green)
+![npm (canary)](https://img.shields.io/npm/v/simplcms/canary?label=canary&color=orange)
 
 # SimplCMS
 
