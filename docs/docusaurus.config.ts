@@ -79,8 +79,24 @@ const config: Config = {
           title: "Docs",
           items: [
             {
-              label: "Getting Started",
+              label: "Introduction",
               to: "/intro",
+            },
+            {
+              label: "Getting Started",
+              to: "/docs/category/getting-started",
+            },
+            {
+              label: "Configuration",
+              to: "/docs/category/configuration",
+            },
+            {
+              label: "Features",
+              to: "/docs/category/using-simplcms",
+            },
+            {
+              label: "Deployment",
+              to: "/docs/category/deploy-your-site",
             },
           ],
         },
