@@ -1,0 +1,50 @@
+name: Publish Latest Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-latest:
+    name: Publish Latest Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Increment Version and Publish Latest
+        id: version
+        run: |
+          VERSION=$(npm version patch -m "chore: release %s [skip ci]")
+          npm publish
+          git push git@github.com:joshkotrous/simplCMS.git HEAD --follow-tags
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          prerelease: false
+          generate_release_notes: true
