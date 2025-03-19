@@ -29,7 +29,7 @@
     "build": "tsup && npm run build:css",
     "start": "next start",
     "lint": "next lint",
-    "document": "npx typedoc --plugin typedoc-plugin-markdown --out gen-docs"
+    "document": "npx typedoc --plugin typedoc-plugin-markdown --out ./docs/docs/api --cleanOutputDir false"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.758.0",

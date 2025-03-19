@@ -1,6 +1,7 @@
 {
     "entryPoints": ["./src/index.ts"], 
-    "exclude": ["docs/**"],
-    "tsconfig": "tsconfig.json"
+    "exclude": ["docs/**", "README.md"],
+    "tsconfig": "tsconfig.json",
+    "readme": "none"
   }
   
