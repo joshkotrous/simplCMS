@@ -27,7 +27,10 @@
     "build:css": "npx tailwindcss -i ./src/app/index.css -o ./src/app/globals.css",
     "build:ts": "tsup src/index.ts --format esm,cjs --dts",
     "build": "tsup && npm run build:css",
-    "start": "next start",
+    "publish:patch": "npm version patch && npm publish && git push --follow-tags",
+    "publish:minor": "npm version minor && npm publish && git push --follow-tags",
+    "publish:major": "npm version major && npm publish && git push --follow-tags",
+    "publish:canary": "npm version prerelease --preid=canary && npm publish --tag canary && git push --follow-tags",    "start": "next start",
     "lint": "next lint",
     "document": "npx typedoc --plugin typedoc-plugin-markdown --out ./docs/docs/api --cleanOutputDir false"
   },
