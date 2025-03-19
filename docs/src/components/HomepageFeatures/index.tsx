@@ -39,7 +39,7 @@ const DocsList: DocCardItem[] = [
   },
   {
     title: "Deployment",
-    description: "Deploy your Docusaurus site to production environments",
+    description: "Deploy SimplCMS to the environment of your choice",
     to: "/docs/category/deploy-your-site",
     icon: "🚀",
   },
