@@ -1,29 +1,12 @@
-.features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.featureSvg {
-  height: 200px;
-  width: 200px;
-}
-
+/* Documentation cards section styling */
 .docsSummary {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
+  padding: 3rem 0;
   width: 100%;
 }
 
 .docCardWrapper {
   margin-bottom: 2rem;
+  padding: 0 1rem; /* Add horizontal padding */
 }
 
 .docCard {
@@ -45,7 +28,8 @@
 
 .cardIcon {
   font-size: 1.5rem;
-  margin-right: 0.5rem;
+  margin-right: 0.75rem;
+  display: inline-flex;
 }
 
 .cardHeader {
@@ -61,4 +45,9 @@
 
 .cardContent {
   flex: 1;
+}
+
+/* Add a custom row class with gutters */
+.rowWithGutters {
+  margin: 0 -1rem; /* Negative margin to counteract the padding on cards */
 }

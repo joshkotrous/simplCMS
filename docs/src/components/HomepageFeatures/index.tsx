@@ -30,7 +30,6 @@ const DocsList: DocCardItem[] = [
     to: "/docs/migration",
     icon: "🔄",
   },
-
   {
     title: "Configuration",
     description: "Customize your site with configuration options and themes",
@@ -77,7 +76,7 @@ export default function HomepageDocsSummary(): ReactNode {
           <Heading as="h2">Documentation</Heading>
           <p>Learn more about getting started and using SimplCMS</p>
         </div>
-        <div className={styles.grid}>
+        <div className={clsx("row", styles.rowWithGutters)}>
           {DocsList.map((props, idx) => (
             <DocCard key={idx} {...props} />
           ))}

@@ -38,7 +38,6 @@ const config: Config = {
         docs: {
           sidebarPath: "./sidebars.ts",
           // Please change this to your repo.
-
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/joshkotrous/simplcms/tree/main/docs/",
         },
@@ -57,57 +56,23 @@ const config: Config = {
       title: "SimplCMS | Docs",
       items: [
         {
-          to: "/",
-          label: "Home",
-          position: "left",
-        },
-        {
           to: "/intro",
+
           label: "Intro",
-          position: "left",
         },
         {
           to: "/providers",
+
           label: "Providers",
-          position: "left",
         },
         {
           type: "docSidebar",
-          sidebarId: "gettingStarted",
-          position: "left",
-          label: "Getting Started",
-        },
-        {
-          type: "docSidebar",
-          sidebarId: "migrationGuide",
-          position: "left",
-          label: "Migration Guide",
-        },
-        {
-          type: "docSidebar",
-          sidebarId: "configuration",
-          position: "left",
-          label: "Configuration",
-        },
-        {
-          type: "docSidebar",
-          sidebarId: "markdownFeatures",
-          position: "left",
-          label: "Markdown Features",
-        },
-        {
-          type: "docSidebar",
-          sidebarId: "deployment",
-          position: "left",
-          label: "Deployment",
-        },
-        {
-          href: "https://github.com/joshkotrous/simplcms",
-          label: "GitHub",
-          position: "right",
+          sidebarId: "docs",
+          label: "Docs",
         },
       ],
     },
+
     footer: {
       links: [
         {
@@ -130,6 +95,13 @@ const config: Config = {
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} SimplCMS`,
+    },
+
+    docs: {
+      sidebar: {
+        hideable: false,
+        autoCollapseCategories: true,
+      },
     },
     prism: {
       theme: prismThemes.github,

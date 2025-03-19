@@ -1,4 +1,6 @@
 ---
+title: Introduction
+sidebar_label: Intro
 sidebar_position: 1
 ---
 
@@ -34,7 +36,7 @@ export default {
       items: [
         // highlight-start
         {
-          type: 'docsVersionDropdown',
+          type: "docsVersionDropdown",
         },
         // highlight-end
       ],
