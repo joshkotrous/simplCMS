@@ -21,31 +21,26 @@ const DocsList: DocCardItem[] = [
   {
     title: "Getting Started",
     description: "Learn the basics and set up your Docusaurus site in minutes",
-    to: "/docs/getting-started",
+    to: "/docs/category/getting-started",
     icon: "📝",
   },
   {
-    title: "Migration Guide",
-    description: "Migrate from older versions or other documentation platforms",
-    to: "/docs/migration",
-    icon: "🔄",
-  },
-  {
     title: "Configuration",
-    description: "Customize your site with configuration options and themes",
-    to: "/docs/configuration",
+    description: "Customize your site with configuration options",
+    to: "/docs/category/configuration",
     icon: "⚙️",
   },
+
   {
-    title: "Markdown Features",
-    description: "Discover all the powerful markdown features and extensions",
-    to: "/docs/markdown-features",
+    title: "Features",
+    description: "Discover all the powerful features of SimplCMS",
+    to: "/docs/category/using-simplcms",
     icon: "✨",
   },
   {
     title: "Deployment",
     description: "Deploy your Docusaurus site to production environments",
-    to: "/docs/deployment",
+    to: "/docs/category/deploy-your-site",
     icon: "🚀",
   },
 ];
