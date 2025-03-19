@@ -20,7 +20,7 @@ export default function AdminToolbar({ user }: { user: User | null }) {
   }
 
   return (
-    <div className="p-2 text-sm bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-400 text-foreground flex justify-between items-center">
+    <div className="p-2 text-sm bg-zinc-100 dark:bg-zinc-900 dark:text-zinc-400 text-simplcms-foreground flex justify-between items-center">
       <span>Admin Mode</span>
 
       <div className="space-x-2 flex items-center">

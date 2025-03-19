@@ -223,7 +223,9 @@ export function MediaGrid({ media }: { media: SimplCMSMedia[] }) {
             {/* Image info overlay on hover */}
             <div className="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <div className="absolute bottom-0 left-0 right-0 p-3">
-                <p className="text-xs text-foreground truncate">{item.name}</p>
+                <p className="text-xs text-simplcms-foreground truncate">
+                  {item.name}
+                </p>
               </div>
             </div>
             {/* Selection overlay */}
@@ -331,7 +333,7 @@ export function MediaGrid({ media }: { media: SimplCMSMedia[] }) {
               Enter a new name for this media file.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="grid gap-4 py-4 text-foreground">
+          <div className="grid gap-4 py-4 text-simplcms-foreground">
             {editMedia && (
               <div className="flex items-center gap-4">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md">

@@ -5,7 +5,7 @@ import { MarkdownRenderer, simplcms } from "simplcms";
 export async function generateStaticParams() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   if (platformConfiguration.database) {
-    const allPosts = await simplcms.posts.getAllPosts();
+    const allPosts = await simplcms.posts.getPublishedPosts();
     return allPosts.map((post) => ({
       slug: post.slug.replace(/\.md$/, ""),
     }));
@@ -87,18 +87,21 @@ export default async function BlogPost({
   }
 
   return (
-    <div className="size-full flex min-h-screen justify-center pb-20 bg-background text-foreground pt-20 overflow-auto">
+    <div className="size-full flex min-h-screen justify-center pb-20 bg-simplcms-background text-simplcms-foreground pt-20 overflow-auto">
       <div
         id="blog"
         className="flex flex-col items-start max-w-5xl w-full p-4 gap-4"
       >
         <div className="text-zinc-500">
-          <Link className="hover:underline text-foreground" href="/blog">
+          <Link
+            className="hover:underline text-simplcms-foreground"
+            href="/blog"
+          >
             Blog
           </Link>
           <span className="cursor-default"> / </span>
           <Link
-            className="hover:underline text-foreground"
+            className="hover:underline text-simplcms-foreground"
             href={`/blog/${slug}`}
           >
             {post.title}

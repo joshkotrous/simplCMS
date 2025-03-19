@@ -61,7 +61,7 @@ export default function MediaPopover({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="h-64 overflow-scroll p-0">
-        <div className="sticky top-0 p-1 px-2 text-sm flex justify-end z-50 bg-background">
+        <div className="sticky top-0 p-1 px-2 text-sm flex justify-end z-50 bg-simplcms-background">
           <Link
             href="/admin/media"
             className="flex gap-1 items-center hover:text-zinc-400 transition-all cursor-pointer"
@@ -86,7 +86,7 @@ export default function MediaPopover({
             </button>
           ))}
         </div>
-        <div className="sticky bottom-0 w-full bg-background p-2">
+        <div className="sticky bottom-0 w-full bg-simplcms-background p-2">
           {!isUploading && (
             <Input
               className="text-xs cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"

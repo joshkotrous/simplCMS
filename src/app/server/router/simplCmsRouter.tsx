@@ -29,22 +29,24 @@ export interface SimplCMSRouterProps {
 export default async function SimplCMSRouter({ params }: SimplCMSRouterProps) {
   // Auth checks
   const session = await getServerSession();
+  const user = session?.user?.email
+    ? await simplcms.users.getUserByEmail(session.user.email)
+    : null;
 
-  // Special case for login page to prevent redirect loop
   if (params.slug?.[0] === "login") {
     return (
-      <LoginLayout>
-        <LoginForm />
-      </LoginLayout>
+      <SimplCMSLayout>
+        <LoginLayout user={user}>
+          <LoginForm />
+        </LoginLayout>
+      </SimplCMSLayout>
     );
   }
 
-  // Redirect to login if no session
   if (!session?.user?.email) {
     redirect("/admin/login");
   }
 
-  const user = await simplcms.users.getUserByEmail(session.user.email);
   if (!user) {
     redirect("/admin/login");
   }

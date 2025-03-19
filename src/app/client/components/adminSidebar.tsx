@@ -32,7 +32,7 @@ export default function AdminSidebar({ user }: { user: User }) {
       collapsible="icon"
       className="border-zinc-200 dark:border-zinc-700"
     >
-      <SidebarContent className="bg-background list-none  bg-[linear-gradient(215deg,rgba(0,0,0,0.1)_0%,transparent_40%)] dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)] justify-between ">
+      <SidebarContent className="bg-simplcms-background list-none  bg-[linear-gradient(215deg,rgba(0,0,0,0.1)_0%,transparent_40%)] dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)] justify-between ">
         <div>
           {open && (
             <SidebarHeader>

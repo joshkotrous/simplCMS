@@ -175,7 +175,7 @@ export default function MediaAlertDialog({
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="text-sm text-foreground"
+                  className="text-sm text-simplcms-foreground"
                 >
                   Add more files
                 </Button>
@@ -191,7 +191,7 @@ export default function MediaAlertDialog({
                 variant="outline"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={isUploading}
-                className="mt-2 text-foreground"
+                className="mt-2 text-simplcms-foreground"
               >
                 Choose Files
               </Button>

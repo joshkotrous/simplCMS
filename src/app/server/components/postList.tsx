@@ -7,8 +7,7 @@ export default async function PostList() {
   const platformConfiguration = simplcms.platform.getPlatformConfiguration();
   let publishedPosts: Post[] = [];
   if (platformConfiguration.database) {
-    const allPosts = await simplcms.posts.getAllPosts();
-    publishedPosts = allPosts.filter((post) => !post.draft);
+    publishedPosts = await simplcms.posts.getPublishedPosts();
   }
   return (
     <div>

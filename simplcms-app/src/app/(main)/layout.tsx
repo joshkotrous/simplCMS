@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Toaster } from "sonner";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { getServerSession } from "next-auth";
@@ -29,7 +28,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
-      <body className="h-screen w-screen overflow-hidden bg-background">
+      <body className="h-screen w-screen overflow-hidden">
         <SiteProvider initialSettings={{ darkMode }}>
           <div className="z-50 fixed w-screen top-0">
             <AdminToolbar user={user} />

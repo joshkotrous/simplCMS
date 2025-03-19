@@ -484,7 +484,10 @@ export default function SetupVercelForm({
             )}
           </Button>
           <Link href="/setup/host">
-            <Button variant="secondary" className="w-full text-foreground">
+            <Button
+              variant="secondary"
+              className="w-full text-simplcms-foreground"
+            >
               Back
             </Button>
           </Link>
