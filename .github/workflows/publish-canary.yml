@@ -9,6 +9,9 @@ jobs:
   publish-canary:
     name: Publish Canary Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,9 +32,19 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Increment Version and Publish Canary
+        id: version
         run: |
-          npm version prerelease --preid=canary -m "chore: release %s [skip ci]"
+          VERSION=$(npm version prerelease --preid=canary -m "chore: release %s [skip ci]")
           npm publish --tag canary
           git push git@github.com:joshkotrous/simplCMS.git HEAD --follow-tags
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          prerelease: true
+          generate_release_notes: true
