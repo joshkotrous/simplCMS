@@ -1,6 +1,6 @@
 {
   "name": "simplcms",
-  "version": "0.1.28",
+  "version": "0.1.29-canary.0",
   "private": false,
   "sideEffects": [
     "./src/app/globals.css"
@@ -30,7 +30,8 @@
     "publish:patch": "npm version patch && npm publish && git push --follow-tags",
     "publish:minor": "npm version minor && npm publish && git push --follow-tags",
     "publish:major": "npm version major && npm publish && git push --follow-tags",
-    "publish:canary": "npm version prerelease --preid=canary && npm publish --tag canary && git push --follow-tags",    "start": "next start",
+    "publish:canary": "npm version prerelease --preid=canary && npm publish --tag canary && git push --follow-tags",
+    "start": "next start",
     "lint": "next lint",
     "document": "npx typedoc --plugin typedoc-plugin-markdown --out ./docs/docs/api --cleanOutputDir false"
   },
