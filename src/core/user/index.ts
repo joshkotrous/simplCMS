@@ -2,11 +2,12 @@ import { simplcms } from "../../core";
 import { User, userSchema } from "../../types/types";
 export async function createUser(
   userData: Partial<User>,
-  dbUri?: string
+  dbUri?: string | null
 ): Promise<void> {
   try {
     if (!dbUri) {
       dbUri = simplcms.db.getDatabaseUriEnvVariable();
+      if (!dbUri) return;
     }
     const db = await simplcms.db.connectToDatabase(dbUri);
 
@@ -20,10 +21,10 @@ export async function createUser(
   }
 }
 
-export async function getUser(user: Partial<User>): Promise<User> {
+export async function getUser(user: Partial<User>): Promise<User | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
 
     const { UserModel } = simplcms.db.getModels(db);
@@ -48,10 +49,11 @@ export async function getUser(user: Partial<User>): Promise<User> {
   }
 }
 
-export async function getAllUsers(dbUri?: string): Promise<User[]> {
+export async function getAllUsers(dbUri?: string | null): Promise<User[]> {
   try {
     if (!dbUri) {
       dbUri = simplcms.db.getDatabaseUriEnvVariable();
+      if (!dbUri) return [];
     }
     const db = await simplcms.db.connectToDatabase(dbUri);
     const { UserModel } = simplcms.db.getModels(db);
@@ -69,6 +71,7 @@ export async function getAllUsers(dbUri?: string): Promise<User[]> {
 export async function getUserByEmail(email: string): Promise<User | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
     const { UserModel } = simplcms.db.getModels(db);
     const user = await UserModel.findOne({ email }).select("-__v");
@@ -94,7 +97,7 @@ export async function userHasAccess(user: User): Promise<boolean> {
 export async function deleteUser(user: User): Promise<void> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return;
     const db = await simplcms.db.connectToDatabase(uri);
     const { UserModel } = simplcms.db.getModels(db);
     let query = {};
@@ -118,7 +121,7 @@ export async function deleteUser(user: User): Promise<void> {
 export async function updateUser(user: Partial<User>): Promise<void> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return;
     const db = await simplcms.db.connectToDatabase(uri);
     const { UserModel } = simplcms.db.getModels(db);
     let query = {};

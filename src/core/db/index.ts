@@ -64,8 +64,11 @@ export function getModels(connection: Connection) {
   };
 }
 
-export function getDatabaseUriEnvVariable(): string {
-  if (!process.env.MONGO_URI) throw new Error("MONGO_URI is not configured.");
+export function getDatabaseUriEnvVariable(): string | null {
+  if (!process.env.MONGO_URI) {
+    console.error("MONGO_URI is not configured");
+    return null;
+  }
   return process.env.MONGO_URI;
 }
 

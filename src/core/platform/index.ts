@@ -604,7 +604,7 @@ export function getPlatformConfiguration(): SimplCMSPlatformConfiguration {
 export async function getSiteConfig(): Promise<SiteConfig | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
     const { SiteConfigModel } = simplcms.db.getModels(db);
     const config = await SiteConfigModel.findOne().select("-__v");
@@ -623,7 +623,7 @@ export async function initSiteConfig(): Promise<void> {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
     if (!host || !database || !mediaStorage || !oauth)
       throw new Error("Setup is not completed");
-
+    if (!uri) return;
     const db = await simplcms.db.connectToDatabase(uri);
     const { SiteConfigModel } = simplcms.db.getModels(db);
 

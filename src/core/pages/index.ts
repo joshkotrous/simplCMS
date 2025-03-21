@@ -3,6 +3,7 @@ import { simplcms } from "../../core";
 export async function getAllPages(): Promise<Page[]> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return [];
     const db = await simplcms.db.connectToDatabase(uri);
     const { PageModel } = simplcms.db.getModels(db);
 
@@ -17,11 +18,12 @@ export async function getAllPages(): Promise<Page[]> {
 }
 export async function createPage(
   page: CreatePage,
-  uri?: string
-): Promise<Page> {
+  uri?: string | null
+): Promise<Page | null> {
   try {
     if (!uri) {
       uri = simplcms.db.getDatabaseUriEnvVariable();
+      if (!uri) return null;
     }
     const db = await simplcms.db.connectToDatabase(uri);
     const { PageModel } = simplcms.db.getModels(db);
@@ -37,6 +39,7 @@ export async function createPage(
 export async function getPageByRoute(route: string): Promise<Page | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
     const { PageModel } = simplcms.db.getModels(db);
 

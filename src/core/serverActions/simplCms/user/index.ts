@@ -14,7 +14,7 @@ export async function createUserAction(
   }
 }
 
-export async function getUserAction(user: Partial<User>): Promise<User> {
+export async function getUserAction(user: Partial<User>): Promise<User | null> {
   try {
     const _user = await simplcms.users.getUser(user);
     if (!user) throw new Error("User could not be found.");

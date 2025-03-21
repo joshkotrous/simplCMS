@@ -21,7 +21,7 @@ function createSlug(title: string): string {
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
 
@@ -48,6 +48,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 export async function createPost(post: CreatePost): Promise<void> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return;
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     const slug = createSlug(post.title);
@@ -72,7 +73,7 @@ export async function createPost(post: CreatePost): Promise<void> {
 export async function getAllPosts(): Promise<Post[]> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return [];
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     const posts = await PostModel.find({})
@@ -91,12 +92,12 @@ export async function getAllPosts(): Promise<Post[]> {
  *
  * @param post - A partial object containing at least one criterion for searching the post (e.g., `_id`, `title`, `author`, etc.).
  * @returns A promise resolving to the post matching the provided criteria.
- * @throws Throws an error if no criteria are provided or the post isn't found.
+ * @throws Throws an error if no criteria are provided.
  */
-export async function getPost(post: Partial<Post>): Promise<Post> {
+export async function getPost(post: Partial<Post>): Promise<Post | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     let query = {};
@@ -120,7 +121,7 @@ export async function getPost(post: Partial<Post>): Promise<Post> {
     const foundPost = await PostModel.findOne(query).select("-__v");
 
     if (!foundPost) {
-      throw new Error("Post not found");
+      return null;
     }
 
     return postSchema.parse(foundPost);
@@ -140,7 +141,7 @@ export async function getPost(post: Partial<Post>): Promise<Post> {
 export async function deletePost(post: Post): Promise<void> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return;
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     const result = await PostModel.deleteOne({ _id: post._id });
@@ -160,15 +161,15 @@ export async function deletePost(post: Post): Promise<void> {
  * @param postId - The unique identifier (`_id`) of the post to be updated.
  * @param updates - An object containing the fields and values to update.
  * @returns A promise resolving to the updated post object.
- * @throws Throws an error if the post does not exist or validation fails.
+ * @throws Throws an error if validation fails.
  */
 export async function updatePost(
   postId: string,
   updates: Partial<Post>
-): Promise<Post> {
+): Promise<Post | null> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
-
+    if (!uri) return null;
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     const updatedPost = await PostModel.findByIdAndUpdate(
@@ -182,7 +183,7 @@ export async function updatePost(
     );
 
     if (!updatedPost) {
-      throw new Error("Post not found");
+      return null;
     }
 
     return postSchema.parse(updatedPost);
@@ -201,6 +202,7 @@ export async function updatePost(
 export async function getPublishedPosts(): Promise<Post[]> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return [];
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     const posts = await PostModel.find({ draft: false })
@@ -222,6 +224,7 @@ export async function getPublishedPosts(): Promise<Post[]> {
 export async function getDrafts(): Promise<Post[]> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return [];
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
     const drafts = await PostModel.find({ draft: true })
@@ -249,6 +252,7 @@ export async function getDrafts(): Promise<Post[]> {
 export async function getCategories(): Promise<string[]> {
   try {
     const uri = simplcms.db.getDatabaseUriEnvVariable();
+    if (!uri) return [];
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
 
