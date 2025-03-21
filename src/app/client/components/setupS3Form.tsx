@@ -5,7 +5,7 @@ import { AWSS3Logo } from "./logos";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
-import { connectMediaStorageToApplication } from "../../../core/serverActions/simplcms/setup";
+import { connectMediaStorageToApplication } from "../../../core/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
 import { SimplCMSPlatformConfiguration } from "../../../types/types";
 import { testS3ConnectionAction } from "../../../core/serverActions/providers/s3";

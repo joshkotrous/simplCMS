@@ -1,6 +1,6 @@
 "use server";
 
-import { simplcms } from "../../../../core";
+import { simplcms } from "../../..";
 import {
   SimplCMSMedia,
   SimplCMSMediaStorageConfiguration,

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { SimplCMSPlatformConfiguration } from "../../../types/types";
 import { Label } from "./ui/label";
 import { useSetupData } from "./setupContextProvider";
-import { connectDbToApplication } from "../../../core/serverActions/simplcms/setup";
+import { connectDbToApplication } from "../../../core/serverActions/simplCms/setup";
 
 export default function SetupMongoForm({
   platformConfiguration,

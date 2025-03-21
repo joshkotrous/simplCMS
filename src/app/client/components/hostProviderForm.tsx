@@ -12,7 +12,7 @@ export default function HostProviderForm() {
       onClick={() =>
         setSetupData((prev) => ({ ...prev, host: { provider: "Vercel" } }))
       }
-      href="/admin/setup/vercel"
+      href="/admin/setup/host/vercel"
     >
       <Card className="size-full p-12 flex items-center justify-center cursor-pointer hover:scale-[99%]">
         <CardContent className="p-0 ">

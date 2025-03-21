@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 import { useState } from "react";
 import { toast } from "sonner";
 import { testCloudinaryConnectionAction } from "../../../core/serverActions/providers/cloudinary";
-import { connectMediaStorageToApplication } from "../../../core/serverActions/simplcms/setup";
+import { connectMediaStorageToApplication } from "../../../core/serverActions/simplCms/setup";
 import { useRouter } from "next/navigation";
 import { SimplCMSPlatformConfiguration } from "../../../types/types";
 import { useSetupData } from "./setupContextProvider";

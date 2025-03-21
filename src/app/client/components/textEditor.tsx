@@ -34,7 +34,7 @@ import {
 } from "./ui/dropdown-menu";
 import Link from "next/link";
 import { CreatePost, Post, SimplCMSMedia } from "../../../types/types";
-import { createNewPost } from "../../../core/serverActions/simplcms/post";
+import { createNewPost } from "../../../core/serverActions/simplCms/post";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import MediaPopover from "./mediaPopover";
@@ -47,7 +47,7 @@ import {
   CollapsibleTrigger,
 } from "./ui/collapsible";
 import { Deployments } from "@vercel/sdk/models/getdeploymentsop.js";
-import * as postActions from "../../../core/serverActions/simplcms/post";
+import * as postActions from "../../../core/serverActions/simplCms/post";
 import useRedeployToast from "./redeploymentToast";
 import { Checkbox } from "./ui/checkbox";
 

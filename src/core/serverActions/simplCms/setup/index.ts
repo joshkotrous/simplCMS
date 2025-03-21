@@ -5,7 +5,7 @@ import {
   createPageSchema,
   MediaStorageProvider,
 } from "../../../../types/types";
-import { simplcms } from "../../../../core";
+import { simplcms } from "../../..";
 
 export async function connectDbToApplication(
   vercelToken: string,

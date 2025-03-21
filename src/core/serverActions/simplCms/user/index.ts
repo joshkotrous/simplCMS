@@ -1,7 +1,7 @@
 "use server";
 
 import { User } from "../../../../types/types";
-import { simplcms } from "../../../../core";
+import { simplcms } from "../../..";
 
 export async function createUserAction(
   user: Partial<User>,

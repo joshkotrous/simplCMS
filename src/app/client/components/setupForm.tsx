@@ -23,7 +23,7 @@ import {
   SetupValidationComponent,
 } from "../../../core/platform";
 import { useSetupData } from "./setupContextProvider";
-import { validateSetupAction } from "../../../core/serverActions/simplcms";
+import { validateSetupAction } from "../../../core/serverActions/simplCms";
 
 const SETUP_DATA_KEY = "setupData";
 
