@@ -252,10 +252,8 @@ export async function getCategories(): Promise<string[]> {
     const db = await simplcms.db.connectToDatabase(uri);
     const { PostModel } = simplcms.db.getModels(db);
 
-    // Find all distinct category values from the posts collection
     const categories = await PostModel.distinct("category");
 
-    // Return the array of unique categories
     return categories;
   } catch (error) {
     console.error(`Could not get post categories: ${error}`);

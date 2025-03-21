@@ -1,7 +1,7 @@
 "use server";
 import React from "react";
 import "../../globals.css";
-import { User } from "@/types/types";
+import { User } from "../../../types/types";
 import { redirect } from "next/navigation";
 
 export default async function AdminLoginLayout({
