@@ -235,33 +235,51 @@ export async function getDrafts(): Promise<Post[]> {
 }
 
 /**
- * Collection of functions to manage blog posts within the CMS.
+ * Retrieves all unique categories used across posts in the database.
  *
- * Provides CRUD (Create, Read, Update, Delete) operations, and additional methods to manage
- * post states, such as retrieving published posts or drafts.
+ * @returns A promise resolving to an array of unique category strings.
+ * @throws Throws an error if the database operation fails.
  */
+/**
+ * Retrieves all unique categories used across posts in the database.
+ *
+ * @returns A promise resolving to an array of unique category strings.
+ * @throws Throws an error if the database operation fails.
+ */
+export async function getCategories(): Promise<string[]> {
+  try {
+    const uri = simplcms.db.getDatabaseUriEnvVariable();
+    const db = await simplcms.db.connectToDatabase(uri);
+    const { PostModel } = simplcms.db.getModels(db);
+
+    // Find all distinct category values from the posts collection
+    const categories = await PostModel.distinct("category");
+
+    // Return the array of unique categories
+    return categories;
+  } catch (error) {
+    console.error(`Could not get post categories: ${error}`);
+    throw error;
+  }
+}
+
 export const posts = {
   /** Updates an existing post by its ID with provided changes. */
   updatePost,
-
   /** Deletes a post by its ID. */
   deletePost,
-
   /** Retrieves a post matching provided criteria (e.g., ID, title, author). */
   getPost,
-
   /** Retrieves all existing posts sorted by most recent. */
   getAllPosts,
-
   /** Creates a new post with provided data. */
   createPost,
-
   /** Retrieves a post by its unique slug. */
   getPostBySlug,
-
   /** Retrieves all posts marked as published. */
   getPublishedPosts,
-
   /** Retrieves all posts marked as drafts. */
   getDrafts,
+  /** Retrieves all unique post categories. */
+  getCategories,
 };
