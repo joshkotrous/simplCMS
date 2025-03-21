@@ -10,6 +10,7 @@ import SetupS3Page from "../pages/setup/mediaStorage/setupS3Page";
 import SetupGoogleOauthPage from "../pages/setup/oauth/setupGoogleOauthPage";
 import SetupOauth from "../pages/setup/oauth/setupOauthPage";
 import SetupPage from "../pages/setup/setupPage";
+import AddFirstUserPage from "../pages/setup/user/addUserPage";
 
 export default async function SetupRouter(slug: string[]) {
   if (slug?.[0] === "setup") {
@@ -90,6 +91,15 @@ export default async function SetupRouter(slug: string[]) {
         <SimplCMSLayout>
           <SetupLayout>
             <SetupMediaStoragePage />
+          </SetupLayout>
+        </SimplCMSLayout>
+      );
+    }
+    if (slug?.[1] === "add-user") {
+      return (
+        <SimplCMSLayout>
+          <SetupLayout>
+            <AddFirstUserPage />
           </SetupLayout>
         </SimplCMSLayout>
       );
