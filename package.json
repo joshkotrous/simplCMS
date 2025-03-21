@@ -1,6 +1,6 @@
 {
   "name": "simplcms",
-  "version": "0.1.35-canary.9",
+  "version": "0.1.35-canary.10",
   "private": false,
   "sideEffects": [
     "./src/app/globals.css"
