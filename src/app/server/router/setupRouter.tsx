@@ -11,12 +11,12 @@ import SetupGoogleOauthPage from "../pages/setup/oauth/setupGoogleOauthPage";
 import SetupOauth from "../pages/setup/oauth/setupOauthPage";
 import SetupPage from "../pages/setup/setupPage";
 
-export default async function SetupRouter(slug: string[], user: User) {
+export default async function SetupRouter(slug: string[]) {
   if (slug?.[0] === "setup") {
     if (slug?.[1] === "database") {
       if (slug?.[2] === "mongo") {
         return (
-          <SimplCMSLayout user={user}>
+          <SimplCMSLayout>
             <SetupLayout>
               <SetupMongoPage />
             </SetupLayout>
@@ -24,7 +24,7 @@ export default async function SetupRouter(slug: string[], user: User) {
         );
       }
       return (
-        <SimplCMSLayout user={user}>
+        <SimplCMSLayout>
           <SetupLayout>
             <SetupDatabasePage />
           </SetupLayout>
@@ -34,7 +34,7 @@ export default async function SetupRouter(slug: string[], user: User) {
     if (slug?.[1] === "oauth") {
       if (slug?.[2] === "google") {
         return (
-          <SimplCMSLayout user={user}>
+          <SimplCMSLayout>
             <SetupLayout>
               <SetupGoogleOauthPage />
             </SetupLayout>
@@ -42,7 +42,7 @@ export default async function SetupRouter(slug: string[], user: User) {
         );
       }
       return (
-        <SimplCMSLayout user={user}>
+        <SimplCMSLayout>
           <SetupLayout>
             <SetupOauth />
           </SetupLayout>
@@ -52,7 +52,7 @@ export default async function SetupRouter(slug: string[], user: User) {
     if (slug?.[1] === "host") {
       if (slug?.[2] === "vercel") {
         return (
-          <SimplCMSLayout user={user}>
+          <SimplCMSLayout>
             <SetupLayout>
               <SetupVercelPage />
             </SetupLayout>
@@ -60,7 +60,7 @@ export default async function SetupRouter(slug: string[], user: User) {
         );
       }
       return (
-        <SimplCMSLayout user={user}>
+        <SimplCMSLayout>
           <SetupLayout>
             <HostSetupPage />
           </SetupLayout>
@@ -70,7 +70,7 @@ export default async function SetupRouter(slug: string[], user: User) {
     if (slug?.[1] === "media-storage") {
       if (slug?.[2] === "cloudinary") {
         return (
-          <SimplCMSLayout user={user}>
+          <SimplCMSLayout>
             <SetupLayout>
               <SetupCloudinaryPage />
             </SetupLayout>
@@ -79,7 +79,7 @@ export default async function SetupRouter(slug: string[], user: User) {
       }
       if (slug?.[2] === "s3") {
         return (
-          <SimplCMSLayout user={user}>
+          <SimplCMSLayout>
             <SetupLayout>
               <SetupS3Page />
             </SetupLayout>
@@ -87,7 +87,7 @@ export default async function SetupRouter(slug: string[], user: User) {
         );
       }
       return (
-        <SimplCMSLayout user={user}>
+        <SimplCMSLayout>
           <SetupLayout>
             <SetupMediaStoragePage />
           </SetupLayout>
@@ -95,7 +95,7 @@ export default async function SetupRouter(slug: string[], user: User) {
       );
     }
     return (
-      <SimplCMSLayout user={user}>
+      <SimplCMSLayout>
         <SetupLayout>
           <SetupPage />
         </SetupLayout>

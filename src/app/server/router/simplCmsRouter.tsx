@@ -42,6 +42,9 @@ export default async function SimplCMSRouter({ params }: SimplCMSRouterProps) {
       </SimplCMSLayout>
     );
   }
+  if (params.slug?.[0] === "setup") {
+    return SetupRouter(params.slug);
+  }
 
   if (!session?.user?.email) {
     redirect("/admin/login");
@@ -49,11 +52,6 @@ export default async function SimplCMSRouter({ params }: SimplCMSRouterProps) {
 
   if (!user) {
     redirect("/admin/login");
-  }
-
-  // Skip access check for setup page
-  if (params.slug?.[0] === "setup") {
-    return SetupRouter(params.slug, user);
   }
 
   // Check user access
