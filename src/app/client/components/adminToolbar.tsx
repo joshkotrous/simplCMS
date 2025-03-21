@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./themeToggle";
 import { User } from "../../../types/types";
-import "../../globals.css";
+import "../../simplcms.css";
 
 export default function AdminToolbar({ user }: { user: User | null }) {
   const path = usePathname();

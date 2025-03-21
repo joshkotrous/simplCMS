@@ -3,7 +3,7 @@
   "version": "0.1.35-canary.11",
   "private": false,
   "sideEffects": [
-    "./src/app/globals.css"
+    "./src/app/simplcms.css"
   ],
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build:css": "npx tailwindcss -i ./src/app/index.css -o ./src/app/globals.css",
+    "build:css": "npx tailwindcss -i ./src/app/index.css -o ./src/app/simplcms.css",
     "build:ts": "tsup src/index.ts --format esm,cjs --dts",
     "build": "tsup && npm run build:css",
     "publish:patch": "npm version patch && npm publish && git push --follow-tags",

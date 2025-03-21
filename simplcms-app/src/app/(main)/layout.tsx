@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./simplcms.css";
 import { cookies } from "next/headers";
 import { getServerSession } from "next-auth";
 import { simplcms, SiteProvider, AdminToolbar, Navigation } from "simplcms";

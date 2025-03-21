@@ -1,6 +1,6 @@
 "use server";
 import React from "react";
-import "../../globals.css";
+import "../../simplcms.css";
 import { User } from "../../../types/types";
 import { redirect } from "next/navigation";
 

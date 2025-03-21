@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import "../../globals.css";
+import "../../simplcms.css";
 export default function Navigation() {
   const navItems = [
     {

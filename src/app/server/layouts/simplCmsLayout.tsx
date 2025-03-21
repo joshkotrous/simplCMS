@@ -3,7 +3,7 @@ import React from "react";
 import { Toaster } from "sonner";
 import { SiteProvider } from "../../client/components/siteContextProvider";
 import AdminToolbar from "../../client/components/adminToolbar";
-import "../../globals.css";
+import "../../simplcms.css";
 import { cookies } from "next/headers";
 import { User } from "../../../types/types";
 import Navigation from "../../client/components/navigation";
@@ -21,7 +21,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
-      <body className="h-screen w-screen overflow-hidden bg-simplcms-background">
+      <body className="h-screen w-screen overflow-hidden bg-simplcms-background simplcms-body">
         <SiteProvider initialSettings={{ darkMode }}>
           <div className="z-50 fixed w-screen top-0">
             <AdminToolbar user={user ?? null} />
