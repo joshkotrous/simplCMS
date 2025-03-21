@@ -1,6 +1,6 @@
 {
   "name": "simplcms",
-  "version": "0.1.35-canary.10",
+  "version": "0.1.35-canary.11",
   "private": false,
   "sideEffects": [
     "./src/app/globals.css"
@@ -71,7 +71,6 @@
     "@types/react-syntax-highlighter": "^15.5.13",
     "uuid": "^9.0.0",
     "@types/uuid": "^10.0.0"
-
   },
   "peerDependencies": {
     "mongodb": "^6.12.0",
