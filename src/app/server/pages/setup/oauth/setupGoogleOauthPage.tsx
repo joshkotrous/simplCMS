@@ -9,7 +9,7 @@ export default async function SetupGoogleOauthPage() {
     : null;
   if (!siteUrl) throw new Error("Could not get site url");
   return (
-    <div className="size-full flex justify-center items-center text-foreground">
+    <div className="size-full flex justify-center items-center text-simplcms-foreground">
       <SetupGoogleOauthForm siteUrl={siteUrl} />
     </div>
   );

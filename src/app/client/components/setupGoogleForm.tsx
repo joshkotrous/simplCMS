@@ -137,7 +137,7 @@ export default function SetupGoogleOauthForm({ siteUrl }: { siteUrl: string }) {
   }
 
   return (
-    <div className="size-full flex justify-center items-center text-foreground">
+    <div className="size-full flex justify-center items-center text-simplcms-foreground">
       <Card>
         <CardHeader className="gap-4">
           <div className="w-full flex justify-center">

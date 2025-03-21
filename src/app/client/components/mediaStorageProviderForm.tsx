@@ -77,7 +77,7 @@ export default function MediaStorageProviderForm() {
           }
           href="/admin/setup/media-storage/s3"
         >
-          <Card className="size-full p-12 flex items-center justify-center hover:scale-[99%] cursor-pointer text-center bg-zinc-200 text-foreground">
+          <Card className="size-full p-12 flex items-center justify-center hover:scale-[99%] cursor-pointer text-center bg-zinc-200 text-simplcms-foreground">
             <CardContent className="p-0 gap-4 flex flex-col">
               <AWSS3Logo />
               <span className="font-semibold">AWS S3</span>

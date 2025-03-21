@@ -557,8 +557,8 @@ video {
 :root {
   --radius: 0.5rem;
   --sidebar-accent: 240 4.8% 95.9%;
-  --background: #ffffff;
-  --foreground: #000000;
+  --simplcms-background: #ffffff;
+  --simplcms-foreground: #000000;
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: 240 5.9% 10%;
@@ -570,9 +570,8 @@ video {
 }
 
 .dark {
-  --background: 0 0% 0%;
-  --background: #09090b;
-  --foreground: #ffffff;
+  --simplcms-background: #09090b;
+  --simplcms-foreground: #ffffff;
   --sidebar-background: 240 5.9% 10%;
   --sidebar-foreground: 240 4.8% 95.9%;
   --sidebar-primary: 224.3 76.3% 48%;
@@ -635,6 +634,14 @@ video {
 
 .pointer-events-auto {
   pointer-events: auto;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.collapse {
+  visibility: collapse;
 }
 
 .static {
@@ -864,6 +871,10 @@ video {
 
 .block {
   display: block;
+}
+
+.inline-block {
+  display: inline-block;
 }
 
 .inline {
@@ -1671,14 +1682,6 @@ video {
   border-color: rgb(24 24 27 / var(--tw-border-opacity, 1));
 }
 
-.border-b-foreground {
-  border-bottom-color: var(--foreground);
-}
-
-.bg-background {
-  background-color: var(--background);
-}
-
 .bg-black\/50 {
   background-color: rgb(0 0 0 / 0.5);
 }
@@ -1707,6 +1710,10 @@ video {
 
 .bg-sidebar-border {
   background-color: hsl(var(--sidebar-border));
+}
+
+.bg-simplcms-background {
+  background-color: var(--simplcms-background);
 }
 
 .bg-transparent {
@@ -1984,6 +1991,10 @@ video {
   text-transform: uppercase;
 }
 
+.lowercase {
+  text-transform: lowercase;
+}
+
 .capitalize {
   text-transform: capitalize;
 }
@@ -2022,10 +2033,6 @@ video {
   color: currentColor;
 }
 
-.text-foreground {
-  color: var(--foreground);
-}
-
 .text-gray-400 {
   --tw-text-opacity: 1;
   color: rgb(156 163 175 / var(--tw-text-opacity, 1));
@@ -2057,6 +2064,10 @@ video {
 
 .text-sidebar-foreground\/70 {
   color: hsl(var(--sidebar-foreground) / 0.7);
+}
+
+.text-simplcms-foreground {
+  color: var(--simplcms-foreground);
 }
 
 .text-white {
@@ -2101,6 +2112,18 @@ video {
 
 .text-zinc-950\/50 {
   color: rgb(9 9 11 / 0.5);
+}
+
+.underline {
+  text-decoration-line: underline;
+}
+
+.overline {
+  text-decoration-line: overline;
+}
+
+.line-through {
+  text-decoration-line: line-through;
 }
 
 .underline-offset-4 {
@@ -2324,6 +2347,10 @@ video {
   animation-play-state: running;
 }
 
+.paused {
+  animation-play-state: paused;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
@@ -2410,10 +2437,6 @@ h2 {
 .hover\:border-blue-300:hover {
   --tw-border-opacity: 1;
   border-color: rgb(147 197 253 / var(--tw-border-opacity, 1));
-}
-
-.hover\:border-b-foreground:hover {
-  border-bottom-color: var(--foreground);
 }
 
 .hover\:bg-red-500\/90:hover {

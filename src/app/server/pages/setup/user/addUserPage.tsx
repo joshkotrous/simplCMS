@@ -12,7 +12,7 @@ export default async function AddFirstUserPage() {
   }
   if (users.length > 0) redirect("/admin/login");
   return (
-    <div className="size-full flex justify-center items-center text-foreground">
+    <div className="size-full flex justify-center items-center text-simplcms-foreground">
       <AddFirstUserForm />
     </div>
   );

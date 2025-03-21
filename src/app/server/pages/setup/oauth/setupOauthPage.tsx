@@ -12,7 +12,7 @@ export default async function SetupOauth() {
   if (process.env.SIMPLCMS_OAUTH_PROVIDERS) redirect("/setup/redeploy");
 
   return (
-    <div className="size-full flex justify-center items-center text-foreground">
+    <div className="size-full flex justify-center items-center text-simplcms-foreground">
       <Card>
         <CardHeader className="gap-4">
           <h2 className="flex w-full justify-center text-xl font-bold">

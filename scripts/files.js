@@ -29,7 +29,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={darkMode ? "dark" : ""}>
-      <body className="h-screen w-screen overflow-hidden bg-background">
+      <body className="h-screen w-screen overflow-hidden bg-simplcms-background">
         <SiteProvider initialSettings={{ darkMode }}>
           <div className="z-50 fixed w-screen top-0">
             <AdminToolbar user={user} />
@@ -41,9 +41,9 @@ export default async function RootLayout({
               unstyled: true,
               classNames: {
                 toast:
-                  "bg-background border p-4 dark:border-dark text-foreground rounded-md flex gap-2 items-center text-sm w-[23rem]",
-                title: "text-foreground font-normal",
-                description: "text-foreground font-normal",
+                  "bg-simplcms-background border p-4 dark:border-dark text-simplcms-foreground rounded-md flex gap-2 items-center text-sm w-[23rem]",
+                title: "text-simplcms-foreground font-normal",
+                description: "text-simplcms-foreground font-normal",
               },
             }}
           />
@@ -69,8 +69,8 @@ export default async function Home() {
   return (
     <TooltipProvider>
       <div className="size-full flex justify-center items-center overflow-hidden font-[family-name:var(--font-geist-sans)] pt-20">
-        <div className="size-full absolute top-0 left-0 z-0 bg-[linear-gradient(215deg,rgba(0,0,0,0.25)_0%,transparent_40%)] bg-background dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)]" />
-        <main className="flex gap-4 items-center flex-col z-50 text-foreground">
+        <div className="size-full absolute top-0 left-0 z-0 bg-[linear-gradient(215deg,rgba(0,0,0,0.25)_0%,transparent_40%)] bg-simplcms-background dark:bg-[linear-gradient(215deg,rgba(255,255,255,0.1)_0%,transparent_40%)]" />
+        <main className="flex gap-4 items-center flex-col z-50 text-simplcms-foreground">
           <PageRenderer page={pageConfig} />
         </main>
       </div>
@@ -177,18 +177,18 @@ export default async function BlogPost({
   }
 
   return (
-    <div className="size-full flex min-h-screen justify-center pb-20 bg-background text-foreground pt-20 overflow-auto">
+    <div className="size-full flex min-h-screen justify-center pb-20 bg-simplcms-background text-simplcms-foreground pt-20 overflow-auto">
       <div
         id="blog"
         className="flex flex-col items-start max-w-5xl w-full p-4 gap-4"
       >
         <div className="text-zinc-500">
-          <Link className="hover:underline text-foreground" href="/blog">
+          <Link className="hover:underline text-simplcms-foreground" href="/blog">
             Blog
           </Link>
           <span className="cursor-default"> / </span>
           <Link
-            className="hover:underline text-foreground"
+            className="hover:underline text-simplcms-foreground"
             href={\`/blog/\${slug}\`}
           >
             {post.title}

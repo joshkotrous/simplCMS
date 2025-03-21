@@ -2,8 +2,19 @@
 const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const readline = require("readline");
 
 async function init() {
+  // Process command line arguments for npm install options
+  const args = process.argv.slice(2);
+  let npmInstallOption = "";
+  
+  if (args.includes("--force")) {
+    npmInstallOption = "--force";
+  } else if (args.includes("--legacy-peer-deps")) {
+    npmInstallOption = "--legacy-peer-deps";
+  }
+  
   // Detect if project is using TypeScript
   let isTypeScriptProject = false;
   
@@ -35,14 +46,63 @@ async function init() {
     }
   }
   
-  // 1. Try to install simplcms, but continue if it fails (for testing)
+  // 1. Try to install simplcms with conflict resolution if needed
   console.log("Installing simplcms...");
   try {
-    execSync("npm install simplcms", { stdio: "inherit" });
+    // Try standard installation first
+    if (npmInstallOption) {
+      console.log(`Using npm install option: ${npmInstallOption}`);
+      execSync(`npm install simplcms ${npmInstallOption}`, { stdio: "inherit" });
+    } else {
+      execSync("npm install simplcms", { stdio: "inherit" });
+    }
     console.log("simplcms installed successfully!");
   } catch (error) {
-    console.log("Skipping simplcms installation for testing purposes.");
-    // Continue execution instead of exiting
+    // Handle dependency conflicts
+    if (!npmInstallOption) {
+      console.log("\nEncountered a dependency conflict while installing simplcms.");
+      
+      const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+      });
+      
+      const answer = await new Promise((resolve) => {
+        rl.question(
+          "How would you like to resolve this conflict?\n" +
+          "1. Use --force (forces installation regardless of conflicts)\n" +
+          "2. Use --legacy-peer-deps (ignores peer dependency conflicts)\n" +
+          "3. Skip installation and exit\n" +
+          "Enter your choice (1-3): ", 
+          (answer) => resolve(answer)
+        );
+      });
+      
+      rl.close();
+      
+      try {
+        if (answer === "1") {
+          console.log("Retrying installation with --force...");
+          execSync("npm install simplcms --force", { stdio: "inherit" });
+          console.log("simplcms installed successfully with --force!");
+        } else if (answer === "2") {
+          console.log("Retrying installation with --legacy-peer-deps...");
+          execSync("npm install simplcms --legacy-peer-deps", { stdio: "inherit" });
+          console.log("simplcms installed successfully with --legacy-peer-deps!");
+        } else {
+          console.log("Installation skipped. Exiting setup.");
+          process.exit(0);
+        }
+      } catch (retryError) {
+        console.error("Failed to install simplcms even with conflict resolution:", retryError.message);
+        console.log("Please try installing the package manually or check your environment.");
+        process.exit(1);
+      }
+    } else {
+      console.error("Failed to install simplcms:", error.message);
+      console.log("Please try installing the package manually or check your environment.");
+      process.exit(1);
+    }
   }
   
   // 2. Setup admin/[[...slug]] folder with page file
@@ -54,12 +114,10 @@ async function init() {
     // Create page content with appropriate TypeScript types if needed
     const adminPageContent = isTypeScriptProject 
       ? `import { SimplCMSRouter } from "simplcms";
-
 export default function AdminPage({ params }: { params: { slug?: string[] } }) {
   return <SimplCMSRouter params={params} />;
 }`
       : `import { SimplCMSRouter } from "simplcms";
-
 export default function AdminPage({ params }) {
   return <SimplCMSRouter params={params} />;
 }`;
@@ -77,7 +135,6 @@ export default function AdminPage({ params }) {
   try {
     fs.mkdirSync(authDir, { recursive: true });
     const authRouteContent = `import { SimplCMSAuth } from "simplcms";
-
 const handler = SimplCMSAuth;
 export { handler as GET, handler as POST };`;
     
@@ -141,7 +198,6 @@ const nextConfig = {
   },
   transpilePackages: ["simplcms"],
 };
-
 ${exportStatement}`;
     
     fs.writeFileSync(configFile, newConfig);
@@ -157,5 +213,12 @@ ${exportStatement}`;
   console.log("You can now run your Next.js application with: npm run dev");
 }
 
+// Handle as CLI command
+if (require.main === module) {
+  init().catch(error => {
+    console.error("Initialization failed:", error);
+    process.exit(1);
+  });
+}
 
 module.exports = { init };

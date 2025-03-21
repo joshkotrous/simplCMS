@@ -23,7 +23,7 @@ export default function Navigation() {
     return null;
   }
   return (
-    <nav className="grid grid-cols-[1fr_1fr_1fr] text-foreground p-4">
+    <nav className="grid grid-cols-[1fr_1fr_1fr] text-simplcms-foreground p-4">
       <div>SimplCMS</div>
       <div>
         <ul className="flex gap-8 justify-center">
