@@ -87,7 +87,10 @@ export default function RedeployForm() {
       );
       setCurrentDeployment({ id: deployment.id, status: deployment.status });
     } catch (error) {
-      toast.error(String(error));
+      // Log the actual error for debugging purposes (not visible to users)
+      console.error("Deployment status fetch error:", error);
+      // Display a generic error message to the user
+      toast.error("Unable to fetch deployment status. Please try again later.");
     }
   }
 
