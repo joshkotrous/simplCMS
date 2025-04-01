@@ -20,6 +20,12 @@ async function createApp() {
       });
     });
     
+    // Validate the project name to prevent command injection
+    if (!/^[a-zA-Z0-9_-]+$/.test(appName)) {
+      console.error("Error: Project name must only contain alphanumeric characters, underscores, and dashes.");
+      process.exit(1);
+    }
+    
     // Get TypeScript preference from user
     const useTypeScript = await new Promise((resolve) => {
       rl.question("Use TypeScript? (Y/n): ", (answer) => {
