@@ -116,7 +116,7 @@ export default function SetupVercelForm({
         return;
       }
 
-      console.log("Using token:", setupData.host.vercel.token);
+      // Removed logging of sensitive token information
 
       await toast.promise(
         vercel.getTeams(
