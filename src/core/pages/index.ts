@@ -12,7 +12,8 @@ export async function getAllPages(): Promise<Page[]> {
     console.log("PAGES", pages);
     return pageSchema.array().parse(pages);
   } catch (error) {
-    console.error(`Could not get all pages ${error}`);
+    // Generic error message that doesn't expose implementation details
+    console.error("Error retrieving pages: Operation failed");
     throw error;
   }
 }
@@ -31,7 +32,8 @@ export async function createPage(
 
     return pageSchema.parse(newPage);
   } catch (error) {
-    console.error(`Could not create page ${error}`);
+    // Generic error message that doesn't expose implementation details
+    console.error("Error creating page: Operation failed");
     throw error;
   }
 }
@@ -51,7 +53,8 @@ export async function getPageByRoute(route: string): Promise<Page | null> {
 
     return pageSchema.parse(page);
   } catch (error) {
-    console.error(`Could not get page by route: ${route}. Error: ${error}`);
+    // Only include the route parameter as it's user-provided and not sensitive
+    console.error(`Error retrieving page with route '${route}': Operation failed`);
     throw error;
   }
 }
