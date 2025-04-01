@@ -31,6 +31,31 @@ export async function updateMediaNameAction(
   newName: string
 ): Promise<SimplCMSMedia> {
   try {
+    // Validate the newName parameter
+    if (!newName || typeof newName !== 'string') {
+      throw new Error("Media name must be a non-empty string");
+    }
+    
+    // Remove any leading/trailing whitespace
+    newName = newName.trim();
+    
+    // Check if newName is empty after trimming
+    if (newName.length === 0) {
+      throw new Error("Media name cannot be empty");
+    }
+    
+    // Check for length limitations
+    if (newName.length > 255) {
+      throw new Error("Media name is too long (maximum 255 characters)");
+    }
+    
+    // Check for invalid characters
+    // This regex allows alphanumeric characters, spaces, hyphens, underscores, and periods
+    const validNamePattern = /^[a-zA-Z0-9\s\-_.]+$/;
+    if (!validNamePattern.test(newName)) {
+      throw new Error("Media name contains invalid characters");
+    }
+
     const platformConfiguration = simplcms.platform.getPlatformConfiguration();
     const mediaStorage = platformConfiguration.mediaStorage;
 
