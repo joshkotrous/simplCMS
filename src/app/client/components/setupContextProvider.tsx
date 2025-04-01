@@ -37,16 +37,89 @@ const defaultContextValue: SetupContextType = {
 export const SetupContext =
   createContext<SetupContextType>(defaultContextValue);
 
+// Get a simple integrity key based on browser environment
+function getIntegrityKey(): string {
+  if (typeof window === "undefined") {
+    return "default-key";
+  }
+  
+  const domain = window.location.hostname;
+  const appPrefix = "simplcms"; // Application-specific prefix
+  return `${appPrefix}-${domain}`;
+}
+
+// Simple hash function for integrity check
+function simpleHash(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash.toString(16);
+}
+
+// Protect data with obfuscation and integrity check
+function protectData(data: string): string {
+  const key = getIntegrityKey();
+  const integrity = simpleHash(data + key);
+  const payload = JSON.stringify({
+    data: btoa(data),
+    integrity
+  });
+  return `___PROTECTED___${btoa(payload)}`;
+}
+
+// Verify and extract protected data
+function extractProtectedData(protectedData: string): string {
+  // Check if this is protected data
+  if (!protectedData.startsWith('___PROTECTED___')) {
+    // For backward compatibility, return as is
+    return protectedData;
+  }
+  
+  try {
+    const payload = atob(protectedData.substring('___PROTECTED___'.length));
+    const { data, integrity } = JSON.parse(payload);
+    const decodedData = atob(data);
+    
+    // Verify integrity
+    const key = getIntegrityKey();
+    const calculatedIntegrity = simpleHash(decodedData + key);
+    
+    if (calculatedIntegrity !== integrity) {
+      console.error("Data integrity check failed");
+      throw new Error("Data may have been tampered with");
+    }
+    
+    return decodedData;
+  } catch (error) {
+    console.error("Error extracting protected data:", error);
+    throw error;
+  }
+}
+
 function getDataFromLocalStorage(): SimplCMSPlatformConfiguration | null {
   if (typeof window === "undefined") {
     return null;
   }
 
   try {
-    const localValue = localStorage.getItem(SETUP_DATA_KEY);
-    if (localValue) {
+    const storedValue = localStorage.getItem(SETUP_DATA_KEY);
+    if (storedValue) {
+      let jsonData;
+      
+      // Try to extract protected data, with fallback for backward compatibility
+      try {
+        jsonData = extractProtectedData(storedValue);
+      } catch (error) {
+        // If extraction fails, try treating it as unprotected data
+        console.warn("Could not extract protected data, trying as plaintext");
+        jsonData = storedValue;
+      }
+      
       // Validate JSON structure before returning
-      const parsedData = JSON.parse(localValue);
+      const parsedData = JSON.parse(jsonData);
       return parsedData;
     }
   } catch (error) {
@@ -108,7 +181,9 @@ export function SetupProvider({ children }: { children: React.ReactNode }) {
 
     if (isInitialized && typeof window !== "undefined") {
       try {
-        localStorage.setItem(SETUP_DATA_KEY, JSON.stringify(setupData));
+        // Protect the data before storing it
+        const protectedData = protectData(JSON.stringify(setupData));
+        localStorage.setItem(SETUP_DATA_KEY, protectedData);
       } catch (error) {
         console.error("Error saving to localStorage:", error);
       }
