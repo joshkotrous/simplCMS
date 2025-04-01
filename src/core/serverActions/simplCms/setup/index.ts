@@ -7,6 +7,22 @@ import {
 } from "../../../../types/types";
 import { simplcms } from "../../..";
 
+// Helper function to sanitize errors for logging
+function sanitizeErrorForLogging(error: unknown): string {
+  if (error instanceof Error) {
+    // Return only the error message, not the stack trace
+    return `Error: ${error.message}`;
+  }
+  
+  // For non-Error objects, be extra cautious
+  if (typeof error === 'object' && error !== null) {
+    return 'Error: An object was thrown as an error';
+  }
+  
+  // For primitives
+  return `Error: ${String(error)}`;
+}
+
 export async function connectDbToApplication(
   vercelToken: string,
   vercelTeamId: string,
@@ -42,7 +58,7 @@ export async function connectDbToApplication(
     const pageConfig = createPageSchema.parse(defaultHomePageConfig);
     await simplcms.pages.createPage(pageConfig, uri);
   } catch (error) {
-    console.error(error);
+    console.error(sanitizeErrorForLogging(error));
     throw error;
   }
 }
@@ -100,11 +116,11 @@ export async function setupGoogleOauth(
       value: nextAuthSecret,
       projectId: vercelProjectId,
       teamId: vercelTeamId,
-      type: "plain",
+      type: "encrypted",
       target: ["production"],
     });
   } catch (error) {
-    console.error(error);
+    console.error(sanitizeErrorForLogging(error));
     throw error;
   }
 }
@@ -143,7 +159,7 @@ export async function connectMediaStorageToApplication(
           value: config.cloudinary?.url,
           projectId: vercelProjectId,
           teamId: vercelTeamId,
-          type: "plain",
+          type: "encrypted",
           target: ["production"],
         });
         break;
@@ -183,7 +199,7 @@ export async function connectMediaStorageToApplication(
           value: config.s3?.accessKeyId,
           projectId: vercelProjectId,
           teamId: vercelTeamId,
-          type: "plain",
+          type: "encrypted",
           target: ["production"],
         });
         simplcms.providers.vercel.addEnvToProject({
@@ -192,12 +208,12 @@ export async function connectMediaStorageToApplication(
           value: config.s3?.accessSecretKey,
           projectId: vercelProjectId,
           teamId: vercelTeamId,
-          type: "plain",
+          type: "encrypted",
           target: ["production"],
         });
     }
   } catch (error) {
-    console.error(error);
+    console.error(sanitizeErrorForLogging(error));
     throw error;
   }
 }
