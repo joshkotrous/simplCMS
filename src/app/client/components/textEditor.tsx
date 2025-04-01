@@ -73,6 +73,29 @@ const LANGUAGE_OPTIONS = [
   { value: "plaintext", label: "Plain Text" },
 ];
 
+// Function to sanitize markdown content to prevent XSS attacks
+function sanitizeMarkdown(markdown) {
+  if (!markdown) return '';
+  
+  // Basic sanitization to prevent common XSS attacks
+  // Remove potentially dangerous HTML tags and attributes
+  return markdown
+    // Remove script tags
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    // Remove iframe tags
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    // Remove img tags with onerror attributes
+    .replace(/<img[^>]+onerror[^>]*>/gi, '')
+    // Remove svg tags that could contain scripts
+    .replace(/<svg\b[^<]*(?:(?!<\/svg>)<[^<]*)*<\/svg>/gi, '')
+    // Remove event handler attributes (onclick, onload, etc.)
+    .replace(/on\w+=([\"'])[^\"']*\1/gi, '')
+    // Remove javascript: URLs
+    .replace(/href=[\"']javascript:[^\"']*[\"']/gi, 'href="#"')
+    // Remove data: URLs
+    .replace(/href=[\"']data:[^\"']*[\"']/gi, 'href="#"');
+}
+
 export function MarkdownEditor({
   media,
   latestDeployment,
@@ -133,8 +156,8 @@ export function MarkdownEditor({
   }
 
   function insertCodeBlock(language: string = "") {
-    const start = "```" + language + "\n";
-    const end = "\n```";
+    const start = "" + language + "\n";
+    const end = "\n";
 
     const textarea = document.querySelector("textarea");
     if (textarea) {
@@ -533,7 +556,7 @@ export function MarkdownEditor({
             </TabsContent>
             <TabsContent value="preview" className="mt-0">
               <div className="prose max-w-none rounded p-4 h-[34rem] overflow-auto">
-                <MarkdownRenderer content={postData.content} />
+                <MarkdownRenderer content={sanitizeMarkdown(postData.content)} />
               </div>
             </TabsContent>
           </div>
