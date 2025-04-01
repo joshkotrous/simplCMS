@@ -1,5 +1,11 @@
 import { simplcms } from "../../core";
 import { User, userSchema } from "../../types/types";
+
+// Utility function to safely log errors without exposing sensitive details
+function logErrorSafely(operation: string): void {
+  console.error(`Error during ${operation}. Check server logs for detailed information.`);
+}
+
 export async function createUser(
   userData: Partial<User>,
   dbUri?: string | null
@@ -16,7 +22,7 @@ export async function createUser(
     const newUser = new UserModel(userData);
     await newUser.save();
   } catch (error) {
-    console.error(`Could not create user ${error}`);
+    logErrorSafely("user creation");
     throw error;
   }
 }
@@ -44,7 +50,7 @@ export async function getUser(user: Partial<User>): Promise<User | null> {
 
     return userSchema.parse(JSON.stringify(foundUser));
   } catch (error) {
-    console.error(`Could not get user: ${error}`);
+    logErrorSafely("user retrieval");
     throw error;
   }
 }
@@ -63,7 +69,7 @@ export async function getAllUsers(dbUri?: string | null): Promise<User[]> {
 
     return userSchema.array().parse(users);
   } catch (error) {
-    console.error(`Could not get all users ${error}`);
+    logErrorSafely("retrieving all users");
     throw error;
   }
 }
@@ -78,7 +84,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     if (!user) return null;
     return userSchema.parse(user);
   } catch (error) {
-    console.error(`Could not get user by email ${error}`);
+    logErrorSafely("retrieving user by email");
     throw error;
   }
 }
@@ -89,7 +95,7 @@ export async function userHasAccess(user: User): Promise<boolean> {
     const hasAccess = allUsers.some((_user) => user.email === _user.email);
     return hasAccess;
   } catch (error) {
-    console.error(`Could not check user access ${error}`);
+    logErrorSafely("checking user access");
     throw error;
   }
 }
@@ -113,7 +119,7 @@ export async function deleteUser(user: User): Promise<void> {
       throw new Error("User not found");
     }
   } catch (error) {
-    console.error(`Could not delete user: ${error}`);
+    logErrorSafely("user deletion");
     throw error;
   }
 }
@@ -147,7 +153,7 @@ export async function updateUser(user: Partial<User>): Promise<void> {
       throw new Error("No changes were made to the user");
     }
   } catch (error) {
-    console.error(`Could not update user: ${error}`);
+    logErrorSafely("user update");
     throw error;
   }
 }
