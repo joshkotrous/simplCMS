@@ -42,6 +42,106 @@ type Property = {
   value: string;
 };
 
+// Function to sanitize content to prevent XSS attacks
+const sanitizeContent = (content: string | undefined): string => {
+  if (!content) return "";
+  
+  // Convert HTML special characters to their entity equivalents
+  return content
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+};
+
+// Validate style property names (CSS properties)
+const isValidStyleProperty = (property: string): boolean => {
+  // List of allowed CSS properties (this is a subset, can be expanded)
+  const allowedProperties = [
+    "color", "background", "background-color", "font-size", "font-weight", 
+    "margin", "padding", "border", "width", "height", "display", "flex",
+    "align-items", "justify-content", "text-align", "position", "top", "left",
+    "right", "bottom", "z-index", "opacity", "transform", "transition",
+    // Add more allowed properties as needed
+  ];
+  
+  // Check if property is in the allowed list (case-insensitive)
+  return allowedProperties.some(
+    allowed => allowed.toLowerCase() === property.toLowerCase()
+  );
+};
+
+// Validate style values
+const isValidStyleValue = (value: string): boolean => {
+  // Basic check for potentially harmful content
+  return !value.includes("javascript:") && 
+         !value.includes("data:") &&
+         !/<\s*script/i.test(value);
+};
+
+// Sanitize style value
+const sanitizeStyleValue = (value: string): string => {
+  // Basic sanitization
+  return value
+    .replace(/javascript:/gi, "")
+    .replace(/data:/gi, "")
+    .replace(/<\s*script/gi, "");
+};
+
+// Validate attribute names
+const isValidAttributeName = (name: string): boolean => {
+  // List of allowed HTML attributes
+  const allowedAttributes = [
+    "id", "class", "style", "href", "src", "alt", "title", "target",
+    "aria-label", "role", "data-testid", "placeholder", "type", "value",
+    "disabled", "checked", "readonly", "name", "rel"
+    // Add more allowed attributes as needed
+  ];
+  
+  // Don't allow event handler attributes
+  if (name.toLowerCase().startsWith("on")) {
+    return false;
+  }
+  
+  // Check if attribute is in the allowed list or is a data attribute
+  return allowedAttributes.some(
+    allowed => allowed.toLowerCase() === name.toLowerCase()
+  ) || name.toLowerCase().startsWith("data-");
+};
+
+// Validate attribute values
+const isValidAttributeValue = (name: string, value: string): boolean => {
+  // Special validation for href/src attributes
+  if (name.toLowerCase() === "href" || name.toLowerCase() === "src") {
+    return !value.toLowerCase().includes("javascript:") && 
+           !value.toLowerCase().startsWith("data:");
+  }
+  
+  // General validation for other attributes
+  return !value.includes("javascript:") && 
+         !/<\s*script/i.test(value);
+};
+
+// Sanitize attribute value
+const sanitizeAttributeValue = (name: string, value: string): string => {
+  // Special sanitization for href/src
+  if (name.toLowerCase() === "href" || name.toLowerCase() === "src") {
+    value = value.replace(/javascript:/gi, "");
+    
+    if (value.toLowerCase().startsWith("data:")) {
+      if (!/data:image\//i.test(value)) {
+        return "#"; // Replace unsafe data URIs
+      }
+    }
+  }
+  
+  // Basic sanitization for other attributes
+  return value
+    .replace(/javascript:/gi, "")
+    .replace(/<\s*script/gi, "");
+};
+
 // Element editor modal component
 const ElementEditor: React.FC<{
   element: any;
@@ -77,7 +177,26 @@ const ElementEditor: React.FC<{
     value: string
   ) => {
     const newStyles = [...styles];
-    newStyles[index][field] = value;
+    
+    if (field === "name") {
+      // Validate style property name
+      if (isValidStyleProperty(value)) {
+        newStyles[index][field] = value;
+      } else {
+        // Log warning for invalid property
+        console.warn(`Invalid CSS property: ${value}`);
+        return; // Don't update with invalid property
+      }
+    } else if (field === "value") {
+      // Validate and sanitize style value
+      if (isValidStyleValue(value)) {
+        newStyles[index][field] = value;
+      } else {
+        // Sanitize potentially harmful values
+        newStyles[index][field] = sanitizeStyleValue(value);
+      }
+    }
+    
     setStyles(newStyles);
   };
 
@@ -98,7 +217,27 @@ const ElementEditor: React.FC<{
     value: string
   ) => {
     const newAttributes = [...attributes];
-    newAttributes[index][field] = value;
+    
+    if (field === "name") {
+      // Validate attribute name
+      if (isValidAttributeName(value)) {
+        newAttributes[index][field] = value;
+      } else {
+        // Log warning for invalid attribute
+        console.warn(`Invalid HTML attribute: ${value}`);
+        return; // Don't update with invalid attribute
+      }
+    } else if (field === "value") {
+      const attrName = newAttributes[index].name;
+      // Validate and sanitize attribute value
+      if (isValidAttributeValue(attrName, value)) {
+        newAttributes[index][field] = value;
+      } else {
+        // Sanitize potentially harmful values
+        newAttributes[index][field] = sanitizeAttributeValue(attrName, value);
+      }
+    }
+    
     setAttributes(newAttributes);
   };
 
@@ -130,8 +269,12 @@ const ElementEditor: React.FC<{
           }))
         : null;
 
+    // Sanitize content before saving to prevent XSS
+    const sanitizedContent = sanitizeContent(editedElement.content);
+
     const updatedElement = {
       ...editedElement,
+      content: sanitizedContent,
       styles: formattedStyles,
       attributes: formattedAttributes,
     };
