@@ -54,7 +54,7 @@
     "@vercel/sdk": "^1.2.2",
     "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
-    "cloudinary": "^2.5.1",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",
     "gray-matter": "^4.0.3",
